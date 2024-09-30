@@ -1,0 +1,15 @@
+{
+  "name": "@iringo/engineering-solutions",
+  "private": true,
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "description": "",
+  "packageManager": "pnpm@9.9.0",
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.2"
+  }
+}
