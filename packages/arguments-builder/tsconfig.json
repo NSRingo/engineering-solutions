@@ -2,7 +2,11 @@
   "compilerOptions": {
     "lib": ["ESNext"],
     "strict": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@iringo/arguments-builder": ["src/index.ts"]
+    }
   },
   "include": ["src/**/*"]
 }
