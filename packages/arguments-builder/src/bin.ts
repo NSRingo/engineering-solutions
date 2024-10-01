@@ -1,6 +1,7 @@
 import { bundleRequire } from '@modern-js/node-bundle-require';
 import { fs, logger, program } from '@modern-js/utils';
 import { z } from 'zod';
+import { ArgumentsBuilder } from './core';
 import { argumentsBuilderOptionsSchema } from './core/types';
 
 const argumentsBuilderConfigSchema = argumentsBuilderOptionsSchema.extend({
@@ -8,29 +9,25 @@ const argumentsBuilderConfigSchema = argumentsBuilderOptionsSchema.extend({
     .object({
       surge: z
         .object({
-          template: z.string().optional(),
+          template: z.string(),
           path: z.string().optional(),
         })
-        .or(z.boolean())
         .optional(),
       loon: z
         .object({
-          template: z.string().optional(),
+          template: z.string(),
           path: z.string().optional(),
         })
-        .or(z.boolean())
         .optional(),
       boxjsSettings: z
         .object({
-          path: z.string().optional(),
+          path: z.string().default('boxjs.settings.json').optional(),
         })
-        .or(z.boolean())
         .optional(),
       dts: z
         .object({
-          path: z.string().optional(),
+          path: z.string().default('./src/settings.d.ts').optional(),
         })
-        .or(z.boolean())
         .optional(),
     })
     .optional(),
@@ -57,10 +54,28 @@ program
     const resp = argumentsBuilderConfigSchema.safeParse(config.default);
 
     if (!resp.success) {
-      logger.error('配置文件有误', resp)
-      return
+      logger.error('配置文件有误', resp.error);
+      return;
     }
-    console.log(resp);
+    const { output, ...rest } = resp.data;
+    const argumentsBuilder = new ArgumentsBuilder(rest);
+
+    const [surgeResult, loonResult, boxjsSettingsResult, dtsResult] = await Promise.allSettled([
+      argumentsBuilder.buildSurgeArguments(),
+      argumentsBuilder.buildLoonArguments(),
+      argumentsBuilder.buildBoxJsSettings(),
+      argumentsBuilder.buildDtsArguments(),
+    ]);
+
+    // if (surgeResult.status === 'fulfilled') {
+    //   const surgeOutput = output?.surge;
+    //   if (surgeOutput) {
+    //     const { path = 'modules/surge.sgmodule', template } = surgeOutput;
+
+    //   } else {
+    //     logger.info('未配置 surge 输出');
+    //   }
+    // }
   });
 
 program.parse(process.argv);
