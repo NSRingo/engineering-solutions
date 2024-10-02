@@ -100,13 +100,13 @@ export class ArgumentsBuilder {
           if (['number', 'boolean'].includes(typeof val)) {
             return val;
           }
-          return '';
+          return '""';
         }
         result += `,${getValue(arg.defaultValue)}`;
         if (arg.options) {
           result += ',';
           result += arg.options
-            .filter((item) => item !== arg.defaultValue)
+            .filter((item) => item.key !== arg.defaultValue)
             .map((option) => `${getValue(option.key)}`)
             .join(',');
         }
