@@ -14,7 +14,7 @@ const outputSchema = z.object({
     .optional(),
   loon: z
     .object({
-      template: z.string(),
+      template: z.string().optional(),
       path: z.string().optional(),
     })
     .optional(),

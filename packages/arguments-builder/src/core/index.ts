@@ -93,16 +93,22 @@ export class ArgumentsBuilder {
           type = 'select';
         }
         result += ` = ${type}`;
-        if (typeof arg.defaultValue === 'string') {
-          result += `,"${arg.defaultValue}"`;
-        } else if (['number', 'boolean'].includes(typeof arg.defaultValue)) {
-          result += `,${arg.defaultValue}`;
-        } else {
-          result += `,""`;
+        function getValue(val: any) {
+          if (typeof val === 'string') {
+            return `"${val}"`;
+          }
+          if (['number', 'boolean'].includes(typeof val)) {
+            return val;
+          }
+          return '';
         }
+        result += `,${getValue(arg.defaultValue)}`;
         if (arg.options) {
           result += ',';
-          result += arg.options.map((option) => `"${option.key}"`).join(',');
+          result += arg.options
+            .filter((item) => item !== arg.defaultValue)
+            .map((option) => `${getValue(option.key)}`)
+            .join(',');
         }
         if (arg.name) {
           result += `,tag=${arg.name}`;

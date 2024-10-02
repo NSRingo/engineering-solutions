@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { program } from 'commander';
 import { buildBoxJsSettings } from './boxjs';
 import { getBuilder } from './builder';
