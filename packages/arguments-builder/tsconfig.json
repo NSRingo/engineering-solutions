@@ -4,6 +4,8 @@
     "strict": true,
     "skipLibCheck": true,
     "baseUrl": ".",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "paths": {
       "@iringo/arguments-builder": ["src/index.ts"]
     }

@@ -71,14 +71,18 @@ export class ArgumentsBuilder {
       })
       .join('\n');
 
+    const scriptParams = args.map((item) => `${item.key}={{{${item.key}}}}`).join('&');
+
     return {
       argumentsText,
       argumentsDescription,
+      scriptParams,
     };
   }
 
   public buildLoonArguments() {
-    return this.getArgumentByScope('loon')
+    const args = this.getArgumentByScope('loon');
+    const argumentsText = args
       .map((arg) => {
         let result = arg.key;
         let type: LoonType = 'input';
@@ -109,16 +113,22 @@ export class ArgumentsBuilder {
         return result;
       })
       .join('\n');
+
+    const scriptParams = `[${args.map((item) => `{${item.key}}`).join(',')}]`;
+    return {
+      argumentsText,
+      scriptParams,
+    };
   }
 
-  public buildDtsArguments() {
+  public buildDtsArguments({ isExported = true } = {}) {
     const project = new Project({
       useInMemoryFileSystem: true,
     });
     const sourceFile = project.createSourceFile('settings.ts', '');
     const settingsInterface = sourceFile.addInterface({
       name: 'Settings',
-      isExported: true,
+      isExported,
     });
     const args = this.getArgumentByScope('dts');
 

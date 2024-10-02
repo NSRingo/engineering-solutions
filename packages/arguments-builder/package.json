@@ -1,24 +1,29 @@
 {
   "name": "@iringo/arguments-builder",
   "version": "1.0.0",
-  "main": "dist/cjs/index.js",
-  "types": "dist/cjs/index.d.ts",
-  "module": "dist/esm/index.mjs",
+  "main": "dist/lib/index.js",
+  "types": "dist/types/index.d.ts",
+  "module": "dist/es/index.js",
+  "bin": {
+    "arguments-builder": "./dist/lib/bin.js"
+  },
   "scripts": {
-    "dev": "rslib build -w",
-    "build": "rslib build",
+    "dev": "modern build -w",
+    "build": "modern build",
     "test": "jest"
   },
   "dependencies": {
-    "@modern-js/node-bundle-require": "^2.60.2",
-    "@modern-js/utils": "^2.60.2",
+    "commander": "^12.1.0",
     "handlebars": "^4.7.8",
+    "jiti": "^2.1.0",
+    "rslog": "^1.2.3",
     "ts-morph": "^23.0.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@rslib/core": "^0.0.8",
+    "@modern-js/module-tools": "^2.60.2",
     "@types/jest": "^29.5.13",
+    "@types/node": "^20.0.0",
     "jest": "^29.7.0",
     "ts-jest": "^29.2.5",
     "typescript": "^5.6.2"
