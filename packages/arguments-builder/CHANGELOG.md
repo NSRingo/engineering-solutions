@@ -1,5 +1,11 @@
 # @iringo/arguments-builder
 
+## 1.1.2
+
+### Patch Changes
+
+- dded7d3: 修复未编译产物的问题
+
 ## 1.1.0
 
 ### Minor Changes
