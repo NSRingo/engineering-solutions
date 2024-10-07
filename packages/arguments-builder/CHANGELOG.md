@@ -1,5 +1,11 @@
 # @iringo/arguments-builder
 
+## 1.1.1
+
+### Patch Changes
+
+- 89d0043: ci publish
+
 ## 1.1.0
 
 ### Minor Changes

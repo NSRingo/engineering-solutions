@@ -1,6 +1,6 @@
 {
   "name": "@iringo/arguments-builder",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "private": false,
   "main": "dist/lib/index.js",
   "types": "dist/types/index.d.ts",
@@ -35,5 +35,8 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
-  "files": ["dist", "CHANGELOG.md"]
+  "files": [
+    "dist",
+    "CHANGELOG.md"
+  ]
 }
