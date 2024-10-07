@@ -23,22 +23,10 @@ jobs:
 
       - run: pnpm install
 
-      - name: Get affected packages from PR
-        id: affected
-        run: |
-          # 获取最近一次合并的提交
-          LAST_COMMIT_SHA=$(git rev-parse HEAD)
-          BASE_BRANCH=${{ github.event.before }}
-          
-          # 获取受影响的项目
-          npx nx affected:libs --base=$BASE_BRANCH --head=$LAST_COMMIT_SHA --select=project > affected.json
-          echo "affected=$(jq -r '.[]' affected.json | tr '\n' ',')" >> $GITHUB_ENV
-
-
       - uses: changesets/action@v1
         id: changesets
         with:
-          publish: pnpm build 
+          publish: pnpm build && nx release publish --access public | true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
