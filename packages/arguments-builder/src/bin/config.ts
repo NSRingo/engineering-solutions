@@ -20,6 +20,7 @@ const outputSchema = z.object({
     .optional(),
   boxjsSettings: z
     .object({
+      scope: z.string().optional(),
       path: z.string().default('boxjs.settings.json').optional(),
     })
     .optional(),

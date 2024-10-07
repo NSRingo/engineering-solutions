@@ -6,8 +6,7 @@ import type { ArgumentItem, ArgumentType, ArgumentsBuilderOptions, BoxJsType, Lo
 export class ArgumentsBuilder {
   constructor(private readonly options: ArgumentsBuilderOptions) {}
 
-  public buildBoxJsSettings() {
-    const scope = this.options.boxJsConfig?.scope ?? '';
+  public buildBoxJsSettings(scope = '') {
     return this.getArgumentByScope('boxjs').map((arg) => {
       let type: BoxJsType = 'text';
       if (arg.boxJsType) {

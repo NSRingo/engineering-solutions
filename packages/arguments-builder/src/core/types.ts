@@ -54,11 +54,6 @@ export type ArgumentItem = z.infer<typeof argumentItemSchema>;
 
 export const argumentsBuilderOptionsSchema = z.object({
   args: z.array(argumentItemSchema).optional(),
-  boxJsConfig: z
-    .object({
-      scope: z.string().optional().describe('boxJs scope'),
-    })
-    .optional(),
 });
 
 export type ArgumentsBuilderOptions = z.infer<typeof argumentsBuilderOptionsSchema>;

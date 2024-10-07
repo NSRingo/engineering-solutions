@@ -35,11 +35,10 @@ module.exports = {
 
 ### ArgumentsBuilderConfig
 
-| 参数        | 类型                            | 描述           |
-| ----------- | ------------------------------- | -------------- |
-| output      | [Output](#Output)               | 输出文件配置   |
-| args        | [ArgumentItem](#ArgumentItem)[] | 参数配置       |
-| boxJsConfig | BoxJsConfig                     | boxjs 特殊配置 |
+| 参数   | 类型                            | 描述         |
+| ------ | ------------------------------- | ------------ |
+| output | [Output](#Output)               | 输出文件配置 |
+| args   | [ArgumentItem](#ArgumentItem)[] | 参数配置     |
 
 ### Output
 
@@ -47,7 +46,7 @@ module.exports = {
 | ------------- | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | surge         | { path?: string; template?: string; }   | surge 输出内容配置。`path` 为输出路径，`template` 为模版路径                                                                                |
 | loon          | { path?: string; template?: string; }   | loon 输出内容配置。`path` 为输出路径，`template` 为模版路径                                                                                 |
-| boxjsSettings | { path?: string; }                      | boxjs 的 settings 部分内容的输出路径                                                                                                        |
+| boxjsSettings | { path?: string; scope?: string }       | boxjs 的 settings 部分内容的输出内容配置。`path` 为输出路径，`scope` 为存储键的前缀                                                         |
 | dts           | { path?: string; isExported?: boolean } | 输出 dts 文件的配置。`isExported` 默认根据输出文件后缀自动判断，及 `.d.ts` 文件认为是全局类型，则 `isExported` 为 `false`；`.ts` 文件则反之 |
 
 ### ArgumentItem
