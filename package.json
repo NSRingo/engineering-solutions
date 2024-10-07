@@ -5,8 +5,6 @@
   "main": "index.js",
   "scripts": {
     "build": "cross-env NX_DAEMON=false nx run-many -t build --exclude @examples/* @e2e/* --parallel=10",
-    "publish": "cross-env NX_DAEMON=false nx run-many -t publish --exclude @examples/* @e2e/* --parallel=10",
-    "prepublishOnly": "pnpm run build",
     "change": "changeset"
   },
   "author": "",

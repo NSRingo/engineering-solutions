@@ -34,7 +34,7 @@ jobs:
       - uses: changesets/action@v1
         id: changesets
         with:
-          publish: pnpm run publish
+          publish: node scripts/release.mjs
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           

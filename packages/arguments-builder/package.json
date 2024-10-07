@@ -12,7 +12,7 @@
     "dev": "modern build -w",
     "build": "modern build",
     "test": "jest",
-    "publish": "npm publish --access public"
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "commander": "^12.1.0",
