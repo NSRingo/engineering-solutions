@@ -1,5 +1,11 @@
 # @iringo/arguments-builder
 
+## 1.2.0
+
+### Minor Changes
+
+- e3ebb12: 修改配置文件格式
+
 ## 1.1.2
 
 ### Patch Changes
