@@ -1,5 +1,11 @@
 # @iringo/arguments-builder
 
+## 1.3.0
+
+### Minor Changes
+
+- 9876397: 修改 loon 的输出方案，多选的参数降级为 input
+
 ## 1.2.0
 
 ### Minor Changes
