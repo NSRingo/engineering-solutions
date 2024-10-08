@@ -4,12 +4,11 @@ import { testArgs } from './common';
 describe('ArgumentsBuilder', () => {
   const builder = new ArgumentsBuilder({
     args: testArgs,
-    boxJsConfig: { scope: '@iRingo.WeatherKit.Settings' },
   });
 
   describe('buildBoxJsSettings', () => {
     it('should generate correct BoxJs settings', () => {
-      const result = builder.buildBoxJsSettings();
+      const result = builder.buildBoxJsSettings('@iRingo.WeatherKit.Settings');
       expect(result).toEqual(
         expect.arrayContaining([
           {
@@ -170,23 +169,30 @@ describe('ArgumentsBuilder', () => {
   });
 
   describe('buildSurgeArguments', () => {
+    const result = builder.buildSurgeArguments();
     it('should generate correct Surge arguments', () => {
-      const result = builder.buildSurgeArguments();
       expect(result.argumentsText).not.toContain('Switch');
       expect(result.argumentsText).toContain('NextHour.Provider:ColorfulClouds');
-      expect(result.argumentsDescription).toContain('[未来一小时降水强度]数据源');
-      expect(result.argumentsDescription).toContain('[空气质量]数据源');
     });
+    it('should generate correct Surge arguments description', () => {
+      expect(result.argumentsDescription).toContain('[未来一小时降水强度]数据源\n    ├ WeatherKit');
+    });
+    it('should generate correct Surge script params', () => {
+      expect(result.scriptParams).toContain('NextHour.Provider={{{NextHour.Provider}}}&AQI.Provider={{{AQI.Provider}}}&')
+    })
   });
 
   describe('buildLoonArguments', () => {
+    const result = builder.buildLoonArguments();
     it('should generate correct Loon arguments', () => {
-      const result = builder.buildLoonArguments();
-      expect(result).not.toContain('Switch');
-      expect(result).toContain('NextHour.Provider = select,"ColorfulClouds","WeatherKit","ColorfulClouds","QWeather"');
-      expect(result).toContain(
-        'AQI.Provider = select,"ColorfulClouds","WeatherKit","ColorfulClouds","QWeather","WAQI"',
+      expect(result.argumentsText).not.toContain('Switch');
+      expect(result.argumentsText).toContain(
+        'NextHour.Provider = select,"ColorfulClouds","WeatherKit","QWeather",tag=[未来一小时降水强度]数据源,desc=',
       );
+      expect(result.argumentsText).toContain('AQI.ReplaceProviders = input,');
+    });
+    it('should generate correct Loon script params', () => {
+      expect(result.scriptParams).toContain('[{NextHour.Provider},{AQI.Provider},');
     });
   });
 
