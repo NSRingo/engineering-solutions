@@ -87,8 +87,8 @@ export class ArgumentsBuilder {
         let type: LoonType = 'input';
         if (arg.type === 'boolean') {
           type = 'switch';
-        }
-        if (arg.options) {
+        } else if (arg.options && arg.type !== 'array') {
+          // 只有在有选项且不是数组类型时才使用 select
           type = 'select';
         }
         result += ` = ${type}`;
@@ -102,7 +102,7 @@ export class ArgumentsBuilder {
           return '""';
         }
         result += `,${getValue(arg.defaultValue)}`;
-        if (arg.options) {
+        if (arg.options && type === 'select') {
           result += ',';
           result += arg.options
             .filter((item) => item.key !== arg.defaultValue)
