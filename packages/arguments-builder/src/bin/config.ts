@@ -30,6 +30,14 @@ const outputSchema = z.object({
       isExported: z.boolean().optional(),
     })
     .optional(),
+  customItems: z
+    .array(
+      z.object({
+        template: z.string(),
+        path: z.string(),
+      }),
+    )
+    .optional(),
 });
 
 export type Output = z.infer<typeof outputSchema>;
