@@ -1,5 +1,11 @@
 # @iringo/arguments-builder
 
+## 1.4.0
+
+### Minor Changes
+
+- 5683bc8: 模板增加 version 变量
+
 ## 1.3.0
 
 ### Minor Changes
