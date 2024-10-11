@@ -9,4 +9,8 @@ handlebars.registerHelper('now', (formatStr: string) => {
   return now.toISOString();
 });
 
+handlebars.registerHelper('version', () => {
+  return process.env.BUILD_VERSION || '0.0.0';
+});
+
 export { handlebars };

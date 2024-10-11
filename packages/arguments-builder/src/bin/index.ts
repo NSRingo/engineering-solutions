@@ -1,14 +1,25 @@
 #!/usr/bin/env node
 
+import fs from 'node:fs';
+import path from 'node:path';
 import { program } from 'commander';
 import { buildBoxJsSettings } from './boxjs';
 import { getBuilder } from './builder';
 import { ArgumentsBuilderConfig } from './config';
 import { buildDtsArguments } from './dts';
+import { handlebars } from './handlebars';
 import { buildLoonArguments } from './loon';
 import { buildSurgeArguments } from './surge';
 
 export { ArgumentsBuilderConfig };
+
+const packageJsonPath = path.resolve(process.cwd(), 'package.json');
+if (fs.existsSync(packageJsonPath)) {
+  try {
+    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
+    process.env.BUILD_VERSION = packageJson.version;
+  } catch (error) {}
+}
 
 program.version(process.env.VERSION || '0.0.0');
 
@@ -64,6 +75,10 @@ buildCommand.action(async (option) => {
     buildLoonArguments(builder, output?.loon, configFileDir ?? process.cwd()),
     buildBoxJsSettings(builder, output?.boxjsSettings),
   ]);
+  output?.customItems?.forEach((item) => {
+    const temp = handlebars.compile(fs.readFileSync(item.template, 'utf-8'));
+    fs.writeFileSync(item.path, temp({}));
+  });
 });
 
 program.parse(process.argv);
