@@ -172,14 +172,16 @@ describe('ArgumentsBuilder', () => {
     const result = builder.buildSurgeArguments();
     it('should generate correct Surge arguments', () => {
       expect(result.argumentsText).not.toContain('Switch');
-      expect(result.argumentsText).toContain('NextHour.Provider:ColorfulClouds');
+      expect(result.argumentsText).toContain('NextHour.Provider:"ColorfulClouds"');
     });
     it('should generate correct Surge arguments description', () => {
       expect(result.argumentsDescription).toContain('[未来一小时降水强度]数据源\n    ├ WeatherKit');
     });
     it('should generate correct Surge script params', () => {
-      expect(result.scriptParams).toContain('NextHour.Provider={{{NextHour.Provider}}}&AQI.Provider={{{AQI.Provider}}}&')
-    })
+      expect(result.scriptParams).toContain(
+        'NextHour.Provider={{{NextHour.Provider}}}&AQI.Provider={{{AQI.Provider}}}&',
+      );
+    });
   });
 
   describe('buildLoonArguments', () => {
