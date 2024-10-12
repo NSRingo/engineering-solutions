@@ -3,6 +3,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { program } from 'commander';
+import { logger } from 'rslog';
 import { buildBoxJsSettings } from './boxjs';
 import { getBuilder } from './builder';
 import { ArgumentsBuilderConfig } from './config';
@@ -10,11 +11,12 @@ import { buildDtsArguments } from './dts';
 import { handlebars } from './handlebars';
 import { buildLoonArguments } from './loon';
 import { buildSurgeArguments } from './surge';
+import { safeWriteFile } from './utils';
 
 export { ArgumentsBuilderConfig };
 
 const packageJsonPath = path.resolve(process.cwd(), 'package.json');
-if (fs.existsSync(packageJsonPath)) {
+if (fs.existsSync(packageJsonPath) && !process.env.BUILD_VERSION) {
   try {
     const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
     process.env.BUILD_VERSION = packageJson.version;
@@ -38,7 +40,7 @@ dtsCommand.action(async (option) => {
   if (!builder) {
     return;
   }
-  buildDtsArguments(builder, output?.dts);
+  await buildDtsArguments(builder, output?.dts);
 });
 
 surgeCommand.action(async (option) => {
@@ -46,7 +48,7 @@ surgeCommand.action(async (option) => {
   if (!builder) {
     return;
   }
-  buildSurgeArguments(builder, output?.surge, configFileDir ?? process.cwd());
+  await buildSurgeArguments(builder, output?.surge, configFileDir ?? process.cwd());
 });
 
 loonCommand.action(async (option) => {
@@ -54,7 +56,7 @@ loonCommand.action(async (option) => {
   if (!builder) {
     return;
   }
-  buildLoonArguments(builder, output?.loon, configFileDir ?? process.cwd());
+  await buildLoonArguments(builder, output?.loon, configFileDir ?? process.cwd());
 });
 
 boxjsCommand.action(async (option) => {
@@ -62,7 +64,7 @@ boxjsCommand.action(async (option) => {
   if (!builder) {
     return;
   }
-  buildBoxJsSettings(builder, output?.boxjsSettings);
+  await buildBoxJsSettings(builder, output?.boxjsSettings);
 });
 
 buildCommand.action(async (option) => {
@@ -70,15 +72,23 @@ buildCommand.action(async (option) => {
   if (!builder) {
     return;
   }
-  await Promise.allSettled([
-    buildSurgeArguments(builder, output?.surge, configFileDir ?? process.cwd()),
-    buildLoonArguments(builder, output?.loon, configFileDir ?? process.cwd()),
-    buildBoxJsSettings(builder, output?.boxjsSettings),
-  ]);
-  output?.customItems?.forEach((item) => {
-    const temp = handlebars.compile(fs.readFileSync(item.template, 'utf-8'));
-    fs.writeFileSync(item.path, temp({}));
-  });
+  await Promise.allSettled(
+    [
+      buildSurgeArguments(builder, output?.surge, configFileDir ?? process.cwd()),
+      buildLoonArguments(builder, output?.loon, configFileDir ?? process.cwd()),
+      buildBoxJsSettings(builder, output?.boxjsSettings),
+    ].concat(
+      output?.customItems?.map(async (item) => {
+        try {
+          const template = handlebars.compile(fs.readFileSync(item.template, 'utf-8'));
+          await safeWriteFile(item.path, template({}));
+          logger.success(`Successfully generated custom item to ${item.path}`);
+        } catch (error) {
+          logger.error(`Failed to generate custom item to ${item.path}`, error);
+        }
+      }) ?? [],
+    ),
+  );
 });
 
 program.parse(process.argv);
