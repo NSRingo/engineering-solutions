@@ -1,6 +1,6 @@
 {
   "name": "@iringo/sgmoudle-tools",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
@@ -22,5 +22,13 @@
     "@types/node": "^20.0.0",
     "@types/qrcode-terminal": "^0.12.2",
     "typescript": "^5.6.2"
-  }
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+   "files": [
+    "dist",
+    "CHANGELOG.md"
+  ]
 }
