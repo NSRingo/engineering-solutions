@@ -23,4 +23,11 @@ handlebars.registerHelper('inline', (string?: string) => {
   return new handlebars.SafeString(string?.replace(/\n/g, '\\n') ?? '');
 });
 
+handlebars.registerHelper('splitLines', (string?: string) => {
+  if (!string) {
+    return [];
+  }
+  return string.split('\n');
+});
+
 export { handlebars };
