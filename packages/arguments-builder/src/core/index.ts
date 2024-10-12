@@ -37,15 +37,18 @@ export class ArgumentsBuilder {
 
   public buildSurgeArguments() {
     const args = this.getArgumentByScope('surge');
-    const argumentsText = args
-      .map((arg) => {
-        let result = arg.key;
-        if (arg.defaultValue) {
-          result += `:${['string', 'number', 'boolean'].includes(typeof arg.defaultValue) ? arg.defaultValue : `""`}`;
-        }
-        return result;
-      })
-      .join(',');
+    const getValue = (defaultValue: any) => {
+      switch (typeof defaultValue) {
+        case 'string':
+          return `"${defaultValue}"`;
+        case 'number':
+        case 'boolean':
+          return defaultValue;
+        default:
+          return '""';
+      }
+    };
+    const argumentsText = args.map((arg) => `${arg.key}:${getValue(arg.defaultValue)}`).join(',');
 
     const argumentsDescription = args
       .map((arg) => {
