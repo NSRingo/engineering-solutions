@@ -8,7 +8,13 @@ for (const pkg of pkgs) {
   /**
    * @type {string[]}
    */
-  const versions = JSON.parse(execSync(`pnpm info ${pkg.name} versions --json`).toString());
+  let versions = [];
+  try {
+    versions = JSON.parse(execSync(`pnpm info ${pkg.name} versions --json`).toString());
+  } catch (error) {
+    versions = [];
+  }
+
   if (versions.includes(pkg.version)) continue;
 
   execSync(`NPM_TOKEN=${process.env.NPM_TOKEN} npm publish`, {
