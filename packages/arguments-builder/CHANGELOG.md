@@ -1,5 +1,11 @@
 # @iringo/arguments-builder
 
+## 1.4.2
+
+### Patch Changes
+
+- 025dff4: 修复 surge 模板默认值生成错误的问题
+
 ## 1.4.1
 
 ### Patch Changes
