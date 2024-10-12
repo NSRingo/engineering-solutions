@@ -1,5 +1,11 @@
 # @iringo/arguments-builder
 
+## 1.6.0
+
+### Minor Changes
+
+- 6911c43: 增加 splitLines helper
+
 ## 1.5.0
 
 ### Minor Changes
