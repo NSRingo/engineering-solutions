@@ -1,5 +1,11 @@
 # @iringo/arguments-builder
 
+## 1.4.1
+
+### Patch Changes
+
+- 3028257: 修复输出目标目录可能不存在而写入失败的问题
+
 ## 1.4.0
 
 ### Minor Changes
