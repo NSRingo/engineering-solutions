@@ -16,10 +16,13 @@ import { safeWriteFile } from './utils';
 export { ArgumentsBuilderConfig };
 
 const packageJsonPath = path.resolve(process.cwd(), 'package.json');
-if (fs.existsSync(packageJsonPath) && !process.env.BUILD_VERSION) {
+if (fs.existsSync(packageJsonPath)) {
   try {
     const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
-    process.env.BUILD_VERSION = packageJson.version;
+    if (!process.env.BUILD_VERSION) {
+      process.env.BUILD_VERSION = packageJson.version;
+    }
+    process.env.PACKAGE_JSON_DATA = JSON.stringify(packageJson);
   } catch (error) {}
 }
 
