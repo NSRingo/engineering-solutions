@@ -1,5 +1,11 @@
 # @iringo/arguments-builder
 
+## 1.7.0
+
+### Minor Changes
+
+- de261d3: 修改 splitLines 为 split，支持自定义分割符
+
 ## 1.6.0
 
 ### Minor Changes
