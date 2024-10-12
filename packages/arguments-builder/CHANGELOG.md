@@ -1,5 +1,11 @@
 # @iringo/arguments-builder
 
+## 1.5.0
+
+### Minor Changes
+
+- 6217566: 新增 `@package` helper 用于获取 `package.json` 中的内容
+
 ## 1.4.2
 
 ### Patch Changes
