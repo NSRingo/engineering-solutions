@@ -1,3 +1,6 @@
+import type { commander } from '@iringo/utils';
+import type { RspackOptions } from '@rspack/core';
+
 /**
  * @link https://github.com/chavyleung/scripts/blob/master/box/chavy.boxjs.html#L1019
  */
@@ -44,7 +47,7 @@ export interface ArgumentItem {
   /**
    * 默认值
    */
-  defaultValue?: any;
+  defaultValue?: string | number | boolean | (string | number | boolean)[];
   /**
    * 选项
    */
@@ -73,7 +76,7 @@ export interface ModuleMetadata {
    * @default 读取 package.json 中的 description
    */
   description?: string;
-  system?: Array<'iOS' | 'iPadOS' | 'tvOS' | 'macOS' | 'watchOS'>;
+  system?: 'iOS' | 'iPadOS' | 'tvOS' | 'macOS' | 'watchOS'[];
   systemVersion?: number;
   /**
    * 是否生成 arguments 及 arguments-desc
@@ -94,7 +97,7 @@ export interface ModuleMetadata {
   };
 }
 
-export interface SurgeScript<ScriptKey extends string> {
+export interface Script<ScriptKey extends string> {
   name: string;
   type: 'http-request' | 'http-response' | 'cron' | 'event' | 'dns' | 'rule' | 'generic';
   /**
@@ -106,6 +109,10 @@ export interface SurgeScript<ScriptKey extends string> {
   argument?: string;
   engine?: 'auto' | 'jsc' | 'webview';
   pattern?: string;
+  /**
+   * @default 131072
+   */
+  maxSize?: number;
   /**
    * 是否获取 http 请求的 body
    */
@@ -129,7 +136,7 @@ export interface ModuleContent<ScriptKey extends string> {
   general?: Record<string, string>;
   host?: Record<string, string>;
   rule?: string[];
-  script?: SurgeScript<ScriptKey>[];
+  script?: Script<ScriptKey>[];
   mitm?: {
     hostname?: string[];
     clientSourceAddress?: string[];
@@ -166,45 +173,51 @@ export interface ModkitConfig<ScriptInput extends Record<string, string>> {
        * @default dist
        */
       root?: string;
-      /**
-       * Surge 输出路径
-       * @default {package.json#name}.sgmodule
-       */
-      surge?: string;
-
-      /**
-       * Loon 输出路径
-       * @default {package.json#name}.plugin
-       */
-      loon?: string;
-
-      /**
-       * Quantumult x 输出路径
-       * @default {package.json#name}.snippet
-       */
-      qx?: string;
-
-      /**
-       * Stash 输出路径
-       * @default {package.json#name}.stoverride
-       */
-      stash?: string;
     };
-    dts?: {
+  };
+
+  tools?: {
+    rspack?: Omit<RspackOptions, 'entry'>;
+  };
+
+  plugins?: ModkitPlugin<ScriptInput>[];
+}
+
+export interface ModkitPlugin<ScriptInput extends Record<string, string> = any> {
+  /**
+   * 插件名称
+   */
+  name: string;
+
+  setup: () => {
+    /**
+     * 针对当前平台修改配置
+     */
+    modifyConfig?: (config: ModkitConfig<ScriptInput>) => ModkitConfig<ScriptInput>;
+    /**
+     * 处理参数
+     */
+    processArguments?: (args: ArgumentItem[]) => Record<string, any>;
+    /**
+     * 模块渲染
+     */
+    moduleRender?: (args: {
       /**
-       * d.ts 文件路径
-       * @default ./src/settings.d.ts
+       * 当前平台的配置
        */
-      path?: string;
+      config: ModkitConfig<ScriptInput>;
       /**
-       * 是否导出
-       * @default false
+       * 经过处理的参数上下文
        */
-      isExported?: boolean;
-    };
-    boxjsSettings?: {
-      scope?: string;
-      distPath?: string;
-    };
+      argumentsContext: Record<string, any>;
+      /**
+       * 是否为生产环境
+       */
+      isProd: boolean;
+    }) => void;
+    /**
+     * 为 commander 添加新的 CLI 命令
+     */
+    commands?: (utils: { program: commander.Command }) => void;
   };
 }

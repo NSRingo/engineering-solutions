@@ -9,9 +9,13 @@
     "dev": "modern build -w",
     "build": "modern build"
   },
-  "files": ["dist", "CHANGELOG.md"],
+  "files": [
+    "dist",
+    "CHANGELOG.md"
+  ],
   "dependencies": {
     "@iringo/utils": "workspace:^",
+    "@rspack/core": "^1.0.10",
     "@swc/helpers": "^0.5.13"
   },
   "devDependencies": {
