@@ -1,5 +1,11 @@
 # @iringo/sgmoudle-tools
 
+## 1.1.1
+
+### Patch Changes
+
+- 0dee3e2: bump version
+
 ## 1.1.0
 
 ### Minor Changes
