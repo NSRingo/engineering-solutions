@@ -1,5 +1,11 @@
 # @iringo/sgmoudle-tools
 
+## 1.2.1
+
+### Patch Changes
+
+- 793e54e: 修复新增 script 路由不生效的问题
+
 ## 1.2.0
 
 ### Minor Changes
