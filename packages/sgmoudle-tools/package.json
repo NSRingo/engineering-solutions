@@ -26,5 +26,10 @@
     "@types/qrcode-terminal": "^0.12.2",
     "typescript": "^5.6.2"
   },
-  "files": ["dist", "bin", "CHANGELOG.md"]
+  "files": ["dist", "bin", "CHANGELOG.md"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NSRingo/engineering-solutions",
+    "directory": "packages/sgmoudle-tools"
+  }
 }
