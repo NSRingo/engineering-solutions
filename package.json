@@ -13,7 +13,8 @@
   "devDependencies": {
     "@biomejs/biome": "^1.9.2",
     "@changesets/cli": "^2.27.8",
+    "@nx/js": "^20.0.0",
     "cross-env": "^7.0.3",
-    "nx": "^19.8.3"
+    "nx": "^20.0.0"
   }
 }
