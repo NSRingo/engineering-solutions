@@ -1,5 +1,11 @@
 # @iringo/arguments-builder
 
+## 1.7.3
+
+### Patch Changes
+
+- d5aad17: 修复分割换行不生效的问题
+
 ## 1.7.2
 
 ### Patch Changes
