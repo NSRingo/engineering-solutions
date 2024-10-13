@@ -1,5 +1,7 @@
 import { execSync } from 'node:child_process';
 
+execSync('pnpm build', { stdio: 'inherit' });
+
 const pkgs = JSON.parse(execSync('pnpm recursive list --depth 0 --json').toString());
 
 for (const pkg of pkgs) {
