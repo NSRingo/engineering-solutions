@@ -1,7 +1,6 @@
-import fs from 'node:fs';
 import path from 'node:path';
-import { createJiti } from 'jiti';
-import { logger } from 'rslog';
+import { loadConfigFile } from '@iringo/utils';
+import { logger } from '@iringo/utils';
 import { z } from 'zod';
 import { argumentsBuilderOptionsSchema } from '../core/types';
 
@@ -55,48 +54,12 @@ export const loadConfig = async ({
   cwd?: string;
   path?: string;
 } = {}) => {
-  const configFilePath = [
-    configPath,
-    'arguments-builder.config.js',
-    'arguments-builder.config.mjs',
-    'arguments-builder.config.cjs',
-    'arguments-builder.config.ts',
-    'arguments-builder.config.mts',
-    'arguments-builder.config.cts',
-  ]
-    .filter(Boolean)
-    .map((item) => path.resolve(cwd, item ?? ''))
-    .find((item) => fs.existsSync(item));
-
-  if (!configFilePath) {
-    logger.error('未找到配置文件');
-    return;
-  }
-
-  let config: ArgumentsBuilderConfig | undefined;
-
-  if (/\.(?:js|mjs|cjs)$/.test(configFilePath)) {
-    try {
-      const exportModule = await import(`${configFilePath}?t=${Date.now()}`);
-      config = exportModule.default ? exportModule.default : exportModule;
-    } catch (err) {
-      logger.debug(`Failed to load file with dynamic import: ${configFilePath}`);
-    }
-  }
-
-  try {
-    if (!config) {
-      const jiti = createJiti(__filename, {
-        requireCache: false,
-        interopDefault: true,
-      });
-
-      config = (await jiti.import(configFilePath)) as ArgumentsBuilderConfig;
-    }
-  } catch (err) {
-    logger.error(`Failed to load file with jiti: ${configFilePath}`);
-    throw err;
-  }
+  const { config, configFilePath } =
+    (await loadConfigFile<ArgumentsBuilderConfig>({
+      configPath,
+      baseConfigName: 'arguments-builder.config',
+      cwd,
+    })) ?? {};
 
   const result = argumentsBuilderConfigSchema.safeParse(config);
 
@@ -107,6 +70,6 @@ export const loadConfig = async ({
 
   return {
     config: result.data,
-    configFileDir: path.dirname(configFilePath),
+    configFileDir: path.dirname(configFilePath ?? ''),
   };
 };

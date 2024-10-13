@@ -4,9 +4,8 @@
     "strict": true,
     "skipLibCheck": true,
     "baseUrl": ".",
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "allowSyntheticDefaultImports": true
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext"
   },
   "include": ["src/**/*"]
 }

@@ -2,8 +2,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { program } from 'commander';
-import { logger } from 'rslog';
+import { commander, logger } from '@iringo/utils';
 import { buildBoxJsSettings } from './boxjs';
 import { getBuilder } from './builder';
 import { ArgumentsBuilderConfig } from './config';
@@ -14,6 +13,8 @@ import { buildSurgeArguments } from './surge';
 import { safeWriteFile } from './utils';
 
 export { ArgumentsBuilderConfig };
+
+const { program } = commander;
 
 const packageJsonPath = path.resolve(process.cwd(), 'package.json');
 if (fs.existsSync(packageJsonPath)) {
