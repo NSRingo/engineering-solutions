@@ -1,6 +1,6 @@
 {
   "name": "@iringo/sgmoudle-tools",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "main": "dist/index.js",
   "bin": {
     "sgmoudle": "./bin/sgmoudle.js"
@@ -30,5 +30,9 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
-  "files": ["dist", "bin", "CHANGELOG.md"]
+  "files": [
+    "dist",
+    "bin",
+    "CHANGELOG.md"
+  ]
 }
