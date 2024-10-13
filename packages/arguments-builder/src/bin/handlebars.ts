@@ -27,7 +27,11 @@ handlebars.registerHelper('split', (string?: string, separator = '\n') => {
   if (!string) {
     return [];
   }
-  return string.split(separator);
+  let actualSeparator = separator;
+  if (actualSeparator === '\\n') {
+    actualSeparator = '\n';
+  }
+  return string.split(actualSeparator);
 });
 
 export { handlebars };
