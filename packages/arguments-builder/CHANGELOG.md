@@ -1,5 +1,11 @@
 # @iringo/arguments-builder
 
+## 1.7.2
+
+### Patch Changes
+
+- 74081f0: bump version
+
 ## 1.7.1
 
 ### Patch Changes
