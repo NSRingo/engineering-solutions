@@ -26,14 +26,10 @@ jobs:
       - uses: changesets/action@v1
         id: changesets
         with:
-          publish: true
+          publish: npx nx release publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - if: steps.changesets.outputs.published == 'true'
-        run: npx nx release publish
-        shell: bash
-        env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
+
           
