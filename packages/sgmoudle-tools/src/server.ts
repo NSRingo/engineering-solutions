@@ -22,7 +22,8 @@ export function startServerFactory(config: SgModuleToolsOptions, configFilePath:
       logger.start('配置文件发生变化，重新加载配置...');
       const newConfig = await loadConfig({ path: configFilePath });
       if (newConfig) {
-        module = cloneDeep(newConfig.config.module);
+        config.module = newConfig.config.module;
+        module = cloneDeep(config.module);
         logger.ready('重新加载配置成功');
       }
     }
