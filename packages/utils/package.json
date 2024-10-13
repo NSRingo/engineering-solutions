@@ -9,14 +9,7 @@
     "dev": "modern build -w",
     "build": "modern build"
   },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
-  },
-  "files": [
-    "dist",
-    "CHANGELOG.md"
-  ],
+  "files": ["dist", "CHANGELOG.md"],
   "dependencies": {
     "address": "^2.0.3",
     "commander": "^12.1.0",

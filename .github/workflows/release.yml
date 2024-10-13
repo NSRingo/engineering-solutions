@@ -23,13 +23,14 @@ jobs:
 
       - run: pnpm install
 
+      - run: pnpm build
+
       - uses: changesets/action@v1
         id: changesets
         with:
-          publish: npx nx release publish
+          publish: NODE_AUTH_TOKEN=${{ secrets.NPM_TOKEN }} npx nx release publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
 
           
