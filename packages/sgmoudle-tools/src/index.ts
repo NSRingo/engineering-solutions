@@ -1,64 +1,72 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import type { CliPlugin, ModuleTools } from '@modern-js/module-tools';
+
+import { address, commander } from '@iringo/utils';
 import express from 'express';
 import qrcode from 'qrcode-terminal';
 import { logger } from 'rslog';
 import type { SgModuleToolsOptions } from './types';
 
 import { cloneDeep } from 'lodash';
+import { loadConfig } from './config';
 import { generateSgModule } from './utils';
 
-export const pluginSgModuleTools = (options: SgModuleToolsOptions): CliPlugin<ModuleTools> => {
-  options.port ??= 0;
-  return {
-    name: 'sgmodule-tools',
+export function initCommand() {
+  const { program } = commander;
+  program
+    .command('dev')
+    .description('Start a development sgmodule')
+    .option('-p, --port <port>', 'specify the port')
+    .option('-c, --config <config>', 'specify the configuration file')
+    .action(async (option) => {
+      const { config, configFileDir } = await loadConfig(option.config);
+      if (!config) {
+        process.exit(1);
+      }
+      if (option.port) {
+        config.port = option.port;
+      }
+      const packageJson = JSON.parse(fs.readFileSync(path.resolve(configFileDir, 'package.json'), 'utf-8'));
+      const name = packageJson.name ?? 'sgmodule';
+      const modulePath = `/${name}.sgmodule`;
+      const module = cloneDeep(config.module);
 
-    setup: (api) => {
-      const appContext = api.useAppContext();
+      const app = express();
 
-      return {
-        beforeBuild: async () => {
-          const packageJson = JSON.parse(
-            fs.readFileSync(path.resolve(appContext.appDirectory, 'package.json'), 'utf-8'),
-          );
-          const name = packageJson.name.split('/').pop();
-          const app = express();
-          const modulePath = `/${name}.sgmodule`;
+      config.module?.script?.forEach((script, index) => {
+        const scriptPath = path.resolve(configFileDir, script.scriptPath);
+        const routePath = `/${name}/${path.relative(configFileDir, scriptPath)}`;
+        app.get(routePath, (req, res) => {
+          res.sendFile(scriptPath);
+        });
+        if (module?.script) {
+          module.script[index].scriptPath = routePath;
+        }
+      });
 
-          const module = cloneDeep(options.module);
+      app.get(modulePath, (req, res) => {
+        const protocol = req.protocol;
+        const host = req.get('host');
+        module?.script?.forEach((script) => {
+          script.scriptPath = `${protocol}://${host}${script.scriptPath}?${Date.now()}`;
+        });
+        res.send(
+          generateSgModule({
+            name,
+            module,
+          }),
+        );
+      });
+      const server = app.listen(config.port, () => {
+        const moduleRemoteUrl = `http://${address.ip()}:${(server.address() as any)?.port}${modulePath}`;
+        qrcode.generate(`surge:///install-module?url=${encodeURIComponent(moduleRemoteUrl)}`, { small: true });
+        logger.ready('扫码安装模块，或手动导入：', moduleRemoteUrl);
+      });
+    });
 
-          options.module?.script?.forEach((script, index) => {
-            const scriptPath = path.resolve(appContext.appDirectory, script.scriptPath);
-            const routePath = `/${name}/${path.relative(appContext.appDirectory, scriptPath)}`;
-            app.get(routePath, (req, res) => {
-              res.sendFile(scriptPath);
-            });
-            if (module?.script) {
-              module.script[index].scriptPath = routePath;
-            }
-          });
+  program.parse(process.argv);
+}
 
-          app.get(modulePath, (req, res) => {
-            const protocol = req.protocol;
-            const host = req.get('host');
-            module?.script?.forEach((script) => {
-              script.scriptPath = `${protocol}://${host}${script.scriptPath}?${Date.now()}`;
-            });
-            res.send(
-              generateSgModule({
-                name,
-                module,
-              }),
-            );
-          });
-          const server = app.listen(options.port, () => {
-            const moduleRemoteUrl = `http://${appContext.ip}:${(server.address() as any)?.port}${modulePath}`;
-            qrcode.generate(`surge:///install-module?url=${encodeURIComponent(moduleRemoteUrl)}`, { small: true });
-            logger.ready('扫码安装模块，或手动导入：', moduleRemoteUrl);
-          });
-        },
-      };
-    },
-  };
-};
+export function defineConfig(config: SgModuleToolsOptions) {
+  return config;
+}

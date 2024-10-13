@@ -1,5 +1,5 @@
 import path from 'node:path';
-import { logger } from 'rslog';
+import { logger } from '@iringo/utils';
 import type { ArgumentsBuilder } from '../core';
 import type { Output } from './config';
 import { safeWriteFile } from './utils';

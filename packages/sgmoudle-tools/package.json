@@ -1,13 +1,16 @@
 {
   "name": "@iringo/sgmoudle-tools",
   "version": "1.0.0",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "dist/index.js",
+  "bin": {
+    "sgmoudle": "./bin/sgmoudle.js"
+  },
   "scripts": {
     "dev": "modern build -w",
     "build": "modern build"
   },
   "dependencies": {
+    "@iringo/utils": "workspace:^",
     "@swc/helpers": "^0.5.13",
     "express": "^4.21.1",
     "handlebars": "^4.7.8",
@@ -27,8 +30,5 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
-  "files": [
-    "dist",
-    "CHANGELOG.md"
-  ]
+  "files": ["dist", "bin", "CHANGELOG.md"]
 }

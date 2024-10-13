@@ -1,0 +1,31 @@
+{
+  "name": "@iringo/utils",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/lib/index.js",
+  "module": "dist/es/index.js",
+  "types": "dist/types/index.d.ts",
+  "scripts": {
+    "dev": "modern build -w",
+    "build": "modern build"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "files": [
+    "dist",
+    "CHANGELOG.md"
+  ],
+  "dependencies": {
+    "address": "^2.0.3",
+    "commander": "^12.1.0",
+    "jiti": "^2.1.0",
+    "rslog": "^1.2.3"
+  },
+  "devDependencies": {
+    "@modern-js/module-tools": "^2.60.2",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.6.2"
+  }
+}

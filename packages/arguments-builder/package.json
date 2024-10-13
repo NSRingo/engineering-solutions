@@ -15,10 +15,10 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
+    "@iringo/utils": "workspace:^",
     "commander": "^12.1.0",
     "date-fns": "^4.1.0",
     "handlebars": "^4.7.8",
-    "jiti": "^2.1.0",
     "rslog": "^1.2.3",
     "ts-morph": "^23.0.0",
     "zod": "^3.23.8"
@@ -35,8 +35,5 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
-  "files": [
-    "dist",
-    "CHANGELOG.md"
-  ]
+  "files": ["dist", "CHANGELOG.md"]
 }

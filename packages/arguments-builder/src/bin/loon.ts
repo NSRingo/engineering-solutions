@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { logger } from 'rslog';
+import { logger } from '@iringo/utils';
 import type { ArgumentsBuilder } from '../core';
 import type { Output } from './config';
 import { handlebars } from './handlebars';
