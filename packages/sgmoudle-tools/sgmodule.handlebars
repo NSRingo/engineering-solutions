@@ -53,7 +53,7 @@
 {{#if module.script}}
 [Script]
 {{#each module.script}}
-{{this.name}} = type={{this.type}}{{#if this.pattern}}, pattern={{this.pattern}}{{/if}}, requires-body={{#if this.requiresBody}}true{{else}}false{{/if}}, binary-body-mode={{#if this.binaryBodyMode}}true{{else}}false{{/if}}, script-path={{this.scriptPath}}{{#if this.argument}}, debug=true, argument={{{this.argument}}}{{/if}}
+{{this.name}} = type={{this.type}}{{#if this.pattern}}, pattern={{this.pattern}}{{/if}}, requires-body={{#if this.requiresBody}}true{{else}}false{{/if}}, binary-body-mode={{#if this.binaryBodyMode}}true{{else}}false{{/if}}, script-path={{this.scriptPath}}, debug=true{{#if this.argument}}, argument={{{this.argument}}}{{/if}}
 {{/each}}
 {{/if}}
 
