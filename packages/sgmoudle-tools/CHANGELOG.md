@@ -1,5 +1,15 @@
 # @iringo/sgmoudle-tools
 
+## 1.2.0
+
+### Minor Changes
+
+- 78c8e7c: 新增监听配置文件变动功能
+
+### Patch Changes
+
+- c33466c: 修复模版错误
+
 ## 1.1.1
 
 ### Patch Changes

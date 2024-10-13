@@ -1,6 +1,6 @@
 {
   "name": "@iringo/arguments-builder",
-  "version": "1.7.2",
+  "version": "1.7.3",
   "private": false,
   "main": "dist/lib/index.js",
   "types": "dist/types/index.d.ts",
@@ -30,7 +30,10 @@
     "ts-jest": "^29.2.5",
     "typescript": "^5.6.2"
   },
-  "files": ["dist", "CHANGELOG.md"],
+  "files": [
+    "dist",
+    "CHANGELOG.md"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/NSRingo/engineering-solutions",

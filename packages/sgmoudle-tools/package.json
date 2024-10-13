@@ -1,6 +1,6 @@
 {
   "name": "@iringo/sgmoudle-tools",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "main": "dist/index.js",
   "bin": {
     "sgmoudle": "./bin/sgmoudle.js"
@@ -26,7 +26,11 @@
     "@types/qrcode-terminal": "^0.12.2",
     "typescript": "^5.6.2"
   },
-  "files": ["dist", "bin", "CHANGELOG.md"],
+  "files": [
+    "dist",
+    "bin",
+    "CHANGELOG.md"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/NSRingo/engineering-solutions",
