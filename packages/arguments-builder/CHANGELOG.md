@@ -1,5 +1,11 @@
 # @iringo/arguments-builder
 
+## 1.7.1
+
+### Patch Changes
+
+- 112f686: 修改依赖方式
+
 ## 1.7.0
 
 ### Minor Changes
