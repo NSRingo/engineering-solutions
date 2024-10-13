@@ -231,6 +231,9 @@ importers:
       jiti:
         specifier: ^2.1.0
         version: 2.1.0
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
       rslog:
         specifier: ^1.2.3
         version: 1.2.3
@@ -238,6 +241,9 @@ importers:
       '@modern-js/module-tools':
         specifier: ^2.60.2
         version: 2.60.2(typescript@5.6.2)
+      '@types/lodash':
+        specifier: ^4.17.10
+        version: 4.17.10
       '@types/node':
         specifier: ^20.0.0
         version: 20.16.10

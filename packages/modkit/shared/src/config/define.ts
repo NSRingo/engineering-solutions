@@ -1,13 +1,16 @@
+import { loadConfigFile, lodash, logger } from '@iringo/utils';
 import type { ModkitConfig } from './types';
 
-export function defineConfig(config: ModkitConfig | (() => ModkitConfig)): ModkitConfig {
+export function defineConfig<ScriptInput extends Record<string, string>>(
+  config: ModkitConfig<ScriptInput> | (() => ModkitConfig<ScriptInput>),
+): ModkitConfig<ScriptInput> {
   if (typeof config === 'function') {
     return config();
   }
   return config;
 }
 
-const getDefaultConfig = (): ModkitConfig => {
+const getDefaultConfig = (): ModkitConfig<any> => {
   const root = process.env.MODKIT_ROOT || process.cwd();
 
   let packageJson: any = {};
@@ -38,5 +41,23 @@ const getDefaultConfig = (): ModkitConfig => {
         isExported: false,
       },
     },
+  };
+};
+
+export const loadConfig = async (configPath: string) => {
+  const resp = await loadConfigFile<ModkitConfig<any>>({
+    configPath,
+    baseConfigName: 'modkit.config',
+    cwd: process.env.MODKIT_ROOT || process.cwd(),
+  });
+  if (!resp) {
+    logger.error('未找到配置文件');
+    process.exit(1);
+  }
+  const { config, configFilePath } = resp;
+  const defaultConfig = getDefaultConfig();
+  return {
+    config: lodash.merge(defaultConfig, config),
+    configFilePath,
   };
 };

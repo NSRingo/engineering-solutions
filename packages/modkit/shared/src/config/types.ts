@@ -94,10 +94,13 @@ export interface ModuleMetadata {
   };
 }
 
-export interface SurgeScript {
+export interface SurgeScript<ScriptKey extends string> {
   name: string;
   type: 'http-request' | 'http-response' | 'cron' | 'event' | 'dns' | 'rule' | 'generic';
-  scriptPath: string;
+  /**
+   * 脚本，对应 `source.script` 中的 key
+   */
+  scriptKey: ScriptKey;
   scriptUpdateInterval?: number;
   timeout?: number;
   argument?: string;
@@ -122,11 +125,11 @@ export interface SurgeScript {
   debug?: boolean;
 }
 
-export interface ModuleContent {
+export interface ModuleContent<ScriptKey extends string> {
   general?: Record<string, string>;
   host?: Record<string, string>;
   rule?: string[];
-  script?: SurgeScript[];
+  script?: SurgeScript<ScriptKey>[];
   mitm?: {
     hostname?: string[];
     clientSourceAddress?: string[];
@@ -137,7 +140,7 @@ export interface ModuleContent {
   mapLocal?: string[];
 }
 
-export interface ModkitConfig {
+export interface ModkitConfig<ScriptInput extends Record<string, string>> {
   source?: {
     /**
      * 模块元数据
@@ -150,7 +153,11 @@ export interface ModkitConfig {
     /**
      * 模块内容
      */
-    content?: ModuleContent;
+    content?: ModuleContent<keyof ScriptInput & string>;
+    /**
+     * 待编译的脚本
+     */
+    script?: ScriptInput;
   };
   output?: {
     distPath?: {
