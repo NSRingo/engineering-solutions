@@ -1,0 +1,8 @@
+{
+  "extends": "@iringo/modkit-config/tsconfig",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "baseUrl": "./"
+  },
+  "include": ["src"]
+}

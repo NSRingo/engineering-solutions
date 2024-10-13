@@ -67,6 +67,116 @@ importers:
         specifier: ^5.6.2
         version: 5.6.2
 
+  packages/modkit/apps/surge:
+    dependencies:
+      '@iringo/utils':
+        specifier: workspace:^
+        version: link:../../../utils
+    devDependencies:
+      '@iringo/modkit-config':
+        specifier: workspace:^
+        version: link:../../config
+      '@modern-js/module-tools':
+        specifier: ^2.60.2
+        version: 2.60.2(typescript@5.6.2)
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.16.10
+      typescript:
+        specifier: ^5.6.2
+        version: 5.6.2
+
+  packages/modkit/config:
+    devDependencies:
+      '@modern-js/module-tools':
+        specifier: ^2.60.2
+        version: 2.60.2(typescript@5.6.2)
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.16.10
+      typescript:
+        specifier: ^5.6.2
+        version: 5.6.2
+
+  packages/modkit/core:
+    dependencies:
+      '@iringo/utils':
+        specifier: workspace:^
+        version: link:../../utils
+    devDependencies:
+      '@iringo/modkit-config':
+        specifier: workspace:^
+        version: link:../config
+      '@modern-js/module-tools':
+        specifier: ^2.60.2
+        version: 2.60.2(typescript@5.6.2)
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.16.10
+      typescript:
+        specifier: ^5.6.2
+        version: 5.6.2
+
+  packages/modkit/functions/arguments:
+    dependencies:
+      '@iringo/utils':
+        specifier: workspace:^
+        version: link:../../../utils
+    devDependencies:
+      '@iringo/modkit-config':
+        specifier: workspace:^
+        version: link:../../config
+      '@modern-js/module-tools':
+        specifier: ^2.60.2
+        version: 2.60.2(typescript@5.6.2)
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.16.10
+      typescript:
+        specifier: ^5.6.2
+        version: 5.6.2
+
+  packages/modkit/functions/templates:
+    dependencies:
+      '@iringo/utils':
+        specifier: workspace:^
+        version: link:../../../utils
+    devDependencies:
+      '@iringo/modkit-config':
+        specifier: workspace:^
+        version: link:../../config
+      '@modern-js/module-tools':
+        specifier: ^2.60.2
+        version: 2.60.2(typescript@5.6.2)
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.16.10
+      typescript:
+        specifier: ^5.6.2
+        version: 5.6.2
+
+  packages/modkit/shared:
+    dependencies:
+      '@iringo/utils':
+        specifier: workspace:^
+        version: link:../../utils
+      '@swc/helpers':
+        specifier: ^0.5.13
+        version: 0.5.13
+    devDependencies:
+      '@iringo/modkit-config':
+        specifier: workspace:^
+        version: link:../config
+      '@modern-js/module-tools':
+        specifier: ^2.60.2
+        version: 2.60.2(typescript@5.6.2)
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.16.10
+      typescript:
+        specifier: ^5.6.2
+        version: 5.6.2
+
   packages/sgmoudle-tools:
     dependencies:
       '@iringo/utils':
