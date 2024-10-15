@@ -1,0 +1,16 @@
+.rc-tooltip {
+    position: absolute;
+    z-index: 1070;
+    display: block;
+    visibility: visible;
+
+    &-hidden {
+        display: none;
+    }
+
+    &-inner {
+        background: var(--rp-c-bg);
+        box-shadow: var(--rp-shadow-3);
+        border-radius: var(--rp-radius-small);
+    }
+}
