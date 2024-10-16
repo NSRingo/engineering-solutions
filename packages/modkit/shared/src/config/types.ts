@@ -1,20 +1,20 @@
 import type { commander } from '@iringo/utils';
 import type { RspackOptions } from '@rspack/core';
 
-/**
- * @link https://github.com/chavyleung/scripts/blob/master/box/chavy.boxjs.html#L1019
- */
-export type BoxJsType =
-  | 'number'
-  | 'boolean'
-  | 'text'
-  | 'slider'
-  | 'textarea'
-  | 'radios'
-  | 'checkboxes'
-  | 'colorpicker'
-  | 'selects'
-  | 'modalSelects';
+// /**
+//  * @link https://github.com/chavyleung/scripts/blob/master/box/chavy.boxjs.html#L1019
+//  */
+// export type BoxJsType =
+//   | 'number'
+//   | 'boolean'
+//   | 'text'
+//   | 'slider'
+//   | 'textarea'
+//   | 'radios'
+//   | 'checkboxes'
+//   | 'colorpicker'
+//   | 'selects'
+//   | 'modalSelects';
 
 /**
  * @link https://nsloon.app/docs/Plugin/#argumentbuild-733
@@ -31,11 +31,15 @@ export interface ArgumentItem {
   /**
    * 参数类型
    */
-  type: ArgumentType;
-  /**
-   * 自动的映射关系无法满足时，可以使用 boxJsType 来自定义
-   */
-  boxJsType?: BoxJsType;
+  type:
+    | ArgumentType
+    | {
+        default: ArgumentType;
+        /**
+         * 如果插件支持更多的参数类型，可自定义传入
+         */
+        [custom: string]: any;
+      };
   /**
    * 参数描述
    */
@@ -59,10 +63,6 @@ export interface ArgumentItem {
    * 输入框占位符
    */
   placeholder?: string;
-  /**
-   * 当前参数在哪些平台上不生效
-   */
-  exclude?: ('surge' | 'loon' | 'boxjs' | 'dts')[];
 }
 
 export interface ModuleMetadata {
@@ -76,7 +76,13 @@ export interface ModuleMetadata {
    * @default 读取 package.json 中的 description
    */
   description?: string;
+  /**
+   * 支持的系统
+   */
   system?: 'iOS' | 'iPadOS' | 'tvOS' | 'macOS' | 'watchOS'[];
+  /**
+   * 最低支持的系统版本
+   */
   systemVersion?: number;
   /**
    * 是否生成 arguments 及 arguments-desc
@@ -88,11 +94,10 @@ export interface ModuleMetadata {
    * @default 默认读取 package.json 中的 version
    */
   version?: string;
-
+  /**
+   * 额外的配置
+   */
   extra?: {
-    /**
-     * 额外的配置，当类型为 `string[]` 时，在 `stash` 输出为数组，其他平台则转为字符串换行
-     */
     [key: string]: string | string[];
   };
 }
@@ -110,6 +115,7 @@ export interface Script<ScriptKey extends string> {
   engine?: 'auto' | 'jsc' | 'webview';
   pattern?: string;
   /**
+   * 最大允许的 body 大小，超过此大小则会跳过脚本执行
    * @default 131072
    */
   maxSize?: number;
@@ -124,7 +130,7 @@ export interface Script<ScriptKey extends string> {
   /**
    * cron 表达式，仅在 type 为 cron 时有效
    */
-  cron?: string;
+  cronexp?: string;
   /**
    * 是否开启 debug 模式
    * @default dev 环境下为 true，其他环境下为 false

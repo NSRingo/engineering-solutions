@@ -2,20 +2,37 @@
   "name": "@iringo/modkit",
   "version": "0.0.0",
   "description": "",
-  "main": "dist/lib/index.js",
-  "module": "dist/es/index.js",
-  "types": "dist/types/index.d.ts",
-  "scripts": {
-    "dev": "modern build -w",
-    "build": "modern build"
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./plugins/*": {
+      "types": "./dist/plugins/*.d.ts",
+      "import": "./dist/plugins/*.js",
+      "require": "./dist/plugins/*.cjs"
+    },
+    "./package.json": "./package.json"
   },
-  "files": ["dist", "CHANGELOG.md"],
+  "bin": {
+    "modkit": "./bin/modkit.js"
+  },
+  "scripts": {
+    "dev": "rslib build -w",
+    "build": "rslib build"
+  },
+  "files": ["dist", "bin", "CHANGELOG.md"],
   "dependencies": {
-    "@iringo/utils": "workspace:^"
+    "@iringo/modkit-plugin-dts": "workspace:^",
+    "@iringo/modkit-plugin-loon": "workspace:^",
+    "@iringo/modkit-plugin-surge": "workspace:^",
+    "@iringo/modkit-shared": "workspace:^"
   },
   "devDependencies": {
     "@iringo/modkit-config": "workspace:^",
-    "@modern-js/module-tools": "^2.60.2",
+    "@rslib/core": "^0.0.12",
     "@types/node": "^20.0.0",
     "typescript": "^5.6.2"
   },

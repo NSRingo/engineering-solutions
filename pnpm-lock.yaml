@@ -98,30 +98,14 @@ importers:
         specifier: ^5.6.2
         version: 5.6.2
 
-  packages/modkit/apps/surge:
-    dependencies:
-      '@iringo/utils':
-        specifier: workspace:^
-        version: link:../../../utils
-    devDependencies:
-      '@iringo/modkit-config':
-        specifier: workspace:^
-        version: link:../../config
-      '@modern-js/module-tools':
-        specifier: ^2.60.2
-        version: 2.60.2(typescript@5.6.2)
-      '@types/node':
-        specifier: ^20.0.0
-        version: 20.16.10
-      typescript:
-        specifier: ^5.6.2
-        version: 5.6.2
-
   packages/modkit/config:
     devDependencies:
-      '@modern-js/module-tools':
-        specifier: ^2.60.2
-        version: 2.60.2(typescript@5.6.2)
+      '@iringo/utils':
+        specifier: workspace:^
+        version: link:../../utils
+      '@rslib/core':
+        specifier: ^0.0.12
+        version: 0.0.12(typescript@5.6.2)
       '@types/node':
         specifier: ^20.0.0
         version: 20.16.10
@@ -131,16 +115,25 @@ importers:
 
   packages/modkit/core:
     dependencies:
-      '@iringo/utils':
+      '@iringo/modkit-plugin-dts':
         specifier: workspace:^
-        version: link:../../utils
+        version: link:../plugins/dts
+      '@iringo/modkit-plugin-loon':
+        specifier: workspace:^
+        version: link:../plugins/loon
+      '@iringo/modkit-plugin-surge':
+        specifier: workspace:^
+        version: link:../plugins/surge
+      '@iringo/modkit-shared':
+        specifier: workspace:^
+        version: link:../shared
     devDependencies:
       '@iringo/modkit-config':
         specifier: workspace:^
         version: link:../config
-      '@modern-js/module-tools':
-        specifier: ^2.60.2
-        version: 2.60.2(typescript@5.6.2)
+      '@rslib/core':
+        specifier: ^0.0.12
+        version: 0.0.12(typescript@5.6.2)
       '@types/node':
         specifier: ^20.0.0
         version: 20.16.10
@@ -157,9 +150,9 @@ importers:
       '@iringo/modkit-config':
         specifier: workspace:^
         version: link:../../config
-      '@modern-js/module-tools':
-        specifier: ^2.60.2
-        version: 2.60.2(typescript@5.6.2)
+      '@rslib/core':
+        specifier: ^0.0.12
+        version: 0.0.12(typescript@5.6.2)
       '@types/node':
         specifier: ^20.0.0
         version: 20.16.10
@@ -176,9 +169,66 @@ importers:
       '@iringo/modkit-config':
         specifier: workspace:^
         version: link:../../config
-      '@modern-js/module-tools':
-        specifier: ^2.60.2
-        version: 2.60.2(typescript@5.6.2)
+      '@rslib/core':
+        specifier: ^0.0.12
+        version: 0.0.12(typescript@5.6.2)
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.16.10
+      typescript:
+        specifier: ^5.6.2
+        version: 5.6.2
+
+  packages/modkit/plugins/dts:
+    dependencies:
+      '@iringo/modkit-shared':
+        specifier: workspace:^
+        version: link:../../shared
+    devDependencies:
+      '@iringo/modkit-config':
+        specifier: workspace:^
+        version: link:../../config
+      '@rslib/core':
+        specifier: ^0.0.12
+        version: 0.0.12(typescript@5.6.2)
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.16.10
+      typescript:
+        specifier: ^5.6.2
+        version: 5.6.2
+
+  packages/modkit/plugins/loon:
+    dependencies:
+      '@iringo/modkit-shared':
+        specifier: workspace:^
+        version: link:../../shared
+    devDependencies:
+      '@iringo/modkit-config':
+        specifier: workspace:^
+        version: link:../../config
+      '@rslib/core':
+        specifier: ^0.0.12
+        version: 0.0.12(typescript@5.6.2)
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.16.10
+      typescript:
+        specifier: ^5.6.2
+        version: 5.6.2
+
+  packages/modkit/plugins/surge:
+    dependencies:
+      '@iringo/modkit-shared':
+        specifier: workspace:^
+        version: link:../../shared
+    devDependencies:
+      '@iringo/modkit-config':
+        specifier: workspace:^
+        version: link:../../config
+      '@rslib/core':
+        specifier: ^0.0.12
+        version: 0.0.12(typescript@5.6.2)
       '@types/node':
         specifier: ^20.0.0
         version: 20.16.10
@@ -201,15 +251,21 @@ importers:
       '@iringo/modkit-config':
         specifier: workspace:^
         version: link:../config
-      '@modern-js/module-tools':
-        specifier: ^2.60.2
-        version: 2.60.2(typescript@5.6.2)
+      '@rslib/core':
+        specifier: ^0.0.12
+        version: 0.0.12(typescript@5.6.2)
       '@types/node':
         specifier: ^20.0.0
         version: 20.16.10
       typescript:
         specifier: ^5.6.2
         version: 5.6.2
+
+  packages/modkit/tests:
+    devDependencies:
+      '@iringo/modkit':
+        specifier: workspace:^
+        version: link:../core
 
   packages/sgmoudle-tools:
     dependencies:
@@ -1788,6 +1844,11 @@ packages:
     engines: {node: '>=16.7.0'}
     hasBin: true
 
+  '@rsbuild/core@1.0.14':
+    resolution: {integrity: sha512-00d0DzRUK2CncKK+dHGG8AZuiXzltVzt58BbTba2AKyLHIb2nwYW4ah33sNrDAbYzdz1kPNfsWrmQvY7z71LfA==}
+    engines: {node: '>=16.7.0'}
+    hasBin: true
+
   '@rsbuild/plugin-less@1.0.1':
     resolution: {integrity: sha512-bXjPDII9b0MCdYxkoNUtf1z11lQVQDPqgC6Iu90s6X5lnfJd7uwxQC7Sr/cHKYDPKVKQZIvbmXHFJxnd8bsCLg==}
     peerDependencies:
@@ -1802,6 +1863,19 @@ packages:
     resolution: {integrity: sha512-3VVdl1m6Dw8cw2ovIaLf1WFrBNlhEQdBgXtUZmAJd0lcaCbTcHyjsssy4dfEN3tUYaMnCHmEEDVgpA84OtllGA==}
     peerDependencies:
       '@rsbuild/core': 1.x || ^1.0.1-rc.0
+
+  '@rslib/core@0.0.12':
+    resolution: {integrity: sha512-vlrrPAASi7D5jlGfndnJFyG3Q2R0m15oPBBJHNUKCMlDQRb83KM/pU1ihYWIxvfTgO6dK8RnGL8cUmVK4NyZkA==}
+    engines: {node: '>=16.0.0'}
+    hasBin: true
+    peerDependencies:
+      '@microsoft/api-extractor': ^7
+      typescript: ^5
+    peerDependenciesMeta:
+      '@microsoft/api-extractor':
+        optional: true
+      typescript:
+        optional: true
 
   '@rspack/binding-darwin-arm64@1.0.10':
     resolution: {integrity: sha512-byQuC3VSEHJxjcjdgOvEPPkteA7d/kKYGUTZjsAMsIriioCVkB+4OYfnQmnav8M0An9vBM34H2+IKqO1ge1+Aw==}
@@ -3752,6 +3826,9 @@ packages:
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
 
+  magic-string@0.30.12:
+    resolution: {integrity: sha512-Ea8I3sQMVXr8JhN4z+H/d8zwo+tYDgHE9+5G4Wnrwhs0gaK9fXTKx0Tw5Xwsd/bCPTTZNRAdpyzvoeORe9LYpw==}
+
   magic-string@0.30.5:
     resolution: {integrity: sha512-7xlpfBaQaP/T6Vh8MO/EqXSW5En6INHEvEXQiuff7Gku0PWjU3uf6w/j9o7O+SpB5fOAkrI5HeoNgwjEO0pFsA==}
     engines: {node: '>=12'}
@@ -4521,6 +4598,19 @@ packages:
   reusify@1.0.4:
     resolution: {integrity: sha512-U9nH88a3fc/ekCF1l0/UP1IosiuIjyTh7hBvXVMHYgVcfGvt897Xguj2UOLDeI5BG2m7/uwyaLVT6fbtCwTyzw==}
     engines: {iojs: '>=1.0.0', node: '>=0.10.0'}
+
+  rsbuild-plugin-dts@0.0.12:
+    resolution: {integrity: sha512-MnU011hgc1vgBrD81e05ZTFOST2rIupGQfBLF+ibm+HnzcXUiC7eHFS34q9rx+59IgJcgxpdSCO2JUPNcpiYog==}
+    engines: {node: '>=16.0.0'}
+    peerDependencies:
+      '@microsoft/api-extractor': ^7
+      '@rsbuild/core': 1.x
+      typescript: ^5
+    peerDependenciesMeta:
+      '@microsoft/api-extractor':
+        optional: true
+      typescript:
+        optional: true
 
   rslog@1.2.3:
     resolution: {integrity: sha512-antALPJaKBRPBU1X2q9t085K4htWDOOv/K1qhTUk7h0l1ePU/KbDqKJn19eKP0dk7PqMioeA0+fu3gyPXCsXxQ==}
@@ -7091,6 +7181,15 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
+  '@rsbuild/core@1.0.14':
+    dependencies:
+      '@rspack/core': 1.0.11(@swc/helpers@0.5.13)
+      '@rspack/lite-tapable': 1.0.1
+      '@swc/helpers': 0.5.13
+      core-js: 3.38.1
+    optionalDependencies:
+      fsevents: 2.3.3
+
   '@rsbuild/plugin-less@1.0.1(@rsbuild/core@1.0.13)':
     dependencies:
       '@rsbuild/core': 1.0.13
@@ -7111,6 +7210,13 @@ snapshots:
       postcss: 8.4.47
       reduce-configs: 1.0.0
       sass-embedded: 1.79.5
+
+  '@rslib/core@0.0.12(typescript@5.6.2)':
+    dependencies:
+      '@rsbuild/core': 1.0.14
+      rsbuild-plugin-dts: 0.0.12(@rsbuild/core@1.0.14)(typescript@5.6.2)
+    optionalDependencies:
+      typescript: 5.6.2
 
   '@rspack/binding-darwin-arm64@1.0.10':
     optional: true
@@ -9453,6 +9559,10 @@ snapshots:
     dependencies:
       yallist: 3.1.1
 
+  magic-string@0.30.12:
+    dependencies:
+      '@jridgewell/sourcemap-codec': 1.5.0
+
   magic-string@0.30.5:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.0
@@ -10542,6 +10652,15 @@ snapshots:
       signal-exit: 3.0.7
 
   reusify@1.0.4: {}
+
+  rsbuild-plugin-dts@0.0.12(@rsbuild/core@1.0.14)(typescript@5.6.2):
+    dependencies:
+      '@rsbuild/core': 1.0.14
+      fast-glob: 3.3.2
+      magic-string: 0.30.12
+      picocolors: 1.1.0
+    optionalDependencies:
+      typescript: 5.6.2
 
   rslog@1.2.3: {}
 

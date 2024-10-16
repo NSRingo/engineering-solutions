@@ -31,14 +31,6 @@ const getDefaultConfig = (): ModkitConfig<any> => {
     output: {
       distPath: {
         root: 'dist',
-        surge: `${packageJson.name}.sgmodule`,
-        loon: `${packageJson.name}.plugin`,
-        qx: `${packageJson.name}.snippet`,
-        stash: `${packageJson.name}.stoverride`,
-      },
-      dts: {
-        path: './src/settings.d.ts',
-        isExported: false,
       },
     },
   };

@@ -1,5 +1,5 @@
 {
-  "name": "@iringo/modkit-shared",
+  "name": "@iringo/modkit-plugin-surge",
   "version": "0.0.0",
   "description": "",
   "main": "dist/index.js",
@@ -11,9 +11,7 @@
   },
   "files": ["dist", "CHANGELOG.md"],
   "dependencies": {
-    "@iringo/utils": "workspace:^",
-    "@rspack/core": "^1.0.10",
-    "@swc/helpers": "^0.5.13"
+    "@iringo/modkit-shared": "workspace:^"
   },
   "devDependencies": {
     "@iringo/modkit-config": "workspace:^",
@@ -24,6 +22,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/NSRingo/engineering-solutions",
-    "directory": "packages/modkit/shared"
+    "directory": "packages/modkit/apps/surge"
   }
 }
