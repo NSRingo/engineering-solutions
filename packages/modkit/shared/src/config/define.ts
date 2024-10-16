@@ -36,7 +36,12 @@ const getDefaultConfig = (): ModkitConfig<any> => {
   };
 };
 
-export const loadConfig = async (configPath: string) => {
+export const loadConfig = async (
+  configPath?: string,
+): Promise<{
+  config: ModkitConfig<any>;
+  configFilePath: string;
+}> => {
   const resp = await loadConfigFile<ModkitConfig<any>>({
     configPath,
     baseConfigName: 'modkit.config',

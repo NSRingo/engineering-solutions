@@ -170,7 +170,7 @@ export interface ModkitConfig<ScriptInput extends Record<string, string>> {
     /**
      * 待编译的脚本
      */
-    script?: ScriptInput;
+    scripts?: ScriptInput;
   };
   output?: {
     distPath?: {

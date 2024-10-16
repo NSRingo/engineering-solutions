@@ -2,17 +2,16 @@
   "name": "@iringo/modkit",
   "version": "0.0.0",
   "description": "",
-  "type": "module",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
     },
     "./plugins/*": {
       "types": "./dist/plugins/*.d.ts",
-      "import": "./dist/plugins/*.js",
-      "require": "./dist/plugins/*.cjs"
+      "import": "./dist/plugins/*.mjs",
+      "require": "./dist/plugins/*.js"
     },
     "./package.json": "./package.json"
   },
@@ -20,8 +19,8 @@
     "modkit": "./bin/modkit.js"
   },
   "scripts": {
-    "dev": "rslib build -w",
-    "build": "rslib build"
+    "dev": "modern build -w",
+    "build": "modern build"
   },
   "files": ["dist", "bin", "CHANGELOG.md"],
   "dependencies": {
@@ -32,7 +31,7 @@
   },
   "devDependencies": {
     "@iringo/modkit-config": "workspace:^",
-    "@rslib/core": "^0.0.12",
+    "@modern-js/module-tools": "^2.60.2",
     "@types/node": "^20.0.0",
     "typescript": "^5.6.2"
   },

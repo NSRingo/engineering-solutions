@@ -1,4 +1,4 @@
 #!/usr/bin/env node
-import { initCommand } from '../dist/index.js';
+const { initCommand } = require('../dist/index.js');
 
 initCommand();
