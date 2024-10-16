@@ -37,7 +37,7 @@ jobs:
       - uses: changesets/action@v1
         id: changesets
         with:
-          publish: npx nx release publish
+          publish: npx nx release publish --access public
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
