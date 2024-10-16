@@ -1,5 +1,11 @@
 # @iringo/doc-ui
 
+## 1.2.1
+
+### Patch Changes
+
+- 4576e18: 修复样式错误
+
 ## 1.2.0
 
 ### Minor Changes
