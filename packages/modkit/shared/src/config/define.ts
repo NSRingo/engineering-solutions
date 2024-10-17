@@ -22,6 +22,7 @@ const getDefaultConfig = (): ModkitConfig<any> => {
 
   return {
     source: {
+      moduleName: `${packageJson.name}`.split('/').pop(),
       metadata: {
         name: packageJson.displayName || packageJson.name,
         description: packageJson.description,

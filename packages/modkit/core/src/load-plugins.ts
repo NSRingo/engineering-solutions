@@ -1,6 +1,5 @@
-import type { ModkitConfig } from '@iringo/modkit-shared';
-import { createPlugin } from './manager';
+import { type ModkitConfig, createPlugin } from '@iringo/modkit-shared';
 
 export const loadPlugins = (config: ModkitConfig<any>) => {
-  return config.plugins?.map((item) => createPlugin(item.setup as any, item as any)) ?? [];
+  return config.plugins?.map((item) => createPlugin(item.setup, item)) ?? [];
 };

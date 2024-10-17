@@ -1,5 +1,5 @@
-import type { commander } from '@iringo/utils';
 import type { RsbuildConfig } from '@rsbuild/core';
+import type { PluginAPI, PluginHooks } from '../plugin/manager';
 
 // /**
 //  * @link https://github.com/chavyleung/scripts/blob/master/box/chavy.boxjs.html#L1019
@@ -156,6 +156,10 @@ export interface ModuleContent<ScriptKey extends string> {
 export interface ModkitConfig<ScriptInput extends Record<string, string>> {
   source?: {
     /**
+     * 模块名称
+     */
+    moduleName?: string;
+    /**
      * 模块元数据
      */
     metadata?: ModuleMetadata;
@@ -213,35 +217,15 @@ export interface ModkitPlugin<ScriptInput extends Record<string, string> = any> 
    */
   name: string;
 
-  setup: () => {
+  /**
+   * 平台插件配置
+   */
+  platformConfig?: {
     /**
-     * 针对当前平台修改配置
+     * 拓展名
      */
-    modifyConfig?: (config: ModkitConfig<ScriptInput>) => ModkitConfig<ScriptInput>;
-    /**
-     * 处理参数
-     */
-    processArguments?: (args: ArgumentItem[]) => Record<string, any>;
-    /**
-     * 模块渲染
-     */
-    moduleRender?: (args: {
-      /**
-       * 当前平台的配置
-       */
-      config: ModkitConfig<ScriptInput>;
-      /**
-       * 经过处理的参数上下文
-       */
-      argumentsContext: Record<string, any>;
-      /**
-       * 是否为生产环境
-       */
-      isProd: boolean;
-    }) => void;
-    /**
-     * 为 commander 添加新的 CLI 命令
-     */
-    commands?: (utils: { program: commander.Command }) => void;
+    extension: string;
   };
+
+  setup: (api: PluginAPI) => PluginHooks<ScriptInput>;
 }

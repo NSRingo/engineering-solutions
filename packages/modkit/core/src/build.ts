@@ -1,37 +1,30 @@
-// import type { ModkitConfig } from '@iringo/modkit-shared';
-import { type ModkitConfig, address } from '@iringo/modkit-shared';
-import { RsbuildConfig, createRsbuild, mergeRsbuildConfig } from '@rsbuild/core';
+import { type ModkitConfig, type ModkitPlugin, address, getPluginContext } from '@iringo/modkit-shared';
+import { type RsbuildConfig, createRsbuild, mergeRsbuildConfig } from '@rsbuild/core';
 import type { loadPlugins } from './load-plugins';
 
-// export function useBuildScript(config: ModkitConfig<any>) {
-//   const isProduction = process.env.NODE_ENV === 'production';
+export const useRsbuild = async (config: ModkitConfig<any>, plugins: ReturnType<typeof loadPlugins>) => {
+  const environments: RsbuildConfig['environments'] = {};
 
-//   createRsbuild({
-//     rsbuildConfig: mergeRsbuildConfig(),
-//   });
+  await Promise.allSettled(
+    plugins.map(async (plugin) => {
+      const { platformConfig } = plugin as unknown as ModkitPlugin<any>;
+      if (!platformConfig) {
+        return;
+      }
+      const pluginCtx = await getPluginContext(plugin);
+      const source = pluginCtx.modifySource?.({ source: config.source });
+      environments[plugin.name] = {
+        output: {
+          filename: {
+            html: `${config.source?.moduleName}.${platformConfig.extension}`,
+          },
+        },
+      };
+    }),
+  );
 
-//   // const compiler = rspackCore.rspack(
-//   //   lodash.merge(
-//   //     DEFAULT_RSPACK_CONFIG,
-//   //     defineRsPackConfig({
-//   //       mode: isProduction ? 'production' : 'development',
-//   //       output: {
-//   //         clean: isProduction,
-//   //       },
-//   //     }),
-//   //     config.tools?.rspack || {},
-//   //     defineRsPackConfig({
-//   //       entry: config.source?.scripts || {},
-//   //     }),
-//   //   ),
-//   // );
-
-//   // return { compiler };
-// }
-
-export const useRsbuild = (config: ModkitConfig<any>, plugins: ReturnType<typeof loadPlugins>) => {
-  createRsbuild({
-    rsbuildConfig: mergeRsbuildConfig({
+  const rsbuild = await createRsbuild({
+    rsbuildConfig: {
       output: {
         assetPrefix: config.output?.assetPrefix,
         distPath: {
@@ -41,6 +34,11 @@ export const useRsbuild = (config: ModkitConfig<any>, plugins: ReturnType<typeof
       dev: {
         assetPrefix: `http://${address.ip()}:${config.dev?.port ?? 3000}`,
       },
-    }),
+      environments,
+    },
   });
+
+  return {
+    rsbuild,
+  };
 };

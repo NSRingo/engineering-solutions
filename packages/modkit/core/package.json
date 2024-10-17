@@ -28,7 +28,6 @@
     "@iringo/modkit-plugin-loon": "workspace:^",
     "@iringo/modkit-plugin-surge": "workspace:^",
     "@iringo/modkit-shared": "workspace:^",
-    "@modern-js/plugin": "^2.60.4",
     "@rsbuild/core": "^1.0.15",
     "minimist": "^1.2.8"
   },

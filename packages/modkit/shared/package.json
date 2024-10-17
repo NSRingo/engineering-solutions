@@ -9,10 +9,15 @@
     "dev": "modern build -w",
     "build": "modern build"
   },
-  "files": ["dist", "CHANGELOG.md"],
+  "files": [
+    "dist",
+    "CHANGELOG.md"
+  ],
   "dependencies": {
     "@iringo/utils": "workspace:^",
-    "@swc/helpers": "^0.5.13"
+    "@modern-js/plugin": "^2.60.4",
+    "@swc/helpers": "^0.5.13",
+    "package-up": "^5.0.0"
   },
   "devDependencies": {
     "@iringo/modkit-config": "workspace:^",

@@ -1,11 +1,9 @@
-import { commander, loadConfig } from '@iringo/modkit-shared';
+import { AppContext, commander, initAppContext, initAppDir, loadConfig, manager } from '@iringo/modkit-shared';
 import minimist from 'minimist';
+import { useRsbuild } from './build';
 import { loadPlugins } from './load-plugins';
-import { manager } from './manager';
 
 export async function initCommand() {
-  let hooksRunner: Awaited<ReturnType<typeof manager.init>> | undefined;
-
   manager.clear();
 
   const cliParams = minimist<{
@@ -17,6 +15,8 @@ export async function initCommand() {
 
   process.env.MODKIT_ROOT ??= process.cwd();
 
+  const appDirectory = await initAppDir(process.env.MODKIT_ROOT);
+
   program.version(process.env.MODKIT_VERSION || '0.0.0');
 
   const { config } = await loadConfig(cliParams.config || cliParams.c);
@@ -25,7 +25,14 @@ export async function initCommand() {
 
   plugins.forEach((plugin) => plugin && manager.usePlugin(plugin));
 
-  hooksRunner = await manager.init();
+  const appContext = initAppContext({
+    appDirectory,
+  });
+  AppContext.set(appContext);
+
+  const hooksRunner = await manager.init();
+
+  const { rsbuild } = await useRsbuild(config, plugins);
 
   const buildCommand = program.command('build');
   const devCommand = program.command('dev');
@@ -37,7 +44,7 @@ export async function initCommand() {
   buildCommand.action(async () => {
     process.env.NODE_ENV = 'production';
 
-    console.log(hooksRunner.modifyConfig());
+    rsbuild.build();
   });
 
   program.parse(process.argv);
