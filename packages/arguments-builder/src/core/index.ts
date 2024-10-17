@@ -35,20 +35,26 @@ export class ArgumentsBuilder {
     });
   }
 
+  private getDefaultValue(defaultValue: any) {
+    switch (typeof defaultValue) {
+      case 'string':
+        return `"${defaultValue}"`;
+      case 'number':
+      case 'boolean':
+        return defaultValue;
+      case 'object':
+        if (Array.isArray(defaultValue) && defaultValue.length > 0) {
+          return this.getDefaultValue(defaultValue[0]);
+        }
+        return '""';
+      default:
+        return '""';
+    }
+  }
+
   public buildSurgeArguments() {
     const args = this.getArgumentByScope('surge');
-    const getValue = (defaultValue: any) => {
-      switch (typeof defaultValue) {
-        case 'string':
-          return `"${defaultValue}"`;
-        case 'number':
-        case 'boolean':
-          return defaultValue;
-        default:
-          return '""';
-      }
-    };
-    const argumentsText = args.map((arg) => `${arg.key}:${getValue(arg.defaultValue)}`).join(',');
+    const argumentsText = args.map((arg) => `${arg.key}:${this.getDefaultValue(arg.defaultValue)}`).join(',');
 
     const argumentsDescription = args
       .map((arg) => {
@@ -95,21 +101,12 @@ export class ArgumentsBuilder {
           type = 'select';
         }
         result += ` = ${type}`;
-        function getValue(val: any) {
-          if (typeof val === 'string') {
-            return `"${val}"`;
-          }
-          if (['number', 'boolean'].includes(typeof val)) {
-            return val;
-          }
-          return '""';
-        }
-        result += `,${getValue(arg.defaultValue)}`;
+        result += `,${this.getDefaultValue(arg.defaultValue)}`;
         if (arg.options && type === 'select') {
           result += ',';
           result += arg.options
             .filter((item) => item.key !== arg.defaultValue)
-            .map((option) => `${getValue(option.key)}`)
+            .map((option) => `${this.getDefaultValue(option.key)}`)
             .join(',');
         }
         if (arg.name) {
