@@ -14,5 +14,6 @@
     "moduleResolution": "Bundler",
     "useDefineForClassFields": true
   },
-  "include": ["src"]
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Base"
 }

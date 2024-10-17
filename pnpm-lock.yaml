@@ -98,6 +98,152 @@ importers:
         specifier: ^5.6.2
         version: 5.6.2
 
+  packages/modkit/config:
+    devDependencies:
+      '@iringo/utils':
+        specifier: workspace:^
+        version: link:../../utils
+      '@modern-js/module-tools':
+        specifier: ^2.60.2
+        version: 2.60.2(typescript@5.6.2)
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.16.10
+      typescript:
+        specifier: ^5.6.2
+        version: 5.6.2
+
+  packages/modkit/core:
+    dependencies:
+      '@iringo/modkit-plugin-dts':
+        specifier: workspace:^
+        version: link:../plugins/dts
+      '@iringo/modkit-plugin-loon':
+        specifier: workspace:^
+        version: link:../plugins/loon
+      '@iringo/modkit-plugin-surge':
+        specifier: workspace:^
+        version: link:../plugins/surge
+      '@iringo/modkit-shared':
+        specifier: workspace:^
+        version: link:../shared
+      '@rsbuild/core':
+        specifier: ^1.0.15
+        version: 1.0.15
+      minimist:
+        specifier: ^1.2.8
+        version: 1.2.8
+    devDependencies:
+      '@iringo/modkit-config':
+        specifier: workspace:^
+        version: link:../config
+      '@modern-js/module-tools':
+        specifier: ^2.60.2
+        version: 2.60.2(typescript@5.6.2)
+      '@types/minimist':
+        specifier: ^1.2.5
+        version: 1.2.5
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.16.10
+      typescript:
+        specifier: ^5.6.2
+        version: 5.6.2
+
+  packages/modkit/plugins/dts:
+    dependencies:
+      '@iringo/modkit-shared':
+        specifier: workspace:^
+        version: link:../../shared
+    devDependencies:
+      '@iringo/modkit-config':
+        specifier: workspace:^
+        version: link:../../config
+      '@modern-js/module-tools':
+        specifier: ^2.60.2
+        version: 2.60.2(typescript@5.6.2)
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.16.10
+      typescript:
+        specifier: ^5.6.2
+        version: 5.6.2
+
+  packages/modkit/plugins/loon:
+    dependencies:
+      '@iringo/modkit-shared':
+        specifier: workspace:^
+        version: link:../../shared
+    devDependencies:
+      '@iringo/modkit-config':
+        specifier: workspace:^
+        version: link:../../config
+      '@modern-js/module-tools':
+        specifier: ^2.60.2
+        version: 2.60.2(typescript@5.6.2)
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.16.10
+      typescript:
+        specifier: ^5.6.2
+        version: 5.6.2
+
+  packages/modkit/plugins/surge:
+    dependencies:
+      '@iringo/modkit-shared':
+        specifier: workspace:^
+        version: link:../../shared
+    devDependencies:
+      '@iringo/modkit-config':
+        specifier: workspace:^
+        version: link:../../config
+      '@modern-js/module-tools':
+        specifier: ^2.60.2
+        version: 2.60.2(typescript@5.6.2)
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.16.10
+      typescript:
+        specifier: ^5.6.2
+        version: 5.6.2
+
+  packages/modkit/shared:
+    dependencies:
+      '@iringo/utils':
+        specifier: workspace:^
+        version: link:../../utils
+      '@modern-js/plugin':
+        specifier: ^2.60.4
+        version: 2.60.4
+      '@swc/helpers':
+        specifier: ^0.5.13
+        version: 0.5.13
+      package-up:
+        specifier: ^5.0.0
+        version: 5.0.0
+    devDependencies:
+      '@iringo/modkit-config':
+        specifier: workspace:^
+        version: link:../config
+      '@modern-js/module-tools':
+        specifier: ^2.60.2
+        version: 2.60.2(typescript@5.6.2)
+      '@rsbuild/core':
+        specifier: ^1.0.15
+        version: 1.0.15
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.16.10
+      typescript:
+        specifier: ^5.6.2
+        version: 5.6.2
+
+  packages/modkit/tests:
+    devDependencies:
+      '@iringo/modkit':
+        specifier: workspace:^
+        version: link:../core
+
   packages/sgmoudle-tools:
     dependencies:
       '@iringo/utils':
@@ -152,6 +298,9 @@ importers:
       jiti:
         specifier: ^2.1.0
         version: 2.1.0
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
       rslog:
         specifier: ^1.2.3
         version: 1.2.3
@@ -159,6 +308,9 @@ importers:
       '@modern-js/module-tools':
         specifier: ^2.60.2
         version: 2.60.2(typescript@5.6.2)
+      '@types/lodash':
+        specifier: ^4.17.10
+        version: 4.17.10
       '@types/node':
         specifier: ^20.0.0
         version: 20.16.10
@@ -1466,6 +1618,9 @@ packages:
   '@modern-js/plugin@2.60.2':
     resolution: {integrity: sha512-DTX7e7uuecX2E4RZLQLDKft1wk+czwAvdnl4tTLrYZ5DpQPOt9MPY/YGlpwguPL/Ut1lK7rM7WSvru8LzgaXmw==}
 
+  '@modern-js/plugin@2.60.4':
+    resolution: {integrity: sha512-u1RljHNayfN/MJziVyv1qonFBo7nTKsTzbvvJzlWqzpbXTGQeJpdaZKbyoKA1Aj5Oc1OpfQahIxMlhktkZ2USw==}
+
   '@modern-js/swc-plugins-darwin-arm64@0.6.11':
     resolution: {integrity: sha512-UMH0bo20vcD10//F7KaINLfuHawQBVcWCCyJvkYOiBt7e1tUjeybKu+y6eNq1USyFVElEMul8ytnYdwAS9sY+w==}
     engines: {node: '>=14.12'}
@@ -1531,6 +1686,9 @@ packages:
 
   '@modern-js/utils@2.60.3':
     resolution: {integrity: sha512-g9kxWsYZ71MZPXMEf2ltDP229WjGIChNB95fjmcvtWRoW9grhINdQJ0/tO+jEaHZiDDQEWuPJlqqUrXWcZB0nQ==}
+
+  '@modern-js/utils@2.60.4':
+    resolution: {integrity: sha512-RQuROvNA68Dr2SI0mEc1MmG5X2yVmz+aWViZP1Q89z9ErVSJGCSspUHpM2kFQaCwDgbB7Oz84bcAnP0C+ED9TQ==}
 
   '@module-federation/runtime-tools@0.5.1':
     resolution: {integrity: sha512-nfBedkoZ3/SWyO0hnmaxuz0R0iGPSikHZOAZ0N/dVSQaIzlffUo35B5nlC2wgWIc0JdMZfkwkjZRrnuuDIJbzg==}
@@ -1669,6 +1827,11 @@ packages:
     engines: {node: '>=16.7.0'}
     hasBin: true
 
+  '@rsbuild/core@1.0.15':
+    resolution: {integrity: sha512-LIOgs4UzfFeT3sZnPMww1JbqF7zkGNMZdMJ6vV8xEXGOU4t8Z6QAtM5A0FGRfb2mYW5u2+XnMog+JAbo2RrN/A==}
+    engines: {node: '>=16.7.0'}
+    hasBin: true
+
   '@rsbuild/plugin-less@1.0.1':
     resolution: {integrity: sha512-bXjPDII9b0MCdYxkoNUtf1z11lQVQDPqgC6Iu90s6X5lnfJd7uwxQC7Sr/cHKYDPKVKQZIvbmXHFJxnd8bsCLg==}
     peerDependencies:
@@ -1689,8 +1852,18 @@ packages:
     cpu: [arm64]
     os: [darwin]
 
+  '@rspack/binding-darwin-arm64@1.0.13':
+    resolution: {integrity: sha512-HepE4V5Rj53o+o8AMzlkdeBxZnsyXKrOJ2oumVtqRLXihVlMguYwNTSkjfmjAqq/4PJAhEeaeIFyomZg+zKC0A==}
+    cpu: [arm64]
+    os: [darwin]
+
   '@rspack/binding-darwin-x64@1.0.11':
     resolution: {integrity: sha512-I7Rs7H972U3wGvR2nutb9YAtxlfJVgQ0xvxZbrgiOUFuzGZdKJeIhzjoLxbCPko2syMdHAKrlz0A4r2skSLiVQ==}
+    cpu: [x64]
+    os: [darwin]
+
+  '@rspack/binding-darwin-x64@1.0.13':
+    resolution: {integrity: sha512-ucHf0q2V+K19z75BvjU6EbQggNFiz1/xJ5tSgOXUfRu5omZF1jpN/epeMGqh0MkExRwOMYKJR/pVHDw5ITcU8g==}
     cpu: [x64]
     os: [darwin]
 
@@ -1699,8 +1872,18 @@ packages:
     cpu: [arm64]
     os: [linux]
 
+  '@rspack/binding-linux-arm64-gnu@1.0.13':
+    resolution: {integrity: sha512-0fqLWDG9Z2VKxy3u6+jLVJgT2E24Xb2umP4Jtx2uNf2+aHLXifgqUdwgCElO+dj+PpOp/q8zmV5U2DXykvPU3w==}
+    cpu: [arm64]
+    os: [linux]
+
   '@rspack/binding-linux-arm64-musl@1.0.11':
     resolution: {integrity: sha512-FXm/Pf3lDmVKI+0llc/L08bPyJ5GIth3lJbTD0ZzGBjoUJoRFJW1ZSAAomBsl5HmjWxiky3WRV7Xc+gHMCvLwA==}
+    cpu: [arm64]
+    os: [linux]
+
+  '@rspack/binding-linux-arm64-musl@1.0.13':
+    resolution: {integrity: sha512-eK72/jAofJRcZ23FTteUh1MfTbErWYNwVLuxnliyf1f1PwH0a7exGE6ik0/y/LdAt5PWP1r8r981EEjrpsTfRQ==}
     cpu: [arm64]
     os: [linux]
 
@@ -1709,8 +1892,18 @@ packages:
     cpu: [x64]
     os: [linux]
 
+  '@rspack/binding-linux-x64-gnu@1.0.13':
+    resolution: {integrity: sha512-C9wGDim1Euc10qRk5ztPvgK4NAi6bi6Ck3+ugaRzYXPFIVegnFyXu2fv42j3Y0LRhBjnKMXZJzME5nQUPuT6Ug==}
+    cpu: [x64]
+    os: [linux]
+
   '@rspack/binding-linux-x64-musl@1.0.11':
     resolution: {integrity: sha512-iI6/WhvdyHK6awfDtDQswtH/mrGWvUyqAZ12aA9hKDOdcXD4LQt/ZQU4teHY3/+0D1qS9Vj1BjeVMqQ3FIu8gw==}
+    cpu: [x64]
+    os: [linux]
+
+  '@rspack/binding-linux-x64-musl@1.0.13':
+    resolution: {integrity: sha512-7bQyGEoMCxXUS+RDo6qej8JjqS8kYd8CvlnfYZVUqWgCxgn19j29lKvWVibey0lnFpoJrqReOdSypbk91tSrzA==}
     cpu: [x64]
     os: [linux]
 
@@ -1719,8 +1912,18 @@ packages:
     cpu: [arm64]
     os: [win32]
 
+  '@rspack/binding-win32-arm64-msvc@1.0.13':
+    resolution: {integrity: sha512-6QOHiCwaQeCZApWRe1y8ZNZGOj00EFdX1ypOc3R1GrfSjn+UjoKhbBtgVl2w+sPTaCZ4SvknOk9usSgcWO4gOQ==}
+    cpu: [arm64]
+    os: [win32]
+
   '@rspack/binding-win32-ia32-msvc@1.0.11':
     resolution: {integrity: sha512-OzWQY1/IyxhpFprcIdU7obwWszMteSWnljPq2i/sHsmeoJfFy0arWtH0Di/riU5pDoyBHR70ffnDGDkfv5ckjA==}
+    cpu: [ia32]
+    os: [win32]
+
+  '@rspack/binding-win32-ia32-msvc@1.0.13':
+    resolution: {integrity: sha512-ucm7emxYDjTsOGNwgYGz30oKcnzXLjg/Fcs0mNMmQgMEFpwBXhczfKJimCyMIlAhQCFPP4WzrXFdf03EPuw6CA==}
     cpu: [ia32]
     os: [win32]
 
@@ -1729,11 +1932,28 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@rspack/binding-win32-x64-msvc@1.0.13':
+    resolution: {integrity: sha512-9G/hvr47ECjDEmBCyyQTZFilmEOIQJCQvpx6hUgDWsfUApwF9LZBW/PqBCSwhY+tIErr/AurJnBVAYub0MYpHA==}
+    cpu: [x64]
+    os: [win32]
+
   '@rspack/binding@1.0.11':
     resolution: {integrity: sha512-b7tD9qTjHLqCkrW2AG85ofjL8M+Tk48qtWE7UpOQsZBDxF+ONWIiZ07gp4VE8nS96VNpBgL+GSqI/K8cmaZabA==}
 
+  '@rspack/binding@1.0.13':
+    resolution: {integrity: sha512-mnSCZ3Qb/I3LzsYoo24AG4LgmaSOIc1CS38A9L9nv4MJj8x+1D2BaLErpaaMmhqI3lQBIcBSQkN7+WbpsCP3Uw==}
+
   '@rspack/core@1.0.11':
     resolution: {integrity: sha512-DpBPc7kDNogjXU2m+wVbdarEY366kTrZlDHxynuBY0snpB9j03vj+R/j3VfzTL84j5fqOMTb3tcu91DlVVp3UQ==}
+    engines: {node: '>=16.0.0'}
+    peerDependencies:
+      '@swc/helpers': '>=0.5.1'
+    peerDependenciesMeta:
+      '@swc/helpers':
+        optional: true
+
+  '@rspack/core@1.0.13':
+    resolution: {integrity: sha512-lh8toWSWcYjlOuriQ8/h0U8riaaRQfzwU0oUNykFj1xokJMSKIQFH5WQWj2DQ386uHNv52nMbc+Jiuml1vYboA==}
     engines: {node: '>=16.0.0'}
     peerDependencies:
       '@swc/helpers': '>=0.5.1'
@@ -1945,6 +2165,9 @@ packages:
 
   '@types/mime@1.3.5':
     resolution: {integrity: sha512-/pyBZWSLD2n0dcHE3hq8s8ZvcETHtEuF+3E7XVt0Ig2nvsVQXdghHVcEkIWjy9A0wKfTn97a/PSDYohKIlnP/w==}
+
+  '@types/minimist@1.2.5':
+    resolution: {integrity: sha512-hov8bUuiLiyFPGyFPE1lwWhmzYbirOXQNNo40+y3zow8aFVTeyn3VWL0VFFfdNddA8S4Vf0Tc062rzyNr7Paag==}
 
   '@types/ms@0.7.34':
     resolution: {integrity: sha512-nG96G3Wp6acyAgJqGasjODb+acrI7KltPiRxzHPXnP3NgI28bpQDRv53olbqGXbfcgF5aiiHmO3xpwEpS5Ld9g==}
@@ -2866,6 +3089,10 @@ packages:
   finalhandler@1.3.1:
     resolution: {integrity: sha512-6BN9trH7bp3qvnrRyzsBz+g3lZxTNZTbVO2EV1CS0WIcDbawYVdYvGflME/9QP0h0pYlCDBCTjYa9nZzMDpyxQ==}
     engines: {node: '>= 0.8'}
+
+  find-up-simple@1.0.0:
+    resolution: {integrity: sha512-q7Us7kcjj2VMePAa02hDAF6d+MzsdsAWEwYyOpwUtlerRBkOEPBCRZrAV4XfcSN8fHAgaD0hP7miwoay6DCprw==}
+    engines: {node: '>=18'}
 
   find-up@4.1.0:
     resolution: {integrity: sha512-PpOwAdQ/YlXQ2vj8a3h8IipDuYRi3wceVQQGYWxNINccq40Anw7BlsEXCMbt1Zt+OLA6Fq9suIpIWD0OsnISlw==}
@@ -3963,6 +4190,10 @@ packages:
 
   package-manager-detector@0.2.0:
     resolution: {integrity: sha512-E385OSk9qDcXhcM9LNSe4sdhx8a9mAPrZ4sMLW+tmxl5ZuGtPUcdFu+MPP2jbgiWAZ6Pfe5soGFMd+0Db5Vrog==}
+
+  package-up@5.0.0:
+    resolution: {integrity: sha512-MQEgDUvXCa3sGvqHg3pzHO8e9gqTCMPVrWUko3vPQGntwegmFo52mZb2abIVTjFnUcW0BcPz0D93jV5Cas1DWA==}
+    engines: {node: '>=18'}
 
   parent-module@1.0.1:
     resolution: {integrity: sha512-GQ2EWRpQV8/o+Aw8YqtfZZPfNRWZYkbidE9k5rpl/hC3vtHHBfGm2Ifi6qWV+coDGkrUKZAxE3Lot5kcsRlh+g==}
@@ -6688,6 +6919,11 @@ snapshots:
       '@modern-js/utils': 2.60.2
       '@swc/helpers': 0.5.13
 
+  '@modern-js/plugin@2.60.4':
+    dependencies:
+      '@modern-js/utils': 2.60.4
+      '@swc/helpers': 0.5.13
+
   '@modern-js/swc-plugins-darwin-arm64@0.6.11':
     optional: true
 
@@ -6734,6 +6970,13 @@ snapshots:
       rslog: 1.2.3
 
   '@modern-js/utils@2.60.3':
+    dependencies:
+      '@swc/helpers': 0.5.13
+      caniuse-lite: 1.0.30001664
+      lodash: 4.17.21
+      rslog: 1.2.3
+
+  '@modern-js/utils@2.60.4':
     dependencies:
       '@swc/helpers': 0.5.13
       caniuse-lite: 1.0.30001664
@@ -6915,6 +7158,15 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
+  '@rsbuild/core@1.0.15':
+    dependencies:
+      '@rspack/core': 1.0.13(@swc/helpers@0.5.13)
+      '@rspack/lite-tapable': 1.0.1
+      '@swc/helpers': 0.5.13
+      core-js: 3.38.1
+    optionalDependencies:
+      fsevents: 2.3.3
+
   '@rsbuild/plugin-less@1.0.1(@rsbuild/core@1.0.13)':
     dependencies:
       '@rsbuild/core': 1.0.13
@@ -6939,28 +7191,55 @@ snapshots:
   '@rspack/binding-darwin-arm64@1.0.11':
     optional: true
 
+  '@rspack/binding-darwin-arm64@1.0.13':
+    optional: true
+
   '@rspack/binding-darwin-x64@1.0.11':
+    optional: true
+
+  '@rspack/binding-darwin-x64@1.0.13':
     optional: true
 
   '@rspack/binding-linux-arm64-gnu@1.0.11':
     optional: true
 
+  '@rspack/binding-linux-arm64-gnu@1.0.13':
+    optional: true
+
   '@rspack/binding-linux-arm64-musl@1.0.11':
+    optional: true
+
+  '@rspack/binding-linux-arm64-musl@1.0.13':
     optional: true
 
   '@rspack/binding-linux-x64-gnu@1.0.11':
     optional: true
 
+  '@rspack/binding-linux-x64-gnu@1.0.13':
+    optional: true
+
   '@rspack/binding-linux-x64-musl@1.0.11':
+    optional: true
+
+  '@rspack/binding-linux-x64-musl@1.0.13':
     optional: true
 
   '@rspack/binding-win32-arm64-msvc@1.0.11':
     optional: true
 
+  '@rspack/binding-win32-arm64-msvc@1.0.13':
+    optional: true
+
   '@rspack/binding-win32-ia32-msvc@1.0.11':
     optional: true
 
+  '@rspack/binding-win32-ia32-msvc@1.0.13':
+    optional: true
+
   '@rspack/binding-win32-x64-msvc@1.0.11':
+    optional: true
+
+  '@rspack/binding-win32-x64-msvc@1.0.13':
     optional: true
 
   '@rspack/binding@1.0.11':
@@ -6975,10 +7254,31 @@ snapshots:
       '@rspack/binding-win32-ia32-msvc': 1.0.11
       '@rspack/binding-win32-x64-msvc': 1.0.11
 
+  '@rspack/binding@1.0.13':
+    optionalDependencies:
+      '@rspack/binding-darwin-arm64': 1.0.13
+      '@rspack/binding-darwin-x64': 1.0.13
+      '@rspack/binding-linux-arm64-gnu': 1.0.13
+      '@rspack/binding-linux-arm64-musl': 1.0.13
+      '@rspack/binding-linux-x64-gnu': 1.0.13
+      '@rspack/binding-linux-x64-musl': 1.0.13
+      '@rspack/binding-win32-arm64-msvc': 1.0.13
+      '@rspack/binding-win32-ia32-msvc': 1.0.13
+      '@rspack/binding-win32-x64-msvc': 1.0.13
+
   '@rspack/core@1.0.11(@swc/helpers@0.5.13)':
     dependencies:
       '@module-federation/runtime-tools': 0.5.1
       '@rspack/binding': 1.0.11
+      '@rspack/lite-tapable': 1.0.1
+      caniuse-lite: 1.0.30001664
+    optionalDependencies:
+      '@swc/helpers': 0.5.13
+
+  '@rspack/core@1.0.13(@swc/helpers@0.5.13)':
+    dependencies:
+      '@module-federation/runtime-tools': 0.5.1
+      '@rspack/binding': 1.0.13
       '@rspack/lite-tapable': 1.0.1
       caniuse-lite: 1.0.30001664
     optionalDependencies:
@@ -7275,6 +7575,8 @@ snapshots:
   '@types/mdx@2.0.13': {}
 
   '@types/mime@1.3.5': {}
+
+  '@types/minimist@1.2.5': {}
 
   '@types/ms@0.7.34': {}
 
@@ -8295,6 +8597,8 @@ snapshots:
       unpipe: 1.0.0
     transitivePeerDependencies:
       - supports-color
+
+  find-up-simple@1.0.0: {}
 
   find-up@4.1.0:
     dependencies:
@@ -9879,6 +10183,10 @@ snapshots:
   p-try@2.2.0: {}
 
   package-manager-detector@0.2.0: {}
+
+  package-up@5.0.0:
+    dependencies:
+      find-up-simple: 1.0.0
 
   parent-module@1.0.1:
     dependencies:
