@@ -35,23 +35,6 @@ export class ArgumentsBuilder {
     });
   }
 
-  private getDefaultValue(defaultValue: any) {
-    switch (typeof defaultValue) {
-      case 'string':
-        return `"${defaultValue}"`;
-      case 'number':
-      case 'boolean':
-        return defaultValue;
-      case 'object':
-        if (Array.isArray(defaultValue) && defaultValue.length > 0) {
-          return this.getDefaultValue(defaultValue[0]);
-        }
-        return '""';
-      default:
-        return '""';
-    }
-  }
-
   public buildSurgeArguments() {
     const args = this.getArgumentByScope('surge');
     const argumentsText = args.map((arg) => `${arg.key}:${this.getDefaultValue(arg.defaultValue)}`).join(',');
@@ -234,6 +217,23 @@ export class ArgumentsBuilder {
     });
 
     return sourceFile.getFullText();
+  }
+
+  private getDefaultValue(defaultValue: any): any {
+    switch (typeof defaultValue) {
+      case 'string':
+        return `"${defaultValue}"`;
+      case 'number':
+      case 'boolean':
+        return defaultValue;
+      case 'object':
+        if (Array.isArray(defaultValue) && defaultValue.length > 0) {
+          return this.getDefaultValue(defaultValue[0]);
+        }
+        return '""';
+      default:
+        return '""';
+    }
   }
 
   private getArgumentByScope(scope: NonNullable<ArgumentItem['exclude']>[number]) {
