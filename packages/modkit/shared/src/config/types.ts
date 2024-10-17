@@ -1,5 +1,5 @@
 import type { commander } from '@iringo/utils';
-import type { RspackOptions } from '@rspack/core';
+import type { RsbuildConfig } from '@rsbuild/core';
 
 // /**
 //  * @link https://github.com/chavyleung/scripts/blob/master/box/chavy.boxjs.html#L1019
@@ -172,6 +172,12 @@ export interface ModkitConfig<ScriptInput extends Record<string, string>> {
      */
     scripts?: ScriptInput;
   };
+  dev?: {
+    /**
+     * @default 3000
+     */
+    port?: number;
+  };
   output?: {
     distPath?: {
       /**
@@ -180,10 +186,22 @@ export interface ModkitConfig<ScriptInput extends Record<string, string>> {
        */
       root?: string;
     };
+    /**
+     * 静态资源的 URL 前缀
+     */
+    assetPrefix?: string;
   };
-
   tools?: {
-    rspack?: Omit<RspackOptions, 'entry'>;
+    bundlerChain?: NonNullable<RsbuildConfig['tools']>['bundlerChain'];
+    /**
+     * 选项用于修改 Rspack 的配置项
+     * @link https://rsbuild.dev/zh/config/tools/rspack
+     */
+    rspack?: NonNullable<RsbuildConfig['tools']>['rspack'];
+    /**
+     * 设置 [builtin:swc-loader](https://rspack.dev/guide/features/builtin-swc-loader) 的选项
+     */
+    swc?: NonNullable<RsbuildConfig['tools']>['swc'];
   };
 
   plugins?: ModkitPlugin<ScriptInput>[];

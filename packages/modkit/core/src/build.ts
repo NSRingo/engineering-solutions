@@ -1,33 +1,46 @@
-import { type ModkitConfig, lodash, rspackCore } from '@iringo/modkit-shared';
+// import type { ModkitConfig } from '@iringo/modkit-shared';
+import { type ModkitConfig, address } from '@iringo/modkit-shared';
+import { RsbuildConfig, createRsbuild, mergeRsbuildConfig } from '@rsbuild/core';
+import type { loadPlugins } from './load-plugins';
 
-const DEFAULT_RSPACK_CONFIG: rspackCore.RspackOptions = {
-  context: process.env.MODKIT_ROOT || process.cwd(),
-  output: {
-    chunkFormat: 'module',
-    asyncChunks: false,
-  },
-  performance: false,
-};
-const defineRsPackConfig = (config: rspackCore.RspackOptions) => config;
+// export function useBuildScript(config: ModkitConfig<any>) {
+//   const isProduction = process.env.NODE_ENV === 'production';
 
-export function useBuildScript(config: ModkitConfig<any>) {
-  const isProduction = process.env.NODE_ENV === 'production';
+//   createRsbuild({
+//     rsbuildConfig: mergeRsbuildConfig(),
+//   });
 
-  const compiler = rspackCore.rspack(
-    lodash.merge(
-      DEFAULT_RSPACK_CONFIG,
-      defineRsPackConfig({
-        mode: isProduction ? 'production' : 'development',
-        output: {
-          clean: isProduction,
+//   // const compiler = rspackCore.rspack(
+//   //   lodash.merge(
+//   //     DEFAULT_RSPACK_CONFIG,
+//   //     defineRsPackConfig({
+//   //       mode: isProduction ? 'production' : 'development',
+//   //       output: {
+//   //         clean: isProduction,
+//   //       },
+//   //     }),
+//   //     config.tools?.rspack || {},
+//   //     defineRsPackConfig({
+//   //       entry: config.source?.scripts || {},
+//   //     }),
+//   //   ),
+//   // );
+
+//   // return { compiler };
+// }
+
+export const useRsbuild = (config: ModkitConfig<any>, plugins: ReturnType<typeof loadPlugins>) => {
+  createRsbuild({
+    rsbuildConfig: mergeRsbuildConfig({
+      output: {
+        assetPrefix: config.output?.assetPrefix,
+        distPath: {
+          root: config.output?.distPath?.root,
         },
-      }),
-      config.tools?.rspack || {},
-      defineRsPackConfig({
-        entry: config.source?.scripts || {},
-      }),
-    ),
-  );
-
-  return { compiler };
-}
+      },
+      dev: {
+        assetPrefix: `http://${address.ip()}:${config.dev?.port ?? 3000}`,
+      },
+    }),
+  });
+};

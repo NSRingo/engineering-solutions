@@ -9,9 +9,9 @@
       "require": "./dist/index.js"
     },
     "./plugins/*": {
-      "types": "./dist/plugins/*.d.ts",
-      "import": "./dist/plugins/*.mjs",
-      "require": "./dist/plugins/*.js"
+      "types": "./dist/exports-plugins/*.d.ts",
+      "import": "./dist/exports-plugins/*.mjs",
+      "require": "./dist/exports-plugins/*.js"
     },
     "./package.json": "./package.json"
   },
@@ -27,11 +27,15 @@
     "@iringo/modkit-plugin-dts": "workspace:^",
     "@iringo/modkit-plugin-loon": "workspace:^",
     "@iringo/modkit-plugin-surge": "workspace:^",
-    "@iringo/modkit-shared": "workspace:^"
+    "@iringo/modkit-shared": "workspace:^",
+    "@modern-js/plugin": "^2.60.4",
+    "@rsbuild/core": "^1.0.15",
+    "minimist": "^1.2.8"
   },
   "devDependencies": {
     "@iringo/modkit-config": "workspace:^",
     "@modern-js/module-tools": "^2.60.2",
+    "@types/minimist": "^1.2.5",
     "@types/node": "^20.0.0",
     "typescript": "^5.6.2"
   },

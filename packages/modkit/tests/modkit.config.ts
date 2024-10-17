@@ -1,4 +1,5 @@
 import { defineConfig } from '@iringo/modkit';
+import { pluginSurge } from '@iringo/modkit/plugins/surge';
 
 export default defineConfig({
   source: {
@@ -6,4 +7,5 @@ export default defineConfig({
       index: './src/index.ts',
     },
   },
+  plugins: [pluginSurge() as any],
 });

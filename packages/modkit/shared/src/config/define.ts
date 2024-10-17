@@ -33,6 +33,9 @@ const getDefaultConfig = (): ModkitConfig<any> => {
         root: 'dist',
       },
     },
+    dev: {
+      port: 3000,
+    },
   };
 };
 

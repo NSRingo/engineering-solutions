@@ -1,1 +1,5 @@
-export default {};
+export const pluginSurge = () => {
+  return {
+    name: 'surge',
+  };
+};
