@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "cross-env NX_DAEMON=false nx run-many -t build --exclude @examples/* @e2e/* --parallel=10",
-    "dev:modkit": "nx run-many -t dev --projects=@iringo/utils,@iringo/modkit* --parallel=10",
+    "mk:dev": "nx run-many -t dev --projects=@iringo/utils,@iringo/modkit* --parallel=10",
+    "mk:build": "nx run-many -t build --projects=@iringo/utils,@iringo/modkit* --parallel=10",
     "change": "changeset"
   },
   "author": "",
