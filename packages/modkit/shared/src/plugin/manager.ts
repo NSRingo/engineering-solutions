@@ -1,38 +1,62 @@
+import type { Server } from 'node:http';
 import type { commander } from '@iringo/utils';
-import { type AsyncWorker, createAsyncManager, createAsyncWorkflow } from '@modern-js/plugin';
+import {
+  type AsyncWorker,
+  type Worker,
+  createAsyncManager,
+  createAsyncWorkflow,
+  createWorkflow,
+} from '@modern-js/plugin';
+import type { RsbuildInstance } from '@rsbuild/core';
+import type { Express } from 'express';
 import type { ArgumentItem, ModkitConfig } from '../config';
 import { runMaybeAsync } from '../utils';
 import { setAppContext, useAppContext } from './context';
 
-interface ModuleRenderParams<T extends Record<string, string>> {
+type RsbuildDevServer = Awaited<ReturnType<RsbuildInstance['createDevServer']>>;
+
+interface ModifySourceParams<T extends Record<string, string>> {
+  source: ModkitConfig<T>['source'];
+}
+
+interface ConfigurePlatformReturn {
   /**
-   * 当前平台的配置
+   * 拓展名
    */
-  config: ModkitConfig<T>;
+  extension: string;
   /**
-   * 经过处理的参数上下文
+   * 渲染模板
    */
-  argumentsContext: Record<string, any>;
-  /**
-   * 是否为生产环境
-   */
-  isProd: boolean;
+  template: string;
+}
+
+interface OnBeforeStartDevServer {
+  app: Express;
+}
+
+interface OnAfterStartDevServer {
+  app: Express;
+  httpServer: Server;
+  rsbuildServer: RsbuildDevServer;
 }
 
 export interface PluginHooks<T extends Record<string, string>> {
   /**
+   * 配置平台信息
+   */
+  configurePlatform?: Worker<void, ConfigurePlatformReturn>;
+  /**
    * 针对当前平台修改配置
    */
-  modifySource?: AsyncWorker<{ source: ModkitConfig<T>['source'] }, ModkitConfig<T>['source']>;
-
+  modifySource?: AsyncWorker<ModifySourceParams<T>, ModkitConfig<T>['source']>;
   /**
    * 处理参数
    */
   processArguments?: AsyncWorker<{ args: ArgumentItem[] }, Record<string, any>>;
-  /**
-   * 模块渲染
-   */
-  moduleRender?: AsyncWorker<ModuleRenderParams<T>, string>;
+
+  onBeforeStartDevServer?: AsyncWorker<OnBeforeStartDevServer, void>;
+  onAfterStartDevServer?: AsyncWorker<OnAfterStartDevServer, void>;
+
   /**
    * 为 commander 添加新的 CLI 命令
    */
@@ -40,9 +64,11 @@ export interface PluginHooks<T extends Record<string, string>> {
 }
 
 const hooks = {
-  modifySource: createAsyncWorkflow<{ source: ModkitConfig<any>['source'] }, ModkitConfig<any>['source']>(),
+  configurePlatform: createWorkflow<void, ConfigurePlatformReturn>(),
+  modifySource: createAsyncWorkflow<ModifySourceParams<any>, ModkitConfig<any>['source']>(),
   processArguments: createAsyncWorkflow<{ args: ArgumentItem[] }, Record<string, any>>(),
-  moduleRender: createAsyncWorkflow<ModuleRenderParams<any>, string>(),
+  onBeforeStartDevServer: createAsyncWorkflow<OnBeforeStartDevServer, void>(),
+  onAfterStartDevServer: createAsyncWorkflow<OnAfterStartDevServer, void>(),
   commands: createAsyncWorkflow<{ program: commander.Command }, void>(),
 };
 

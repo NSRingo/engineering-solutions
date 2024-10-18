@@ -1,7 +1,16 @@
-import { AppContext, commander, initAppContext, initAppDir, loadConfig, manager } from '@iringo/modkit-shared';
+import {
+  AppContext,
+  commander,
+  initAppContext,
+  initAppDir,
+  loadConfig,
+  manager,
+  runMaybeAsync,
+} from '@iringo/modkit-shared';
+import express from 'express';
 import minimist from 'minimist';
-import { useRsbuild } from './build';
 import { loadPlugins } from './load-plugins';
+import { useRsbuild } from './rsbuild';
 
 export async function initCommand() {
   manager.clear();
@@ -32,7 +41,7 @@ export async function initCommand() {
 
   const hooksRunner = await manager.init();
 
-  const { rsbuild } = await useRsbuild(config, plugins);
+  const { rsbuild } = await useRsbuild({ config, plugins, appContext });
 
   const buildCommand = program.command('build');
   const devCommand = program.command('dev');
@@ -44,8 +53,25 @@ export async function initCommand() {
   buildCommand.action(async () => {
     process.env.NODE_ENV = 'production';
 
-    rsbuild.build();
+    await rsbuild.build();
   });
+
+  devCommand.action(async () => {
+    process.env.NODE_ENV = 'development';
+
+    const app = express();
+    await runMaybeAsync(hooksRunner.onBeforeStartDevServer, { app });
+
+    const rsbuildServer = await rsbuild.createDevServer();
+    app.use(rsbuildServer.middlewares);
+    const httpServer = app.listen(rsbuildServer.port, async () => {
+      await rsbuildServer.afterListen();
+    });
+
+    await runMaybeAsync(hooksRunner.onAfterStartDevServer, { app, httpServer, rsbuildServer });
+  });
+
+  await hooksRunner.commands({ program });
 
   program.parse(process.argv);
 }

@@ -111,7 +111,15 @@ export interface Script<ScriptKey extends string> {
   scriptKey: ScriptKey;
   scriptUpdateInterval?: number;
   timeout?: number;
+  /**
+   * 是否注入 argument
+   */
+  injectArgument?: boolean;
+  /**
+   * 自定义 argument，优先级高于 `injectArgument`
+   */
   argument?: string;
+
   engine?: 'auto' | 'jsc' | 'webview';
   pattern?: string;
   /**
@@ -216,16 +224,6 @@ export interface ModkitPlugin<ScriptInput extends Record<string, string> = any> 
    * 插件名称
    */
   name: string;
-
-  /**
-   * 平台插件配置
-   */
-  platformConfig?: {
-    /**
-     * 拓展名
-     */
-    extension: string;
-  };
 
   setup: (api: PluginAPI) => PluginHooks<ScriptInput>;
 }

@@ -9,15 +9,17 @@ export const initAppContext = ({
   appDirectory: string;
   distDir?: string;
 }) => {
+  const nodeModulesDirectory = path.resolve(appDirectory, 'node_modules');
   return {
     appDirectory,
     distDirectory: path.resolve(appDirectory, distDir),
-    nodeModulesDirectory: path.resolve(appDirectory, 'node_modules'),
+    nodeModulesDirectory,
+    cacheDirectory: path.resolve(nodeModulesDirectory, '.modkit'),
     ip: address.ip(),
   };
 };
 
-type IAppContext = ReturnType<typeof initAppContext>;
+export type IAppContext = ReturnType<typeof initAppContext>;
 
 export const AppContext = createContext<IAppContext>({} as IAppContext);
 

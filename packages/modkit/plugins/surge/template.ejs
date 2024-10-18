@@ -1,0 +1,68 @@
+#!name = <%= metadata.name %>
+#!desc = <%= metadata.description %><% if (metadata.system?.length) { %>
+#!requirement = <%= metadata.system.map(item => `SYSTEM = '${item}'`).join(' || ') %><% } %><% if (arguments) { %>
+#!arguments = <%= argumentsText %>
+#!arguments-desc = <%= argumentsDescription %><% } %><% Object.entries(metadata.extra).forEach(([key, value]) => { %>
+#!<%= key %> = <%= value %>
+<% }) %>
+
+<% if (content.general) { %>
+[General]
+<% Object.entries(content.general).forEach(([key, value]) => { %>
+<%= key %> = <%= value %>
+<% }); %>
+<% } %>
+
+<% if (content.host) { %>
+[Host]
+<% Object.entries(content.host).forEach(([key, value]) => { %>
+<%= key %> = <%= value %>
+<% }); %>
+<% } %>
+
+<% if (content.rule) { %>
+[Rule]
+<% content.rule.forEach((rule) => { %>
+<%= rule %>
+<% }); %>
+<% } %>
+
+<% if (content.urlRewrite) { %>
+[URL Rewrite]
+<% content.urlRewrite.forEach((rewrite) => { %>
+<%= rewrite %>
+<% }); %>
+<% } %>
+
+<% if (content.headerRewrite) { %>
+[Header Rewrite]
+<% content.headerRewrite.forEach((rewrite) => { %>
+<%= rewrite %>
+<% }); %>
+<% } %>
+
+<% if (content.bodyRewrite) { %>
+[Body Rewrite]
+<% content.bodyRewrite.forEach((rewrite) => { %>
+<%= rewrite %>
+<% }); %>
+<% } %>
+
+<% if (content.mapLocal) { %>
+[Map Local]
+<% content.mapLocal.forEach((map) => { %>
+<%= map %>
+<% }); %>
+<% } %>
+
+<% if (content.script) { %>
+[Script]
+<% content.script.forEach((script) => { %>
+<%= script.name %> = type=<%= script.type %><% if (script.pattern) { %>, pattern=<%= script.pattern %><% } %>, requires-body=<%= script.requiresBody ? 'true' : 'false' %>, binary-body-mode=<%= script.binaryBodyMode ? 'true' : 'false' %>, script-path=<%= assetPrefix %>/<%= compilation.getStats().toJson({ assets: true }).entrypoints?.[script.scriptKey]?.assets?.[0].name %> <% if (script.injectArgument || script.argument) { %>, argument=<%= script.argument || scriptParams %><% } %>
+<% }); %>
+<% } %>
+
+<% if (content.mitm && content.mitm.hostname) { %>
+[Mitm]
+hostname = %APPEND% <%= content.mitm.hostname %>
+<% } %>
