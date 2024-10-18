@@ -1,5 +1,12 @@
 # @iringo/sgmoudle-tools
 
+## 1.2.2
+
+### Patch Changes
+
+- Updated dependencies [0ef69e3]
+  - @iringo/utils@1.0.1
+
 ## 1.2.1
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @iringo/doc-ui
 
+## 1.2.2
+
+### Patch Changes
+
+- 0ef69e3: WIP: 完成部分插件功能
+
 ## 1.2.1
 
 ### Patch Changes
