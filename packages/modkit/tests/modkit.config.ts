@@ -1,4 +1,6 @@
 import { defineConfig } from '@iringo/modkit';
+import { pluginBoxJs } from '@iringo/modkit/plugins/boxjs';
+import { pluginDts } from '@iringo/modkit/plugins/dts';
 import { pluginSurge } from '@iringo/modkit/plugins/surge';
 
 export default defineConfig<{
@@ -152,7 +154,7 @@ export default defineConfig<{
       response: './src/index.ts',
     },
   },
-  plugins: [pluginSurge()],
+  plugins: [pluginSurge(), pluginDts(), pluginBoxJs()],
   output: {
     assetPrefix: 'https://github.com/NSRingo/WeatherKit/releases/download/v1.8.12',
   },

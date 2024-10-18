@@ -1,5 +1,5 @@
 import type { Server } from 'node:http';
-import type { commander } from '@iringo/utils';
+import { type commander, logger } from '@iringo/utils';
 import {
   type AsyncManager,
   type AsyncWorker,
@@ -24,7 +24,7 @@ export interface ConfigurePlatformReturn {
   /**
    * 拓展名
    */
-  extension: string;
+  extension: `.${string}`;
   /**
    * 渲染模板
    */
@@ -76,6 +76,7 @@ const hooks = {
 export const pluginAPI = {
   setAppContext,
   useAppContext,
+  logger,
 };
 
 export type PluginAPI = typeof pluginAPI;

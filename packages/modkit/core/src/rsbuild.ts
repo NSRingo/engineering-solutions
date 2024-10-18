@@ -10,6 +10,20 @@ import {
   runMaybeAsync,
 } from '@iringo/modkit-shared';
 import { type EnvironmentConfig, type RsbuildConfig, createRsbuild } from '@rsbuild/core';
+import type { Compilation } from '@rspack/core';
+
+const getScriptPath = (compilation: Compilation, scriptKey: string, assetPrefix = '') => {
+  const isDev = process.env.NODE_ENV === 'development';
+  const filePath = compilation.getStats().toJson({ assets: true }).entrypoints?.[scriptKey]?.assets?.[0].name;
+  let result = filePath;
+  if (assetPrefix) {
+    result = `${assetPrefix}/${filePath}`;
+  }
+  if (isDev) {
+    result += `?t=${Date.now()}`;
+  }
+  return result;
+};
 
 const generateEnvironment = async ({
   plugin,
@@ -49,7 +63,7 @@ const generateEnvironment = async ({
   const source = (await runMaybeAsync(pluginCtx.modifySource, { source: sourceBackup })) ?? sourceBackup;
 
   // 设置输出模块名
-  const moduleFilename = `${source?.moduleName}.${platformConfig.extension}`;
+  const moduleFilename = `${source?.moduleName}${platformConfig.extension}`;
   rsbuildConfig.output ??= {};
   rsbuildConfig.output.filename ??= {};
   rsbuildConfig.output.filename.html = moduleFilename;
@@ -105,6 +119,11 @@ export const useRsbuild = async ({
       },
       dev: {
         assetPrefix: `http://${address.ip()}:${config.dev?.port ?? 3000}`,
+      },
+      html: {
+        templateParameters: {
+          getScriptPath,
+        },
       },
       performance: {
         chunkSplit: {

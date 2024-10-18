@@ -1,5 +1,5 @@
 {
-  "name": "@iringo/modkit-plugin-dts",
+  "name": "@iringo/modkit-plugin-boxjs",
   "version": "0.0.0",
   "description": "",
   "main": "dist/index.js",
@@ -11,8 +11,7 @@
   },
   "files": ["dist", "CHANGELOG.md"],
   "dependencies": {
-    "@iringo/modkit-shared": "workspace:^",
-    "ts-morph": "^23.0.0"
+    "@iringo/modkit-shared": "workspace:^"
   },
   "devDependencies": {
     "@iringo/modkit-config": "workspace:^",
@@ -23,6 +22,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/NSRingo/engineering-solutions",
-    "directory": "packages/modkit/apps/dts"
+    "directory": "packages/modkit/apps/boxjs"
   }
 }

@@ -16,5 +16,6 @@
     "quickfix.biome": "explicit",
     "source.organizeImports.biome": "explicit"
   },
-  "conventionalCommits.scopes": ["arguments-builder", "sgmoudle-tools"]
+  "conventionalCommits.scopes": ["arguments-builder", "sgmoudle-tools"],
+  "cSpell.words": ["iringo", "modkit", "rsbuild"]
 }
