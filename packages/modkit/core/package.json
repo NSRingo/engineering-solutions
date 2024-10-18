@@ -1,0 +1,48 @@
+{
+  "name": "@iringo/modkit",
+  "version": "0.0.0",
+  "description": "",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./plugins/*": {
+      "types": "./dist/exports-plugins/*.d.ts",
+      "import": "./dist/exports-plugins/*.mjs",
+      "require": "./dist/exports-plugins/*.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "modkit": "./bin/modkit.js"
+  },
+  "scripts": {
+    "dev": "modern build -w",
+    "build": "modern build"
+  },
+  "files": ["dist", "bin", "CHANGELOG.md"],
+  "dependencies": {
+    "@iringo/modkit-plugin-dts": "workspace:^",
+    "@iringo/modkit-plugin-loon": "workspace:^",
+    "@iringo/modkit-plugin-surge": "workspace:^",
+    "@iringo/modkit-shared": "workspace:^",
+    "@rsbuild/core": "^1.0.15",
+    "express": "^5.0.1",
+    "minimist": "^1.2.8"
+  },
+  "devDependencies": {
+    "@iringo/modkit-config": "workspace:^",
+    "@modern-js/module-tools": "^2.60.2",
+    "@types/express": "^5.0.0",
+    "@types/minimist": "^1.2.5",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.6.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NSRingo/engineering-solutions",
+    "directory": "packages/modkit/core"
+  }
+}
