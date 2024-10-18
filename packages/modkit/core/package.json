@@ -1,6 +1,6 @@
 {
   "name": "@iringo/modkit",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "",
   "exports": {
     ".": {
@@ -22,7 +22,11 @@
     "dev": "modern build -w",
     "build": "modern build"
   },
-  "files": ["dist", "bin", "CHANGELOG.md"],
+  "files": [
+    "dist",
+    "bin",
+    "CHANGELOG.md"
+  ],
   "dependencies": {
     "@iringo/modkit-plugin-boxjs": "workspace:^",
     "@iringo/modkit-plugin-dts": "workspace:^",

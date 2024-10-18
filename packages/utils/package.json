@@ -1,6 +1,6 @@
 {
   "name": "@iringo/utils",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "dist/lib/index.js",
   "module": "dist/es/index.js",
@@ -9,7 +9,10 @@
     "dev": "modern build -w",
     "build": "modern build"
   },
-  "files": ["dist", "CHANGELOG.md"],
+  "files": [
+    "dist",
+    "CHANGELOG.md"
+  ],
   "dependencies": {
     "address": "^2.0.3",
     "commander": "^12.1.0",

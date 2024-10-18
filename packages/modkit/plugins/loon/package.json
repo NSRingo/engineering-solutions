@@ -1,6 +1,6 @@
 {
   "name": "@iringo/modkit-plugin-loon",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -9,7 +9,10 @@
     "dev": "modern build -w",
     "build": "modern build"
   },
-  "files": ["dist", "CHANGELOG.md"],
+  "files": [
+    "dist",
+    "CHANGELOG.md"
+  ],
   "dependencies": {
     "@iringo/modkit-shared": "workspace:^"
   },
