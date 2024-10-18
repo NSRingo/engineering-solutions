@@ -1,6 +1,7 @@
 import type { Server } from 'node:http';
 import type { commander } from '@iringo/utils';
 import {
+  type AsyncManager,
   type AsyncWorker,
   type Worker,
   createAsyncManager,
@@ -15,11 +16,11 @@ import { setAppContext, useAppContext } from './context';
 
 type RsbuildDevServer = Awaited<ReturnType<RsbuildInstance['createDevServer']>>;
 
-interface ModifySourceParams<T extends Record<string, string>> {
+export interface ModifySourceParams<T extends Record<string, string>> {
   source: ModkitConfig<T>['source'];
 }
 
-interface ConfigurePlatformReturn {
+export interface ConfigurePlatformReturn {
   /**
    * 拓展名
    */
@@ -30,11 +31,11 @@ interface ConfigurePlatformReturn {
   template: string;
 }
 
-interface OnBeforeStartDevServer {
+export interface OnBeforeStartDevServer {
   app: Express;
 }
 
-interface OnAfterStartDevServer {
+export interface OnAfterStartDevServer {
   app: Express;
   httpServer: Server;
   rsbuildServer: RsbuildDevServer;
@@ -82,6 +83,8 @@ export type PluginAPI = typeof pluginAPI;
 export const manager = createAsyncManager(hooks, pluginAPI);
 
 export const { createPlugin, registerHook } = manager;
+
+export type PluginType = ReturnType<AsyncManager<typeof hooks, PluginAPI>['createPlugin']>;
 
 export const getPluginContext = async (plugin: ReturnType<typeof createPlugin>) => {
   const pluginCtx = await runMaybeAsync(plugin.setup, pluginAPI as any);

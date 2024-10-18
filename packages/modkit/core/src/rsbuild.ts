@@ -3,19 +3,19 @@ import path from 'node:path';
 import {
   type IAppContext,
   type ModkitConfig,
+  type PluginType,
   address,
   getPluginContext,
   lodash,
   runMaybeAsync,
 } from '@iringo/modkit-shared';
 import { type EnvironmentConfig, type RsbuildConfig, createRsbuild } from '@rsbuild/core';
-import type { Plugins } from './load-plugins';
 
 const generateEnvironment = async ({
   plugin,
   config,
   appContext,
-}: { plugin: Plugins[number]; config: ModkitConfig<Record<string, string>>; appContext: IAppContext }): Promise<{
+}: { plugin: PluginType; config: ModkitConfig<Record<string, string>>; appContext: IAppContext }): Promise<{
   name: string;
   rsbuildConfig: RsbuildConfig;
 } | null> => {
@@ -73,7 +73,7 @@ export const useRsbuild = async ({
   appContext,
 }: {
   config: ModkitConfig<Record<string, string>>;
-  plugins: Plugins;
+  plugins: PluginType[];
   appContext: IAppContext;
 }) => {
   const environments: RsbuildConfig['environments'] = {};

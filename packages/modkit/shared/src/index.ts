@@ -4,4 +4,4 @@ export * from './config';
 export * from './plugin';
 export * from './init-app-dir';
 
-export type { AsyncPlugin } from '@modern-js/plugin';
+export type { AsyncManager } from '@modern-js/plugin';

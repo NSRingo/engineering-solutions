@@ -4,12 +4,12 @@ import {
   initAppContext,
   initAppDir,
   loadConfig,
+  loadPlugins,
   manager,
   runMaybeAsync,
 } from '@iringo/modkit-shared';
 import express from 'express';
 import minimist from 'minimist';
-import { loadPlugins } from './load-plugins';
 import { useRsbuild } from './rsbuild';
 
 export async function initCommand() {
