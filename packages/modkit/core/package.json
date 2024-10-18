@@ -24,18 +24,20 @@
   },
   "files": ["dist", "bin", "CHANGELOG.md"],
   "dependencies": {
+    "@iringo/modkit-plugin-boxjs": "workspace:^",
     "@iringo/modkit-plugin-dts": "workspace:^",
     "@iringo/modkit-plugin-loon": "workspace:^",
     "@iringo/modkit-plugin-surge": "workspace:^",
     "@iringo/modkit-shared": "workspace:^",
     "@rsbuild/core": "^1.0.15",
-    "express": "^5.0.1",
+    "express": "^4.21.1",
     "minimist": "^1.2.8"
   },
   "devDependencies": {
     "@iringo/modkit-config": "workspace:^",
     "@modern-js/module-tools": "^2.60.2",
-    "@types/express": "^5.0.0",
+    "@rspack/core": "^1.0.13",
+    "@types/express": "^4.17.21",
     "@types/minimist": "^1.2.5",
     "@types/node": "^20.0.0",
     "typescript": "^5.6.2"

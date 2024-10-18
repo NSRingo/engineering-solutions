@@ -58,7 +58,7 @@
 <% if (content.script) { %>
 [Script]
 <% content.script.forEach((script) => { %>
-<%= script.name %> = type=<%= script.type %><% if (script.pattern) { %>, pattern=<%= script.pattern %><% } %>, requires-body=<%= script.requiresBody ? 'true' : 'false' %>, binary-body-mode=<%= script.binaryBodyMode ? 'true' : 'false' %>, script-path=<%= assetPrefix %>/<%= compilation.getStats().toJson({ assets: true }).entrypoints?.[script.scriptKey]?.assets?.[0].name %> <% if (script.injectArgument || script.argument) { %>, argument=<%= script.argument || scriptParams %><% } %>
+<%= script.name %> = type=<%= script.type %><% if (script.pattern) { %>, pattern=<%= script.pattern %><% } %>, requires-body=<%= script.requiresBody ? 'true' : 'false' %>, binary-body-mode=<%= script.binaryBodyMode ? 'true' : 'false' %>, script-path=<%= getScriptPath(compilation, script.scriptKey, assetPrefix) %><% if (script.injectArgument || script.argument) { %>, argument=<%= script.argument || scriptParams %><% } %>
 <% }); %>
 <% } %>
 

@@ -9,9 +9,13 @@
     "dev": "modern build -w",
     "build": "modern build"
   },
-  "files": ["dist", "CHANGELOG.md"],
+  "files": [
+    "dist",
+    "CHANGELOG.md"
+  ],
   "dependencies": {
-    "@iringo/modkit-shared": "workspace:^"
+    "@iringo/modkit-shared": "workspace:^",
+    "ts-morph": "^23.0.0"
   },
   "devDependencies": {
     "@iringo/modkit-config": "workspace:^",

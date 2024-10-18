@@ -1,4 +1,5 @@
 import type { ModkitPlugin } from '@iringo/modkit-shared';
+import qrcode from 'qrcode-terminal';
 
 function getDefaultValue(defaultValue: any): any {
   switch (typeof defaultValue) {
@@ -21,11 +22,13 @@ export const pluginSurge = <T extends Record<string, string>>(): ModkitPlugin<T>
   return {
     name: 'surge',
 
-    setup() {
+    setup(api) {
+      const appContext = api.useAppContext();
+      let moduleName = '';
       return {
         configurePlatform() {
           return {
-            extension: 'sgmodule',
+            extension: '.sgmodule',
             template: process.env.TEMP || '',
           };
         },
@@ -43,6 +46,7 @@ export const pluginSurge = <T extends Record<string, string>>(): ModkitPlugin<T>
             }
             return true;
           });
+          moduleName = source.moduleName || '';
           return source;
         },
         processArguments({ args }) {
@@ -79,6 +83,12 @@ export const pluginSurge = <T extends Record<string, string>>(): ModkitPlugin<T>
             argumentsDescription,
             scriptParams,
           };
+        },
+
+        onAfterStartDevServer({ rsbuildServer }) {
+          const moduleRemoteUrl = `http://${appContext.ip}:${rsbuildServer.port}/${moduleName}.sgmodule`;
+          qrcode.generate(`surge:///install-module?url=${encodeURIComponent(moduleRemoteUrl)}`, { small: true });
+          api.logger.ready('Scan the QR code to install the module, or manually import:', moduleRemoteUrl);
         },
       };
     },
