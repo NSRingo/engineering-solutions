@@ -128,6 +128,8 @@ export const useRsbuild = async ({
       },
       dev: {
         assetPrefix: `http://${address.ip()}:${config.dev?.port ?? 3000}`,
+        hmr: false,
+        liveReload: false,
       },
       performance: {
         chunkSplit: {
