@@ -24,6 +24,14 @@ export type LoonType = 'input' | 'select' | 'switch';
 
 export type ArgumentType = 'string' | 'number' | 'boolean' | 'array';
 
+export interface PluginArgumentType {
+  default: ArgumentType;
+  /**
+   * 如果插件支持更多的参数类型，可自定义传入
+   */
+  [custom: string]: any;
+}
+
 export interface ArgumentItem {
   /**
    * 参数 key
@@ -32,15 +40,7 @@ export interface ArgumentItem {
   /**
    * 参数类型
    */
-  type:
-    | ArgumentType
-    | {
-        default: ArgumentType;
-        /**
-         * 如果插件支持更多的参数类型，可自定义传入
-         */
-        [custom: string]: any;
-      };
+  type: ArgumentType | PluginArgumentType;
   /**
    * 参数描述
    */
@@ -78,23 +78,14 @@ export interface ModuleMetadata {
    */
   description?: string;
   /**
-   * 支持的系统
-   */
-  system?: ('iOS' | 'iPadOS' | 'tvOS' | 'macOS' | 'watchOS')[];
-  /**
-   * 最低支持的系统版本
-   */
-  systemVersion?: number;
-  /**
-   * 是否生成 arguments 及 arguments-desc
-   * @default true
-   */
-  arguments?: boolean;
-  /**
    * 版本号
    * @default 默认读取 package.json 中的 version
    */
   version?: string;
+  /**
+   * 支持的系统
+   */
+  system?: ('iOS' | 'iPadOS' | 'tvOS' | 'macOS' | 'watchOS')[];
   /**
    * 额外的配置
    */

@@ -14,7 +14,7 @@ export default defineConfig<{
         defaultValue: true,
         type: {
           default: 'boolean',
-          exclude: ['surge', 'loon'],
+          surge: 'exclude',
         },
         description: '是否启用此APP修改',
       },

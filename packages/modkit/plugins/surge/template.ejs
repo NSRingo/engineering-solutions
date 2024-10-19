@@ -1,65 +1,24 @@
-#!name = <%= metadata.name %>
-#!desc = <%= metadata.description %><% if (metadata.system?.length) { %>
-#!requirement = <%= metadata.system.map(item => `SYSTEM = '${item}'`).join(' || ') %><% } %><% if (arguments) { %>
-#!arguments = <%= argumentsText %>
-#!arguments-desc = <%= argumentsDescription %><% } %><% Object.entries(metadata.extra).forEach(([key, value]) => { %>
-#!<%= key %> = <%= value %>
-<% }) %>
+<%= surgeTemplate.renderMetadata(argumentsText, argumentsDescription) %>
+
 
 <% if (content.general) { %>
 [General]
-<% Object.entries(content.general).forEach(([key, value]) => { %>
-<%= key %> = <%= value %>
-<% }); %>
+<%= surgeTemplate.renderGeneral() %>
 <% } %>
 
 <% if (content.host) { %>
 [Host]
-<% Object.entries(content.host).forEach(([key, value]) => { %>
-<%= key %> = <%= value %>
-<% }); %>
+<%= surgeTemplate.renderHost() %>
 <% } %>
 
 <% if (content.rule) { %>
-[Rule]
-<% content.rule.forEach((rule) => { %>
-<%= rule %>
-<% }); %>
-<% } %>
-
-<% if (content.urlRewrite) { %>
-[URL Rewrite]
-<% content.urlRewrite.forEach((rewrite) => { %>
-<%= rewrite %>
-<% }); %>
-<% } %>
-
-<% if (content.headerRewrite) { %>
-[Header Rewrite]
-<% content.headerRewrite.forEach((rewrite) => { %>
-<%= rewrite %>
-<% }); %>
-<% } %>
-
-<% if (content.bodyRewrite) { %>
-[Body Rewrite]
-<% content.bodyRewrite.forEach((rewrite) => { %>
-<%= rewrite %>
-<% }); %>
-<% } %>
-
-<% if (content.mapLocal) { %>
-[Map Local]
-<% content.mapLocal.forEach((map) => { %>
-<%= map %>
-<% }); %>
+[Host]
+<%= surgeTemplate.renderRule() %>
 <% } %>
 
 <% if (content.script) { %>
 [Script]
-<% content.script.forEach((script) => { %>
-<%= script.name %> = type=<%= script.type %><% if (script.pattern) { %>, pattern=<%= script.pattern %><% } %>, requires-body=<%= script.requiresBody ? 'true' : 'false' %>, binary-body-mode=<%= script.binaryBodyMode ? 'true' : 'false' %>, script-path=<%= getScriptPath(compilation, script.scriptKey, assetPrefix) %><% if (script.injectArgument || script.argument) { %>, argument=<%= script.argument || scriptParams %><% } %>
-<% }); %>
+<%= surgeTemplate.renderScript(scriptParams) %>
 <% } %>
 
 <% if (content.mitm && content.mitm.hostname) { %>

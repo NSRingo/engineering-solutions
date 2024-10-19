@@ -10,29 +10,30 @@ export const pluginSurge = <T extends Record<string, string>>(): ModkitPlugin<T>
       const appContext = api.useAppContext();
       let moduleName = '';
       return {
-        configurePlatform({ source }) {
-          const surgeTemplate = new SurgeTemplate(source);
+        configurePlatform() {
           return {
             extension: '.sgmodule',
-            template: surgeTemplate.renderTemplate(),
+            template: process.env.TEMP || '',
           };
         },
         modifySource({ source }) {
           source ??= {};
-          source.metadata ??= {};
-          source.metadata.arguments ??= true;
           source.arguments = source.arguments?.filter((item) => {
-            if (
-              typeof item.type === 'object' &&
-              Array.isArray(item.type.exclude) &&
-              item.type.exclude.includes('surge')
-            ) {
+            if (typeof item.type === 'object' && item.type.surge === 'exclude') {
               return false;
             }
             return true;
           });
           moduleName = source.moduleName || '';
           return source;
+        },
+        templateParameters({ source, getScriptPath }) {
+          const surgeTemplate = new SurgeTemplate(source, getScriptPath);
+          const argumentsResult = surgeTemplate.handleArguments();
+          return {
+            ...argumentsResult,
+            surgeTemplate,
+          };
         },
         onAfterStartDevServer({ rsbuildServer }) {
           const moduleRemoteUrl = `http://${appContext.ip}:${rsbuildServer.port}/${moduleName}.sgmodule`;

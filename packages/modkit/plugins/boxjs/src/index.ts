@@ -1,17 +1,16 @@
 import type { ModkitPlugin } from '@iringo/modkit-shared';
 
-enum BoxJsType {
-  Text = 'text',
-  Slider = 'slider',
-  Boolean = 'boolean',
-  Textarea = 'textarea',
-  Radios = 'radios',
-  Checkboxes = 'checkboxes',
-  ColorPicker = 'colorpicker',
-  Number = 'number',
-  Selects = 'selects',
-  ModalSelects = 'modalSelects',
-}
+export type BoxJsType =
+  | 'text'
+  | 'slider'
+  | 'boolean'
+  | 'textarea'
+  | 'radios'
+  | 'checkboxes'
+  | 'colorpicker'
+  | 'number'
+  | 'selects'
+  | 'modalSelects';
 
 export interface BoxJsPluginOptions {
   scope?: string;
@@ -27,19 +26,13 @@ export const pluginBoxJs = <T extends Record<string, string>>({
         configurePlatform() {
           return {
             extension: '.json',
-            template: '<%= JSON.stringify(settings) %>',
+            template: '<%= JSON.stringify(settings, null, 4) %>',
           };
         },
         modifySource({ source }) {
           source ??= {};
-          source.metadata ??= {};
-          source.metadata.arguments ??= true;
           source.arguments = source.arguments?.filter((item) => {
-            if (
-              typeof item.type === 'object' &&
-              Array.isArray(item.type.exclude) &&
-              item.type.exclude.includes('boxjs')
-            ) {
+            if (typeof item.type === 'object' && item.type.boxJs === 'exclude') {
               return false;
             }
             return true;
@@ -49,21 +42,21 @@ export const pluginBoxJs = <T extends Record<string, string>>({
         templateParameters({ source }) {
           const settings =
             source?.arguments?.map((arg) => {
-              let type = BoxJsType.Text;
-              if (typeof arg.type === 'object' && arg.type.boxJsType) {
-                type = arg.type.boxJsType;
+              let type: BoxJsType = 'text';
+              if (typeof arg.type === 'object' && arg.type.boxJs) {
+                type = arg.type.boxJs as BoxJsType;
               } else {
                 if (arg.type === 'boolean') {
-                  type = BoxJsType.Boolean;
+                  type = 'boolean';
                 }
                 if (arg.type === 'number') {
-                  type = BoxJsType.Number;
+                  type = 'number';
                 }
                 if (arg.options) {
                   if (arg.type === 'array') {
-                    type = BoxJsType.Checkboxes;
+                    type = 'checkboxes';
                   } else {
-                    type = BoxJsType.Selects;
+                    type = 'selects';
                   }
                 }
               }

@@ -14,4 +14,8 @@ declare module '@iringo/modkit-shared' {
     bodyRewrite?: string[];
     mapLocal?: string[];
   }
+
+  interface PluginArgumentType {
+    surge?: import('@iringo/modkit-shared').ArgumentType | 'exclude';
+  }
 }

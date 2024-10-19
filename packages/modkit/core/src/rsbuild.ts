@@ -12,17 +12,20 @@ import {
 import { type EnvironmentConfig, type RsbuildConfig, createRsbuild } from '@rsbuild/core';
 import type { Compilation } from '@rspack/core';
 
-const getScriptPath = (compilation: Compilation, scriptKey: string, assetPrefix = '') => {
+const getScriptPathFactory = (compilation: Compilation, assetPrefix = '') => {
   const isDev = process.env.NODE_ENV === 'development';
-  const filePath = compilation.getStats().toJson({ assets: true }).entrypoints?.[scriptKey]?.assets?.[0].name;
-  let result = filePath;
-  if (assetPrefix) {
-    result = `${assetPrefix}/${filePath}`;
-  }
-  if (isDev) {
-    result += `?t=${Date.now()}`;
-  }
-  return result;
+  const entrypoints = compilation.getStats().toJson({ assets: true }).entrypoints;
+  return (scriptKey: string) => {
+    const filePath = entrypoints?.[scriptKey]?.assets?.[0].name;
+    let result = filePath;
+    if (assetPrefix) {
+      result = `${assetPrefix}/${filePath}`;
+    }
+    if (isDev) {
+      result += `?t=${Date.now()}`;
+    }
+    return result ?? '';
+  };
 };
 
 const generateEnvironment = async ({
@@ -37,9 +40,7 @@ const generateEnvironment = async ({
   if (!fs.existsSync(cacheDirectory)) {
     fs.mkdirSync(cacheDirectory);
   }
-  /**
-   * 不能用完整的 `RsbuildConfig`，类型存在递归，下方类型推断会造成内存溢出
-   */
+
   const rsbuildConfig: EnvironmentConfig = {
     html: {
       inject: false,
@@ -47,14 +48,8 @@ const generateEnvironment = async ({
   };
 
   const pluginCtx = await getPluginContext(plugin);
-  if (!pluginCtx.configurePlatform) {
-    return null;
-  }
-  // 处理 source
-  const sourceBackup = lodash.cloneDeep(config.source);
-  const source = (await runMaybeAsync(pluginCtx.modifySource, { source: sourceBackup })) ?? sourceBackup;
 
-  const platformConfig = await runMaybeAsync(pluginCtx.configurePlatform, { source });
+  const platformConfig = pluginCtx.configurePlatform?.();
   if (!platformConfig) {
     return null;
   }
@@ -65,6 +60,10 @@ const generateEnvironment = async ({
   rsbuildConfig.html ??= {};
   rsbuildConfig.html.template = templatePath;
 
+  // 处理 source
+  const sourceBackup = lodash.cloneDeep(config.source);
+  const source = (await runMaybeAsync(pluginCtx.modifySource, { source: sourceBackup })) ?? sourceBackup;
+
   // 设置输出模块名
   const moduleFilename = `${source?.moduleName}${platformConfig.extension}`;
   rsbuildConfig.output ??= {};
@@ -72,10 +71,17 @@ const generateEnvironment = async ({
   rsbuildConfig.output.filename.html = moduleFilename;
 
   // 设置模板参数
-  const params = await runMaybeAsync(pluginCtx.templateParameters, { source });
-  rsbuildConfig.html.templateParameters = {
-    ...source,
-    ...params,
+  rsbuildConfig.html.templateParameters = (defaultParameters) => {
+    const getScriptPath = getScriptPathFactory(
+      defaultParameters.compilation as Compilation,
+      defaultParameters.assetPrefix as string,
+    );
+    const params = pluginCtx.templateParameters?.({ source, getScriptPath });
+    return {
+      ...source,
+      ...params,
+      getScriptPath,
+    };
   };
 
   return {
@@ -122,11 +128,6 @@ export const useRsbuild = async ({
       },
       dev: {
         assetPrefix: `http://${address.ip()}:${config.dev?.port ?? 3000}`,
-      },
-      html: {
-        templateParameters: {
-          getScriptPath,
-        },
       },
       performance: {
         chunkSplit: {

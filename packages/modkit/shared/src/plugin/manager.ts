@@ -1,6 +1,13 @@
 import type { Server } from 'node:http';
 import { type commander, logger } from '@iringo/utils';
-import { type AsyncManager, type AsyncWorker, createAsyncManager, createAsyncWorkflow } from '@modern-js/plugin';
+import {
+  type AsyncManager,
+  type AsyncWorker,
+  type Worker,
+  createAsyncManager,
+  createAsyncWorkflow,
+  createWorkflow,
+} from '@modern-js/plugin';
 import type { RsbuildInstance } from '@rsbuild/core';
 import type { Express } from 'express';
 import type { ModkitConfig } from '../config';
@@ -13,12 +20,9 @@ export interface ModifySourceParams<T extends Record<string, string>> {
   source: ModkitConfig<T>['source'];
 }
 
-export interface ConfigurePlatformParams<T extends Record<string, string>> {
-  source: ModkitConfig<T>['source'];
-}
-
 export interface TemplateParametersParams<T extends Record<string, string>> {
   source: ModkitConfig<T>['source'];
+  getScriptPath: (scriptKey: string) => string;
 }
 
 export interface ConfigurePlatformReturn {
@@ -44,17 +48,17 @@ export interface OnAfterStartDevServer {
 
 export interface PluginHooks<T extends Record<string, string>> {
   /**
+   * 配置平台信息
+   */
+  configurePlatform?: Worker<void, ConfigurePlatformReturn>;
+  /**
    * 针对当前平台修改配置
    */
   modifySource?: AsyncWorker<ModifySourceParams<T>, ModkitConfig<T>['source']>;
   /**
-   * 配置平台信息
-   */
-  configurePlatform?: AsyncWorker<ConfigurePlatformParams<T>, ConfigurePlatformReturn>;
-  /**
    * 注入模板参数
    */
-  templateParameters?: AsyncWorker<TemplateParametersParams<T>, Record<string, any>>;
+  templateParameters?: Worker<TemplateParametersParams<T>, Record<string, any>>;
   /**
    * 启动开发服务器前
    */
@@ -70,12 +74,12 @@ export interface PluginHooks<T extends Record<string, string>> {
 }
 
 const hooks = {
+  configurePlatform: createWorkflow<void, ConfigurePlatformReturn>(),
   modifySource: createAsyncWorkflow<
     ModifySourceParams<Record<string, string>>,
     ModkitConfig<Record<string, string>>['source']
   >(),
-  configurePlatform: createAsyncWorkflow<ConfigurePlatformParams<Record<string, string>>, ConfigurePlatformReturn>(),
-  templateParameters: createAsyncWorkflow<TemplateParametersParams<Record<string, string>>, Record<string, any>>(),
+  templateParameters: createWorkflow<TemplateParametersParams<Record<string, string>>, Record<string, any>>(),
   onBeforeStartDevServer: createAsyncWorkflow<OnBeforeStartDevServer, void>(),
   onAfterStartDevServer: createAsyncWorkflow<OnAfterStartDevServer, void>(),
   commands: createAsyncWorkflow<{ program: commander.Command }, void>(),

@@ -1,7 +1,10 @@
-import type { ModkitConfig, ModuleContent } from '@iringo/modkit-shared';
+import type { ModkitConfig } from '@iringo/modkit-shared';
 
 export class SurgeTemplate {
-  constructor(private readonly source: ModkitConfig<Record<string, string>>['source']) {}
+  constructor(
+    private readonly source: ModkitConfig<Record<string, string>>['source'],
+    private readonly getScriptPath: (scriptKey: string) => string,
+  ) {}
 
   get metadata() {
     return this.source?.metadata || {};
@@ -11,38 +14,16 @@ export class SurgeTemplate {
     return this.source?.content || {};
   }
 
-  private SECTION_TITLE_MAP: Record<keyof ModuleContent<string>, string> = {
-    general: 'General',
-    host: 'Host',
-    proxy: 'Proxy',
-    rule: 'Rule',
-    script: 'Script',
-    urlRewrite: 'URL Rewrite',
-    headerRewrite: 'Header Rewrite',
-    bodyRewrite: 'Body Rewrite',
-    mapLocal: 'Map Local',
-    mitm: 'MITM',
-  };
-
-  renderTemplate() {
-    const { argumentsText, argumentsDescription, scriptParams } = this.handleArguments();
-    let result = '';
-    result += this.renderMetadata(argumentsText, argumentsDescription);
-    result += '\n\n';
-    result += this.renderContentWithoutScript();
-    result += '\n\n';
-    result += this.renderScript(scriptParams);
-    return result;
-  }
-
-  private renderMetadata(argumentsText: string, argumentsDescription: string) {
+  renderMetadata(argumentsText: string, argumentsDescription: string) {
     const result: Record<string, string | undefined> = {};
     result.name = this.metadata.name;
     result.desc = this.metadata.description;
     result.requirement = this.metadata.system?.map((item) => `SYSTEM = ${item}`).join(' || ');
     result.version = this.metadata.version;
-    if (this.metadata.arguments) {
+    if (argumentsText) {
       result.arguments = argumentsText;
+    }
+    if (argumentsDescription) {
       result['arguments-desc'] = argumentsDescription;
     }
     Object.entries(this.metadata.extra || {}).forEach(([key, value]) => {
@@ -54,80 +35,66 @@ export class SurgeTemplate {
       .join('\n');
   }
 
-  private renderContentWithoutScript() {
-    let result = '';
-    ['general', 'host'].forEach((key) => {
-      if (this.content[key]) {
-        result += `[${this.SECTION_TITLE_MAP[key]}]\n`;
-        Object.entries(this.content[key]).forEach(([k, v]) => {
-          result += `${k} = ${v}\n`;
-        });
-        result += '\n';
-      }
-    });
-    (['rule', 'urlRewrite', 'headerRewrite', 'bodyRewrite', 'mapLocal'] as const).forEach((key) => {
-      if (this.content[key]) {
-        result += `[${this.SECTION_TITLE_MAP[key]}]\n`;
-        this.content[key].forEach((item) => {
-          result += `${item}\n`;
-        });
-        result += '\n';
-      }
-    });
-
-    if (this.content.mitm) {
-      result += `[${this.SECTION_TITLE_MAP.mitm}]\n`;
-      if (this.content.mitm.hostname) {
-        result += `hostname = %APPEND% ${this.content.mitm.hostname.join(',')}\n`;
-      }
-      if (this.content.mitm.clientSourceAddress) {
-        result += `client-source-address = ${this.content.mitm.clientSourceAddress.join(',')}\n`;
-      }
-    }
-    return result;
+  renderGeneral() {
+    return Object.entries(this.content.general || {})
+      .map(([key, value]) => `${key} = ${value}`)
+      .join('\n');
   }
 
-  private renderScript(scriptParams?: string) {
-    let result = '';
-    if (!this.content.script) {
-      return;
-    }
-    result += `[${this.SECTION_TITLE_MAP.script}]\n`;
-    this.content.script.forEach((script) => {
-      result += `${script.name} = type=${script.type}`;
-      if (script.pattern) {
-        result += `, pattern=${script.pattern}`;
-      }
-      if (script.type === 'cron' && script.cronexp) {
-        result += `, cronexp=${script.cronexp}`;
-      }
-      result += `, requires-body=${JSON.stringify(!!script.requiresBody)}`;
-      result += `, binary-body-mode=${JSON.stringify(!!script.binaryBodyMode)}`;
-      result += `, script-path=<%= getScriptPath(compilation, '${script.scriptKey}', assetPrefix) %>`;
-      if (script.engine) {
-        result += `, engine=${script.engine}`;
-      }
-      if (script.maxSize) {
-        result += `, max-size=${script.maxSize}`;
-      }
-      if (script.timeout) {
-        result += `, timeout=${script.timeout}`;
-      }
-      if (script.scriptUpdateInterval) {
-        result += `, script-update-interval=${script.scriptUpdateInterval}`;
-      }
-      if (script.debug || process.env.NODE_ENV === 'development') {
-        result += ', debug=true';
-      }
-      if (script.injectArgument || script.argument) {
-        result += `, argument=${script.argument || scriptParams}`;
-      }
-      result += '\n';
-    });
-    return result;
+  renderHost() {
+    return Object.entries(this.content.host || {})
+      .map(([key, value]) => `${key} = ${value}`)
+      .join('\n');
   }
 
-  private handleArguments() {
+  renderRule() {
+    return this.content.rule?.join('\n') || '';
+  }
+
+  renderScript(scriptParams: string) {
+    return (this.content.script || [])
+      .map((script, index) => {
+        const options = [];
+        options.push(`type=${script.type}`);
+        if (script.pattern) {
+          options.push(`pattern=${script.pattern}`);
+        }
+        if (script.type === 'cron' && script.cronexp) {
+          options.push(`cronexp="${script.cronexp}"`);
+        }
+        if (script.engine) {
+          options.push(`requires-body=${JSON.stringify(!!script.requiresBody)}`);
+        }
+        if (script.binaryBodyMode) {
+          options.push(`binary-body-mode=${JSON.stringify(!!script.binaryBodyMode)}`);
+        }
+        if (script.scriptKey) {
+          options.push(`script-path=${this.getScriptPath(script.scriptKey)}`);
+        }
+        if (script.engine) {
+          options.push(`engine=${script.engine}`);
+        }
+        if (script.maxSize) {
+          options.push(`max-size=${script.maxSize}`);
+        }
+        if (script.timeout) {
+          options.push(`timeout=${script.timeout}`);
+        }
+        if (script.scriptUpdateInterval) {
+          options.push(`script-update-interval=${script.scriptUpdateInterval}`);
+        }
+        if (script.debug || process.env.NODE_ENV === 'development') {
+          options.push('debug=true');
+        }
+        if (script.injectArgument || script.argument) {
+          options.push(`argument=${script.argument || scriptParams}`);
+        }
+        return `${script.name || `script${index}`} = ${options.join(', ')}`;
+      })
+      .join('\n');
+  }
+
+  handleArguments() {
     const args = this.source?.arguments || [];
     const argumentsText = args.map((arg) => `${arg.key}:${this.getDefaultValue(arg.defaultValue)}`).join(',');
 
