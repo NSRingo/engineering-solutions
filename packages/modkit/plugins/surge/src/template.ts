@@ -1,11 +1,6 @@
-import type { ModkitConfig } from '@iringo/modkit-shared';
+import { Template } from '@iringo/modkit-shared';
 
-export class SurgeTemplate {
-  constructor(
-    private readonly source: ModkitConfig<Record<string, string>>['source'],
-    private readonly getScriptPath: (scriptKey: string) => string,
-  ) {}
-
+export class SurgeTemplate extends Template {
   get metadata() {
     return this.source?.metadata || {};
   }
