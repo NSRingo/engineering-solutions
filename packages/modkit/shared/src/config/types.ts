@@ -103,6 +103,94 @@ export interface ModuleMetadata {
   };
 }
 
+// 建议交给QX内置解析器自己处理，因为只有QX插件的写法和其他的不一样
+export interface Rule<RuleSetKey extends string> {
+  name?: string;
+  type:
+    | 'DOMAIN'
+    | 'DOMAIN-SUFFIX'
+    | 'DOMAIN-KEYWORD'
+    | 'DOMAIN-SET'
+    | 'IP-CIDR'
+    | 'IP-CIDR6'
+    | 'GEOIP'
+    | 'IP-ASN'
+    | 'USER-AGENT'
+    | 'URL-REGEX'
+    | 'PROCESS-NAME'
+    | 'AND'
+    | 'OR'
+    | 'NOT'
+    | 'SUBNET'
+    | 'DEST-PORT'
+    | 'IN-PORT'
+    | 'SRC-PORT'
+    | 'SRC-IP'
+    | 'PROTOCOL'
+    | 'SCRIPT'
+    | 'CELLULAR-RADIO'
+    | 'DEVICE-NAME'
+    | 'RULE-SET'
+    | 'FINAL';
+  /**
+   * 规则组，对应 `source.ruleSet` 中的 key
+   */
+  content: string | number | RuleSetKey;
+  policy:
+    | 'DIRECT'
+    | 'REJECT'
+    | 'REJECT-NO-DROP'
+    | 'REJECT-TINYGIF'
+    | 'CELLULAR'
+    | 'CELLULAR-ONLY'
+    | 'HYBRID'
+    | 'NO-HYBRID'
+    | string;
+
+  parameters?: 'extended-matching' | 'no-resolve' | 'dns-failed';
+}
+
+// 三合一写法（建议用这个，因为只有surge区分Url Header Body）
+// 有type没mode: BodyRewrite
+// 有mode没type: UrlRewrite
+// 有type有mode: HeaderRewrite
+// mode是'header' | 302 | 'reject': UrlRewrite
+// mode是'header-add' | 'header-del' | 'header-replace-regex': HeaderRewrite
+// 没mode: BodyRewrite
+export interface Rewrite {
+  type?: 'http-request' | 'http-response';
+  pattern: string;
+  mode?: 'header' | 302 | 'reject' | 'header-add' | 'header-del' | 'header-replace-regex';
+  content: string | Record<string, string>;
+}
+
+// 按Surge三种Rewrite分开的写法
+export interface UrlRewrite {
+  pattern: string;
+  content: string;
+  mode: 'header' | 302 | 'reject';
+}
+export interface HeaderRewrite {
+  type: 'http-request' | 'http-response';
+  pattern: string;
+  mode: 'header-add' | 'header-del' | 'header-replace-regex';
+  content: string | Record<string, string>;
+}
+export interface BodyRewrite {
+  type: 'http-request' | 'http-response';
+  pattern: string;
+  content: Record<string, string>;
+}
+
+// 建议叫Mock而不是MapLocal，因为Mock是功能名
+export interface Mock<FileKey extends string> {
+  pattern: string;
+  dataType: 'file' | 'text' | 'tiny-gif' | 'base64';
+  data?: string | FileKey;
+  statusCode?: number;
+  headers?: Record<string, string>;
+}
+
 export interface Script<ScriptKey extends string> {
   name: string;
   type: 'http-request' | 'http-response' | 'cron' | 'event' | 'dns' | 'rule' | 'generic';
@@ -120,7 +208,6 @@ export interface Script<ScriptKey extends string> {
    * 自定义 argument，优先级高于 `injectArgument`
    */
   argument?: string;
-
   engine?: 'auto' | 'jsc' | 'webview';
   pattern?: string;
   /**
