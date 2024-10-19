@@ -11,10 +11,7 @@
     "build:watch": "modern build -w",
     "build": "modern build"
   },
-  "files": [
-    "dist",
-    "CHANGELOG.md"
-  ],
+  "files": ["dist", "CHANGELOG.md"],
   "dependencies": {
     "@rc-component/qrcode": "^1.0.0",
     "rc-tooltip": "^6.2.1"

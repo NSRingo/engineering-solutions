@@ -9,10 +9,7 @@
     "dev": "modern build -w",
     "build": "modern build"
   },
-  "files": [
-    "dist",
-    "CHANGELOG.md"
-  ],
+  "files": ["dist", "CHANGELOG.md"],
   "dependencies": {
     "@iringo/modkit-shared": "workspace:^"
   },

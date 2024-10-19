@@ -22,11 +22,7 @@
     "dev": "modern build -w",
     "build": "modern build"
   },
-  "files": [
-    "dist",
-    "bin",
-    "CHANGELOG.md"
-  ],
+  "files": ["dist", "bin", "CHANGELOG.md"],
   "dependencies": {
     "@iringo/modkit-plugin-boxjs": "workspace:^",
     "@iringo/modkit-plugin-dts": "workspace:^",
