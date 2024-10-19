@@ -1,5 +1,6 @@
 import type { RsbuildConfig } from '@rsbuild/core';
 import type { PluginAPI, PluginHooks } from '../plugin/manager';
+import type { PluginModuleContent } from '../types';
 
 // /**
 //  * @link https://github.com/chavyleung/scripts/blob/master/box/chavy.boxjs.html#L1019
@@ -79,7 +80,7 @@ export interface ModuleMetadata {
   /**
    * 支持的系统
    */
-  system?: 'iOS' | 'iPadOS' | 'tvOS' | 'macOS' | 'watchOS'[];
+  system?: ('iOS' | 'iPadOS' | 'tvOS' | 'macOS' | 'watchOS')[];
   /**
    * 最低支持的系统版本
    */
@@ -146,19 +147,8 @@ export interface Script<ScriptKey extends string> {
   debug?: boolean;
 }
 
-export interface ModuleContent<ScriptKey extends string> {
-  general?: Record<string, string>;
-  host?: Record<string, string>;
-  rule?: string[];
+export interface ModuleContent<ScriptKey extends string> extends PluginModuleContent {
   script?: Script<ScriptKey>[];
-  mitm?: {
-    hostname?: string[];
-    clientSourceAddress?: string[];
-  };
-  urlRewrite?: string[];
-  headerRewrite?: string[];
-  bodyRewrite?: string[];
-  mapLocal?: string[];
 }
 
 export interface ModkitConfig<ScriptInput extends Record<string, string>> {

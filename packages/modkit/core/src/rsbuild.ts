@@ -50,17 +50,20 @@ const generateEnvironment = async ({
   if (!pluginCtx.configurePlatform) {
     return null;
   }
-  const platformConfig = pluginCtx.configurePlatform();
+  // 处理 source
+  const sourceBackup = lodash.cloneDeep(config.source);
+  const source = (await runMaybeAsync(pluginCtx.modifySource, { source: sourceBackup })) ?? sourceBackup;
+
+  const platformConfig = await runMaybeAsync(pluginCtx.configurePlatform, { source });
+  if (!platformConfig) {
+    return null;
+  }
 
   // 注入模板
   const templatePath = path.resolve(cacheDirectory, `${plugin.name}.ejs`);
   await fs.promises.writeFile(templatePath, platformConfig.template);
   rsbuildConfig.html ??= {};
   rsbuildConfig.html.template = templatePath;
-
-  // 处理 source
-  const sourceBackup = lodash.cloneDeep(config.source);
-  const source = (await runMaybeAsync(pluginCtx.modifySource, { source: sourceBackup })) ?? sourceBackup;
 
   // 设置输出模块名
   const moduleFilename = `${source?.moduleName}${platformConfig.extension}`;
@@ -69,10 +72,10 @@ const generateEnvironment = async ({
   rsbuildConfig.output.filename.html = moduleFilename;
 
   // 设置模板参数
-  const argsCtx = await runMaybeAsync(pluginCtx.processArguments, { args: source?.arguments ?? [] });
+  const params = await runMaybeAsync(pluginCtx.templateParameters, { source });
   rsbuildConfig.html.templateParameters = {
-    ...argsCtx,
     ...source,
+    ...params,
   };
 
   return {

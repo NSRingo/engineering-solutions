@@ -1,22 +1,23 @@
 import type { Server } from 'node:http';
 import { type commander, logger } from '@iringo/utils';
-import {
-  type AsyncManager,
-  type AsyncWorker,
-  type Worker,
-  createAsyncManager,
-  createAsyncWorkflow,
-  createWorkflow,
-} from '@modern-js/plugin';
+import { type AsyncManager, type AsyncWorker, createAsyncManager, createAsyncWorkflow } from '@modern-js/plugin';
 import type { RsbuildInstance } from '@rsbuild/core';
 import type { Express } from 'express';
-import type { ArgumentItem, ModkitConfig } from '../config';
+import type { ModkitConfig } from '../config';
 import { runMaybeAsync } from '../utils';
 import { setAppContext, useAppContext } from './context';
 
 type RsbuildDevServer = Awaited<ReturnType<RsbuildInstance['createDevServer']>>;
 
 export interface ModifySourceParams<T extends Record<string, string>> {
+  source: ModkitConfig<T>['source'];
+}
+
+export interface ConfigurePlatformParams<T extends Record<string, string>> {
+  source: ModkitConfig<T>['source'];
+}
+
+export interface TemplateParametersParams<T extends Record<string, string>> {
   source: ModkitConfig<T>['source'];
 }
 
@@ -43,21 +44,25 @@ export interface OnAfterStartDevServer {
 
 export interface PluginHooks<T extends Record<string, string>> {
   /**
-   * 配置平台信息
-   */
-  configurePlatform?: Worker<void, ConfigurePlatformReturn>;
-  /**
    * 针对当前平台修改配置
    */
   modifySource?: AsyncWorker<ModifySourceParams<T>, ModkitConfig<T>['source']>;
   /**
-   * 处理参数
+   * 配置平台信息
    */
-  processArguments?: AsyncWorker<{ args: ArgumentItem[] }, Record<string, any>>;
-
+  configurePlatform?: AsyncWorker<ConfigurePlatformParams<T>, ConfigurePlatformReturn>;
+  /**
+   * 注入模板参数
+   */
+  templateParameters?: AsyncWorker<TemplateParametersParams<T>, Record<string, any>>;
+  /**
+   * 启动开发服务器前
+   */
   onBeforeStartDevServer?: AsyncWorker<OnBeforeStartDevServer, void>;
+  /**
+   * 启动开发服务器后
+   */
   onAfterStartDevServer?: AsyncWorker<OnAfterStartDevServer, void>;
-
   /**
    * 为 commander 添加新的 CLI 命令
    */
@@ -65,9 +70,12 @@ export interface PluginHooks<T extends Record<string, string>> {
 }
 
 const hooks = {
-  configurePlatform: createWorkflow<void, ConfigurePlatformReturn>(),
-  modifySource: createAsyncWorkflow<ModifySourceParams<any>, ModkitConfig<any>['source']>(),
-  processArguments: createAsyncWorkflow<{ args: ArgumentItem[] }, Record<string, any>>(),
+  modifySource: createAsyncWorkflow<
+    ModifySourceParams<Record<string, string>>,
+    ModkitConfig<Record<string, string>>['source']
+  >(),
+  configurePlatform: createAsyncWorkflow<ConfigurePlatformParams<Record<string, string>>, ConfigurePlatformReturn>(),
+  templateParameters: createAsyncWorkflow<TemplateParametersParams<Record<string, string>>, Record<string, any>>(),
   onBeforeStartDevServer: createAsyncWorkflow<OnBeforeStartDevServer, void>(),
   onAfterStartDevServer: createAsyncWorkflow<OnAfterStartDevServer, void>(),
   commands: createAsyncWorkflow<{ program: commander.Command }, void>(),

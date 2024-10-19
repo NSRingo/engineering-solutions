@@ -46,37 +46,38 @@ export const pluginBoxJs = <T extends Record<string, string>>({
           });
           return source;
         },
-        processArguments({ args }) {
-          const settings = args.map((arg) => {
-            let type = BoxJsType.Text;
-            if (typeof arg.type === 'object' && arg.type.boxJsType) {
-              type = arg.type.boxJsType;
-            } else {
-              if (arg.type === 'boolean') {
-                type = BoxJsType.Boolean;
-              }
-              if (arg.type === 'number') {
-                type = BoxJsType.Number;
-              }
-              if (arg.options) {
-                if (arg.type === 'array') {
-                  type = BoxJsType.Checkboxes;
-                } else {
-                  type = BoxJsType.Selects;
+        templateParameters({ source }) {
+          const settings =
+            source?.arguments?.map((arg) => {
+              let type = BoxJsType.Text;
+              if (typeof arg.type === 'object' && arg.type.boxJsType) {
+                type = arg.type.boxJsType;
+              } else {
+                if (arg.type === 'boolean') {
+                  type = BoxJsType.Boolean;
+                }
+                if (arg.type === 'number') {
+                  type = BoxJsType.Number;
+                }
+                if (arg.options) {
+                  if (arg.type === 'array') {
+                    type = BoxJsType.Checkboxes;
+                  } else {
+                    type = BoxJsType.Selects;
+                  }
                 }
               }
-            }
 
-            return {
-              id: `${scope ? `${scope}.` : ''}${arg.key}`,
-              name: arg.name,
-              type,
-              val: arg.defaultValue,
-              items: arg.options,
-              desc: arg.description,
-              placeholder: arg.placeholder,
-            };
-          });
+              return {
+                id: `${scope ? `${scope}.` : ''}${arg.key}`,
+                name: arg.name,
+                type,
+                val: arg.defaultValue,
+                items: arg.options,
+                desc: arg.description,
+                placeholder: arg.placeholder,
+              };
+            }) ?? [];
 
           return { settings };
         },

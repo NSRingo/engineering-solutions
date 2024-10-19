@@ -50,12 +50,12 @@ export async function initCommand() {
   // 初始化插件管理器，执行插件的钩子函数
   const hooksRunner = await manager.init();
 
-  const platformConfigs = await runMaybeAsync(hooksRunner.configurePlatform);
+  const platformConfigs = await runMaybeAsync(hooksRunner.configurePlatform, { source: config.source });
 
   // 执行一些插件钩子函数，处理平台配置、修改源代码和处理命令行参数，此处并不消费，供插件内部共享上下文
   await Promise.allSettled([
     runMaybeAsync(hooksRunner.modifySource, { source: config.source }),
-    runMaybeAsync(hooksRunner.processArguments, { args: config.source?.arguments ?? [] }),
+    runMaybeAsync(hooksRunner.templateParameters, { source: config.source }),
   ]);
 
   // 使用自定义的 rsbuild 构建工具，初始化构建配置和插件

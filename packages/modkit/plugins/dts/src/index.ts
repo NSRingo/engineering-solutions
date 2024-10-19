@@ -124,9 +124,9 @@ export const pluginDts = <T extends Record<string, string>>({
     let argumentItems: ArgumentItem[] = [];
     const { appDirectory } = api.useAppContext();
     return {
-      processArguments: ({ args }) => {
-        argumentItems = args;
-        return args;
+      templateParameters: ({ source }) => {
+        argumentItems = source?.arguments || [];
+        return {};
       },
       commands: ({ program }) => {
         const tsconfigFilePath = path.resolve(appDirectory, tsconfigPath);

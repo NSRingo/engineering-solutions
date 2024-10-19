@@ -5,3 +5,4 @@ export * from './plugin';
 export * from './init-app-dir';
 
 export type { AsyncManager } from '@modern-js/plugin';
+export type { PluginModuleContent } from './types';
