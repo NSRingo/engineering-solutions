@@ -47,8 +47,20 @@ export class LoonTemplate extends Template {
     super(params);
   }
 
+  get Metadata() {
+    const result: Record<string, string | undefined> = {};
+    result.name = this.metadata.name;
+    result.desc = this.metadata.description;
+    result.system = this.metadata.system?.join();
+    result.version = this.metadata.version;
+    Object.entries(this.metadata.extra || {}).forEach(([key, value]) => {
+      result[key] = Array.isArray(value) ? value.join(',') : value;
+    });
+    return this.renderKeyValuePairs(result, { prefix: '#!' });
+  }
+
   get General() {
-    return this.renderKeyValuePairs(this.content.loonGeneral).trim();
+    return this.renderKeyValuePairs(this.content.loonGeneral);
   }
 
   get Rule() {
@@ -129,20 +141,16 @@ export class LoonTemplate extends Template {
             logger.warn('[Loon] Unsupported script type: dns');
             break;
         }
-        const parameters: string[] = [];
-        parameters.push(`script-path=${this.utils.getScriptPath(scriptKey)}`);
-        parameters.push(`tag=${name || `Script${index}`}`);
+        const parameters: Record<string, any> = {};
+        parameters['script-path'] = this.utils.getScriptPath(scriptKey);
+        parameters.tag = name || `Script${index}`;
         objectEntries(rest).forEach(([key, value]) => {
-          parameters.push(`${toKebabCase(key)}=${value}`);
+          parameters[toKebabCase(key)] = value;
         });
-        if (argument || injectArgument) {
-          if (argument) {
-            parameters.push(`argument=${argument}`);
-          } else {
-            parameters.push(`argument=[${this.source.arguments?.map((item) => `{${item.key}}`).join(',')}]`);
-          }
+        if (injectArgument || argument) {
+          parameters.argument = argument || `[${this.source.arguments?.map((item) => `{${item.key}}`).join(',')}]`;
         }
-        line += parameters.join(', ');
+        line += this.renderKeyValuePairs(parameters, { join: ', ', separator: '=' });
         return line;
       })
       .join('\n')

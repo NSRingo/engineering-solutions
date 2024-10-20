@@ -1,4 +1,4 @@
-import { Template, type TemplateParametersParams } from '@iringo/modkit-shared';
+import { Template, type TemplateParametersParams, objectEntries, toKebabCase } from '@iringo/modkit-shared';
 import type { SurgePluginOptions } from './index';
 
 export class SurgeTemplate extends Template {
@@ -7,6 +7,25 @@ export class SurgeTemplate extends Template {
     private readonly objectValuesHandler: SurgePluginOptions['objectValuesHandler'],
   ) {
     super(params);
+  }
+
+  get Metadata() {
+    const { argumentsText, argumentsDescription } = this.#handleArguments();
+    const result: Record<string, string | undefined> = {};
+    result.name = this.metadata.name;
+    result.desc = this.metadata.description;
+    result.requirement = this.metadata.system?.map((item) => `SYSTEM = ${item}`).join(' || ');
+    result.version = this.metadata.version;
+    if (argumentsText) {
+      result.arguments = argumentsText;
+    }
+    if (argumentsDescription) {
+      result['arguments-desc'] = argumentsDescription;
+    }
+    Object.entries(this.metadata.extra || {}).forEach(([key, value]) => {
+      result[key] = Array.isArray(value) ? value.join(',') : value;
+    });
+    return this.renderKeyValuePairs(result, { prefix: '#!' });
   }
 
   get General() {
@@ -42,69 +61,23 @@ export class SurgeTemplate extends Template {
       .trim();
   }
 
-  get Metadata() {
-    const { argumentsText, argumentsDescription } = this.#handleArguments();
-    const result: Record<string, string | undefined> = {};
-    result.name = this.metadata.name;
-    result.desc = this.metadata.description;
-    result.requirement = this.metadata.system?.map((item) => `SYSTEM = ${item}`).join(' || ');
-    result.version = this.metadata.version;
-    if (argumentsText) {
-      result.arguments = argumentsText;
-    }
-    if (argumentsDescription) {
-      result['arguments-desc'] = argumentsDescription;
-    }
-    Object.entries(this.metadata.extra || {}).forEach(([key, value]) => {
-      result[key] = Array.isArray(value) ? value.join(',') : value;
-    });
-    return Object.entries(result)
-      .map(([key, value]) => (!!key && !!value ? `#!${key} = ${value}` : ''))
-      .filter(Boolean)
-      .join('\n')
-      .trim();
-  }
-
   get Script() {
     const { scriptParams } = this.#handleArguments();
     return (this.content.script || [])
       .map((script, index) => {
-        const parameters = [];
-        parameters.push(`type=${script.type}`);
-        if (script.pattern) {
-          parameters.push(`pattern=${script.pattern}`);
-        }
-        if (script.type === 'cron' && script.cronexp) {
-          parameters.push(`cronexp="${script.cronexp}"`);
-        }
-        if (script.engine) {
-          parameters.push(`requires-body=${JSON.stringify(!!script.requiresBody)}`);
-        }
-        if (script.binaryBodyMode) {
-          parameters.push(`binary-body-mode=${JSON.stringify(!!script.binaryBodyMode)}`);
-        }
-        if (script.scriptKey) {
-          parameters.push(`script-path=${this.utils.getScriptPath(script.scriptKey)}`);
-        }
-        if (script.engine) {
-          parameters.push(`engine=${script.engine}`);
-        }
-        if (script.maxSize) {
-          parameters.push(`max-size=${script.maxSize}`);
-        }
-        if (script.timeout) {
-          parameters.push(`timeout=${script.timeout}`);
-        }
-        if (script.scriptUpdateInterval) {
-          parameters.push(`script-update-interval=${script.scriptUpdateInterval}`);
-        }
-        if (script.debug || process.env.NODE_ENV === 'development') {
-          parameters.push('debug=true');
+        const parameters: Record<string, any> = {};
+        const { name, scriptKey, debug, ...rest } = script;
+        parameters['script-path'] = this.utils.getScriptPath(scriptKey);
+        objectEntries(rest).forEach(([key, value]) => {
+          parameters[toKebabCase(key)] = value;
+        });
+        if (debug || process.env.NODE_ENV === 'development') {
+          parameters.debug = true;
         }
         if (script.injectArgument || script.argument) {
-          parameters.push(`argument=${script.argument || scriptParams}`);
+          parameters.argument = script.argument || scriptParams;
         }
-        return `${script.name || `script${index}`} = ${parameters.join(', ')}`;
+        return `${name || `script${index}`} = ${this.renderKeyValuePairs(parameters, { join: ', ', separator: '=' })}`;
       })
       .join('\n')
       .trim();

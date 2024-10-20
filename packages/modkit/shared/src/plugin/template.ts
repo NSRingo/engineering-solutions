@@ -23,13 +23,15 @@ export class Template {
     };
   }
 
-  renderKeyValuePairs(ojb?: Record<string, string>) {
+  renderKeyValuePairs(ojb?: Record<string, string | undefined>, { separator = ' = ', join = '\n', prefix = '' } = {}) {
     return Object.entries(ojb || {})
-      .map(([key, value]) => `${key} = ${value}`)
-      .join('\n');
+      .filter(([, value]) => value !== undefined)
+      .map(([key, value]) => `${prefix}${key}${separator}${value}`)
+      .join(join)
+      .trim();
   }
 
   renderLines(lines?: string[]) {
-    return (lines || []).join('\n');
+    return (lines || []).join('\n').trim();
   }
 }
