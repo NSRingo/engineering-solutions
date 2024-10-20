@@ -7,6 +7,14 @@ export class Template {
     return this.params.source;
   }
 
+  get metadata() {
+    return this.source?.metadata || {};
+  }
+
+  get content() {
+    return this.source?.content || {};
+  }
+
   get utils() {
     const { getFilePath, getScriptPath } = this.params;
     return {
