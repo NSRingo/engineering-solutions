@@ -1,24 +1,24 @@
 import { Template } from '@iringo/modkit-shared';
 
 export class SurgeTemplate extends Template {
-  private get metadata() {
+  get #metadata() {
     return this.source?.metadata || {};
   }
 
-  private get content() {
+  get #content() {
     return this.source?.content || {};
   }
 
   get General() {
-    return this.renderKeyValuePairs(this.content.general).trim();
+    return this.renderKeyValuePairs(this.#content.general).trim();
   }
 
   get Host() {
-    return this.renderKeyValuePairs(this.content.host).trim();
+    return this.renderKeyValuePairs(this.#content.host).trim();
   }
 
   get Rule() {
-    return this.content.rule
+    return this.#content.rule
       ?.map((rule) => {
         if (typeof rule === 'string') {
           return rule;
@@ -40,19 +40,19 @@ export class SurgeTemplate extends Template {
   }
 
   get Metadata() {
-    const { argumentsText, argumentsDescription } = this.handleArguments();
+    const { argumentsText, argumentsDescription } = this.#handleArguments();
     const result: Record<string, string | undefined> = {};
-    result.name = this.metadata.name;
-    result.desc = this.metadata.description;
-    result.requirement = this.metadata.system?.map((item) => `SYSTEM = ${item}`).join(' || ');
-    result.version = this.metadata.version;
+    result.name = this.#metadata.name;
+    result.desc = this.#metadata.description;
+    result.requirement = this.#metadata.system?.map((item) => `SYSTEM = ${item}`).join(' || ');
+    result.version = this.#metadata.version;
     if (argumentsText) {
       result.arguments = argumentsText;
     }
     if (argumentsDescription) {
       result['arguments-desc'] = argumentsDescription;
     }
-    Object.entries(this.metadata.extra || {}).forEach(([key, value]) => {
+    Object.entries(this.#metadata.extra || {}).forEach(([key, value]) => {
       result[key] = Array.isArray(value) ? value.join(',') : value;
     });
     return Object.entries(result)
@@ -63,8 +63,8 @@ export class SurgeTemplate extends Template {
   }
 
   get Script() {
-    const { scriptParams } = this.handleArguments();
-    return (this.content.script || [])
+    const { scriptParams } = this.#handleArguments();
+    return (this.#content.script || [])
       .map((script, index) => {
         const parameters = [];
         parameters.push(`type=${script.type}`);
@@ -108,24 +108,24 @@ export class SurgeTemplate extends Template {
   }
 
   get MITM() {
-    if (!this.content.mitm) {
+    if (!this.#content.mitm) {
       return '';
     }
     let result = '';
-    if (this.content.mitm.hostname?.length) {
-      result += `hostname = %APPEND%  ${this.content.mitm.hostname.join(', ')}\n`;
+    if (this.#content.mitm.hostname?.length) {
+      result += `hostname = %APPEND%  ${this.#content.mitm.hostname.join(', ')}\n`;
     }
-    if (this.content.mitm.clientSourceAddress?.length) {
-      result += `client-source-address = %APPEND%  ${this.content.mitm.clientSourceAddress.join(', ')}\n`;
+    if (this.#content.mitm.clientSourceAddress?.length) {
+      result += `client-source-address = %APPEND%  ${this.#content.mitm.clientSourceAddress.join(', ')}\n`;
     }
     return result.trim();
   }
 
-  private get Rewrite() {
+  get #rewrite() {
     const urlRewrites: string[] = [];
     const headerRewrites: string[] = [];
     const bodyRewrites: string[] = [];
-    this.content.rewrite?.forEach((rewrite) => {
+    this.#content.rewrite?.forEach((rewrite) => {
       switch (rewrite.mode) {
         case 'header':
         case 302:
@@ -166,19 +166,19 @@ export class SurgeTemplate extends Template {
   }
 
   get URLRewrite() {
-    return this.Rewrite.url;
+    return this.#rewrite.url;
   }
 
   get HeaderRewrite() {
-    return this.Rewrite.header;
+    return this.#rewrite.header;
   }
 
   get BodyRewrite() {
-    return this.Rewrite.body;
+    return this.#rewrite.body;
   }
 
   get MapLocal() {
-    return (this.content.mock || [])
+    return (this.#content.mock || [])
       .map((mock) => {
         const options = [];
         options.push(mock.pattern);
@@ -213,9 +213,9 @@ export class SurgeTemplate extends Template {
       .trim();
   }
 
-  private handleArguments() {
+  #handleArguments() {
     const args = this.source?.arguments || [];
-    const argumentsText = args.map((arg) => `${arg.key}:${this.getDefaultValue(arg.defaultValue)}`).join(',');
+    const argumentsText = args.map((arg) => `${arg.key}:${this.#getDefaultValue(arg.defaultValue)}`).join(',');
 
     const argumentsDescription = args
       .map((arg) => {
@@ -250,7 +250,7 @@ export class SurgeTemplate extends Template {
     };
   }
 
-  private getDefaultValue(defaultValue: any): any {
+  #getDefaultValue(defaultValue: any): any {
     switch (typeof defaultValue) {
       case 'string':
         return `"${defaultValue}"`;
@@ -259,7 +259,7 @@ export class SurgeTemplate extends Template {
         return defaultValue;
       case 'object':
         if (Array.isArray(defaultValue) && defaultValue.length > 0) {
-          return this.getDefaultValue(defaultValue[0]);
+          return this.#getDefaultValue(defaultValue[0]);
         }
         return '""';
       default:
