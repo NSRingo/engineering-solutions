@@ -1,5 +1,11 @@
 # @iringo/arguments-builder
 
+## 1.7.6
+
+### Patch Changes
+
+- e137211: 修复默认值为数组的情况丢失参数的问题
+
 ## 1.7.5
 
 ### Patch Changes
