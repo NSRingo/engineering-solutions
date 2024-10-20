@@ -8,6 +8,10 @@ export interface RuleSetRule {
    * 策略名
    */
   policyName?: string;
+  /**
+   * 描述
+   */
+  description?: string;
 }
 
 export type ModuleRule = string | RuleSetRule;

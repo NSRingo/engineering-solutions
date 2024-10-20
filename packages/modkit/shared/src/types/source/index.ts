@@ -13,6 +13,7 @@ export interface PluginModuleContent {
 export interface ModuleContent extends PluginModuleContent {
   script?: ModuleScript[];
   rule?: ModuleRule[];
+  host?: Record<string, string>;
   rewrite?: ModuleRewrite[];
   mock?: ModuleMock[];
   mitm?: ModuleMITM;

@@ -1,6 +1,14 @@
-import { Template } from '@iringo/modkit-shared';
+import { Template, type TemplateParametersParams } from '@iringo/modkit-shared';
+import type { SurgePluginOptions } from './index';
 
 export class SurgeTemplate extends Template {
+  constructor(
+    params: TemplateParametersParams,
+    private readonly objectValuesHandler: SurgePluginOptions['objectValuesHandler'],
+  ) {
+    super(params);
+  }
+
   get General() {
     return this.renderKeyValuePairs(this.content.surgeGeneral).trim();
   }
@@ -20,6 +28,9 @@ export class SurgeTemplate extends Template {
             let result = `RULE-SET, ${this.utils.getFilePath(rule.assetKey)}`;
             if (rule.policyName) {
               result += `, ${rule.policyName}`;
+            }
+            if (rule.description) {
+              result += ` # ${rule.description}`;
             }
             return result;
           }
@@ -250,10 +261,7 @@ export class SurgeTemplate extends Template {
       case 'boolean':
         return defaultValue;
       case 'object':
-        if (Array.isArray(defaultValue) && defaultValue.length > 0) {
-          return this.#getDefaultValue(defaultValue[0]);
-        }
-        return '""';
+        return this.objectValuesHandler?.(defaultValue);
       default:
         return '""';
     }

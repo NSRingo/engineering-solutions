@@ -2,7 +2,18 @@ import type { ModkitPlugin } from '@iringo/modkit-shared';
 import qrcode from 'qrcode-terminal';
 import { SurgeTemplate } from './template';
 
-export const pluginSurge = (): ModkitPlugin => {
+export interface SurgePluginOptions {
+  objectValuesHandler?: (obj: Record<string, any>) => string;
+}
+
+export const pluginSurge = ({
+  objectValuesHandler = (obj) => {
+    if (Array.isArray(obj)) {
+      return `"${obj.join()}"`;
+    }
+    return `"${JSON.stringify(obj)}"`;
+  },
+}: SurgePluginOptions = {}): ModkitPlugin => {
   return {
     name: 'surge',
 
@@ -28,7 +39,7 @@ export const pluginSurge = (): ModkitPlugin => {
           return source;
         },
         templateParameters(params) {
-          const surgeTemplate = new SurgeTemplate(params);
+          const surgeTemplate = new SurgeTemplate(params, objectValuesHandler);
           return {
             surgeTemplate,
           };

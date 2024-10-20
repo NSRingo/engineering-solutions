@@ -1,6 +1,7 @@
 import { defineConfig } from '@iringo/modkit';
 import { pluginBoxJs } from '@iringo/modkit/plugins/boxjs';
 import { pluginDts } from '@iringo/modkit/plugins/dts';
+import { pluginLoon } from '@iringo/modkit/plugins/loon';
 import { pluginSurge } from '@iringo/modkit/plugins/surge';
 
 export default defineConfig({
@@ -155,7 +156,7 @@ export default defineConfig({
       'rule-set.list': './src/rule.list',
     },
   },
-  plugins: [pluginSurge(), pluginDts(), pluginBoxJs()],
+  plugins: [pluginSurge(), pluginDts(), pluginBoxJs(), pluginLoon()],
   output: {
     assetPrefix: 'https://github.com/NSRingo/WeatherKit/releases/download/v1.8.12',
   },

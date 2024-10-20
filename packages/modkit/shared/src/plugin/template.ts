@@ -32,8 +32,4 @@ export class Template {
   renderLines(lines?: string[]) {
     return (lines || []).join('\n');
   }
-
-  objectEntries<T extends Record<string, any>>(obj: T): [keyof T, T[keyof T]][] {
-    return Object.entries(obj);
-  }
 }

@@ -3,7 +3,6 @@ import '@iringo/modkit-shared';
 declare module '@iringo/modkit-shared' {
   interface PluginModuleContent {
     surgeGeneral?: Record<string, string>;
-    host?: Record<string, string>;
   }
 
   interface PluginModuleMITM {
