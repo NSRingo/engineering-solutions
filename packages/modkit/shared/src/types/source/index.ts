@@ -1,5 +1,6 @@
 import type { ArgumentItem } from './argument';
 import type { ModuleMetadata } from './metadata';
+import type { ModuleMITM } from './mitm';
 import type { ModuleMock } from './mock';
 import type { ModuleRewrite } from './rewrite';
 import type { ModuleRule } from './rule';
@@ -14,6 +15,7 @@ export interface ModuleContent extends PluginModuleContent {
   rule?: ModuleRule[];
   rewrite?: ModuleRewrite[];
   mock?: ModuleMock[];
+  mitm?: ModuleMITM;
 }
 
 export interface SourceConfig {
@@ -45,6 +47,7 @@ export interface SourceConfig {
 
 export type * from './argument';
 export type * from './metadata';
+export type * from './mitm';
 export type * from './mock';
 export type * from './rewrite';
 export type * from './rule';

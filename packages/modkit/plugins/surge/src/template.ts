@@ -2,7 +2,7 @@ import { Template } from '@iringo/modkit-shared';
 
 export class SurgeTemplate extends Template {
   get General() {
-    return this.renderKeyValuePairs(this.content.general).trim();
+    return this.renderKeyValuePairs(this.content.surgeGeneral).trim();
   }
 
   get Host() {

@@ -15,6 +15,8 @@ import minimist from 'minimist';
 import { useRsbuild } from './rsbuild';
 
 export async function initCommand() {
+  logger.greet(`  ModKit v${process.env.MODKIT_VERSION}\n`);
+
   // 清空插件管理器中的插件
   manager.clear();
 

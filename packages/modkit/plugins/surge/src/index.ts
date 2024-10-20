@@ -36,7 +36,7 @@ export const pluginSurge = (): ModkitPlugin => {
         onAfterStartDevServer({ rsbuildServer }) {
           const moduleRemoteUrl = `http://${appContext.ip}:${rsbuildServer.port}/${moduleName}.sgmodule`;
           qrcode.generate(`surge:///install-module?url=${encodeURIComponent(moduleRemoteUrl)}`, { small: true });
-          api.logger.ready('Scan the QR code to install the module, or manually import:', moduleRemoteUrl);
+          api.logger.ready('[Surge] Scan the QR code to install the module, or manually import:', moduleRemoteUrl);
         },
       };
     },

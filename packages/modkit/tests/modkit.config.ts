@@ -151,7 +151,7 @@ export default defineConfig({
     scripts: {
       response: './src/index.ts',
     },
-    ruleSets: {
+    assets: {
       'rule-set.list': './src/rule.list',
     },
   },
