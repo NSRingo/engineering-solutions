@@ -1,5 +1,11 @@
 # @iringo/arguments-builder
 
+## 1.7.7
+
+### Patch Changes
+
+- 0f2eee2: 修复默认参数错误问题
+
 ## 1.7.6
 
 ### Patch Changes
