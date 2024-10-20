@@ -46,6 +46,10 @@ const generateEnvironment = async ({
   name: string;
   rsbuildConfig: RsbuildConfig;
 } | null> => {
+  if (!config.source) {
+    return null;
+  }
+
   const { cacheDirectory } = appContext;
   if (!fs.existsSync(cacheDirectory)) {
     fs.mkdirSync(cacheDirectory);

@@ -1,46 +1,23 @@
 import { Template } from '@iringo/modkit-shared';
 
 export class SurgeTemplate extends Template {
-  get metadata() {
+  private get metadata() {
     return this.source?.metadata || {};
   }
 
-  get content() {
+  private get content() {
     return this.source?.content || {};
   }
 
-  renderKeyValuePairs(ojb?: Record<string, string>) {
-    return Object.entries(ojb || {})
-      .map(([key, value]) => `${key} = ${value}`)
-      .join('\n');
+  get General() {
+    return this.renderKeyValuePairs(this.content.general).trim();
   }
 
-  renderLines(lines?: string[]) {
-    return (lines || []).join('\n');
+  get Host() {
+    return this.renderKeyValuePairs(this.content.host).trim();
   }
 
-  renderMetadata(argumentsText: string, argumentsDescription: string) {
-    const result: Record<string, string | undefined> = {};
-    result.name = this.metadata.name;
-    result.desc = this.metadata.description;
-    result.requirement = this.metadata.system?.map((item) => `SYSTEM = ${item}`).join(' || ');
-    result.version = this.metadata.version;
-    if (argumentsText) {
-      result.arguments = argumentsText;
-    }
-    if (argumentsDescription) {
-      result['arguments-desc'] = argumentsDescription;
-    }
-    Object.entries(this.metadata.extra || {}).forEach(([key, value]) => {
-      result[key] = Array.isArray(value) ? value.join(',') : value;
-    });
-    return Object.entries(result)
-      .map(([key, value]) => (!!key && !!value ? `#!${key} = ${value}` : ''))
-      .filter(Boolean)
-      .join('\n');
-  }
-
-  renderRule() {
+  get Rule() {
     return this.content.rule
       ?.map((rule) => {
         if (typeof rule === 'string') {
@@ -58,10 +35,35 @@ export class SurgeTemplate extends Template {
             break;
         }
       })
-      .join('\n');
+      .join('\n')
+      .trim();
   }
 
-  renderScript(scriptParams: string) {
+  get Metadata() {
+    const { argumentsText, argumentsDescription } = this.handleArguments();
+    const result: Record<string, string | undefined> = {};
+    result.name = this.metadata.name;
+    result.desc = this.metadata.description;
+    result.requirement = this.metadata.system?.map((item) => `SYSTEM = ${item}`).join(' || ');
+    result.version = this.metadata.version;
+    if (argumentsText) {
+      result.arguments = argumentsText;
+    }
+    if (argumentsDescription) {
+      result['arguments-desc'] = argumentsDescription;
+    }
+    Object.entries(this.metadata.extra || {}).forEach(([key, value]) => {
+      result[key] = Array.isArray(value) ? value.join(',') : value;
+    });
+    return Object.entries(result)
+      .map(([key, value]) => (!!key && !!value ? `#!${key} = ${value}` : ''))
+      .filter(Boolean)
+      .join('\n')
+      .trim();
+  }
+
+  get Script() {
+    const { scriptParams } = this.handleArguments();
     return (this.content.script || [])
       .map((script, index) => {
         const parameters = [];
@@ -101,10 +103,117 @@ export class SurgeTemplate extends Template {
         }
         return `${script.name || `script${index}`} = ${parameters.join(', ')}`;
       })
-      .join('\n');
+      .join('\n')
+      .trim();
   }
 
-  handleArguments() {
+  get MITM() {
+    if (!this.content.mitm) {
+      return '';
+    }
+    let result = '';
+    if (this.content.mitm.hostname?.length) {
+      result += `hostname = %APPEND%  ${this.content.mitm.hostname.join(', ')}\n`;
+    }
+    if (this.content.mitm.clientSourceAddress?.length) {
+      result += `client-source-address = %APPEND%  ${this.content.mitm.clientSourceAddress.join(', ')}\n`;
+    }
+    return result.trim();
+  }
+
+  private get Rewrite() {
+    const urlRewrites: string[] = [];
+    const headerRewrites: string[] = [];
+    const bodyRewrites: string[] = [];
+    this.content.rewrite?.forEach((rewrite) => {
+      switch (rewrite.mode) {
+        case 'header':
+        case 302:
+        case 'reject': {
+          const options = [];
+          options.push(rewrite.pattern);
+          options.push(rewrite.content);
+          options.push(rewrite.mode);
+          urlRewrites.push(options.join(' '));
+          break;
+        }
+        case 'header-add':
+        case 'header-del':
+        case 'header-replace-regex': {
+          const options = [];
+          options.push(rewrite.type);
+          options.push(rewrite.pattern);
+          options.push(rewrite.mode);
+          options.push(rewrite.content);
+          headerRewrites.push(options.join(' '));
+          break;
+        }
+        case undefined: {
+          const options = [];
+          options.push(rewrite.type);
+          options.push(rewrite.pattern);
+          options.push(rewrite.content);
+          bodyRewrites.push(options.join(' '));
+          break;
+        }
+      }
+    });
+    return {
+      url: urlRewrites.join('\n').trim(),
+      header: headerRewrites.join('\n').trim(),
+      body: bodyRewrites.join('\n').trim(),
+    };
+  }
+
+  get URLRewrite() {
+    return this.Rewrite.url;
+  }
+
+  get HeaderRewrite() {
+    return this.Rewrite.header;
+  }
+
+  get BodyRewrite() {
+    return this.Rewrite.body;
+  }
+
+  get MapLocal() {
+    return (this.content.mock || [])
+      .map((mock) => {
+        const options = [];
+        options.push(mock.pattern);
+        if (mock.dataType) {
+          options.push(`data-type=${mock.dataType}`);
+        }
+        if (typeof mock.data === 'string') {
+          options.push(`data=${this.utils.getFilePath(mock.data) || mock.data}`);
+        } else if (!!mock.data && 'content' in mock.data) {
+          options.push(`data=${mock.data.content}`);
+        }
+        if (mock.statusCode) {
+          options.push(`status-code=${mock.statusCode}`);
+        }
+        if (mock.headers) {
+          switch (typeof mock.headers) {
+            case 'string':
+              options.push(`header=${mock.headers}`);
+              break;
+            case 'object': {
+              const header = Object.entries(mock.headers)
+                .map((value) => value.join(':'))
+                .join('|');
+              options.push(`header=${header}`);
+              break;
+            }
+          }
+        }
+        return options.join(' ');
+      })
+      .join('\n')
+      .trim();
+  }
+
+  private handleArguments() {
     const args = this.source?.arguments || [];
     const argumentsText = args.map((arg) => `${arg.key}:${this.getDefaultValue(arg.defaultValue)}`).join(',');
 

@@ -6,6 +6,7 @@ import {
   initAppDir,
   loadConfig,
   loadPlugins,
+  logger,
   manager,
   runMaybeAsync,
 } from '@iringo/modkit-shared';
@@ -36,6 +37,11 @@ export async function initCommand() {
 
   // 加载配置文件，优先使用命令行指定的配置文件路径
   const { config } = await loadConfig(cliParams.config || cliParams.c);
+
+  if (!config?.source) {
+    logger.error('source config is required');
+    process.exit(1);
+  }
 
   // 加载插件，并注册到插件管理器中
   const plugins = loadPlugins(config);

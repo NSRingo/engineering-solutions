@@ -1,106 +1,10 @@
-import type { RsbuildConfig } from '@rsbuild/core';
-import type { PluginAPI, PluginHooks } from '../plugin/manager';
-import type { PluginModuleContent } from '../types';
-
-// /**
-//  * @link https://github.com/chavyleung/scripts/blob/master/box/chavy.boxjs.html#L1019
-//  */
-// export type BoxJsType =
-//   | 'number'
-//   | 'boolean'
-//   | 'text'
-//   | 'slider'
-//   | 'textarea'
-//   | 'radios'
-//   | 'checkboxes'
-//   | 'colorpicker'
-//   | 'selects'
-//   | 'modalSelects';
-
+// @ts-nocheck
 /**
- * @link https://nsloon.app/docs/Plugin/#argumentbuild-733
+ * @deprecated 迁移至 ../types
  */
-export type LoonType = 'input' | 'select' | 'switch';
-
-export type ArgumentType = 'string' | 'number' | 'boolean' | 'array';
-
-export interface PluginArgumentType {
-  default: ArgumentType;
-  /**
-   * 如果插件支持更多的参数类型，可自定义传入
-   */
-  [custom: string]: any;
-}
-
-export interface ArgumentItem {
-  /**
-   * 参数 key
-   */
-  key: string;
-  /**
-   * 参数类型
-   */
-  type: ArgumentType | PluginArgumentType;
-  /**
-   * 参数描述
-   */
-  name?: string;
-  /**
-   * 参数简介
-   */
-  description?: string;
-  /**
-   * 默认值
-   */
-  defaultValue?: string | number | boolean | (string | number | boolean)[];
-  /**
-   * 选项
-   */
-  options?: {
-    key: string;
-    label?: string;
-  }[];
-  /**
-   * 输入框占位符
-   */
-  placeholder?: string;
-}
-
-export interface ModuleMetadata {
-  /**
-   * 模块名称
-   * @default 读取 package.json 中的 displayName
-   */
-  name?: string;
-  /**
-   * 模块描述
-   * @default 读取 package.json 中的 description
-   */
-  description?: string;
-  /**
-   * 版本号
-   * @default 默认读取 package.json 中的 version
-   */
-  version?: string;
-  /**
-   * 支持的系统
-   */
-  system?: ('iOS' | 'iPadOS' | 'tvOS' | 'macOS' | 'watchOS')[];
-  /**
-   * 额外的配置
-   */
-  extra?: {
-    [key: string]: string | string[];
-  };
-}
-
-export interface RuleSetRule {
-  type: 'RULE-SET';
-  assetKey: string;
-  policyName?: string;
-}
-
-export type Rule = string | RuleSetRule;
+import type { RsbuildConfig } from '@rsbuild/core';
+import type { PluginAPI } from '../plugin/manager';
+import type { PluginModuleContent } from '../types';
 
 // 三合一写法（建议用这个，因为只有surge区分Url Header Body）
 // 有type没mode: BodyRewrite
@@ -141,49 +45,6 @@ export interface Mock<FileKey extends string> {
   data?: string | FileKey;
   statusCode?: number;
   headers?: Record<string, string>;
-}
-
-export interface Script {
-  name: string;
-  type: 'http-request' | 'http-response' | 'cron' | 'event' | 'dns' | 'rule' | 'generic';
-  /**
-   * 脚本，对应 `source.script` 中的 key
-   */
-  scriptKey: string;
-  scriptUpdateInterval?: number;
-  timeout?: number;
-  /**
-   * 是否注入 argument
-   */
-  injectArgument?: boolean;
-  /**
-   * 自定义 argument，优先级高于 `injectArgument`
-   */
-  argument?: string;
-  engine?: 'auto' | 'jsc' | 'webview';
-  pattern?: string;
-  /**
-   * 最大允许的 body 大小，超过此大小则会跳过脚本执行
-   * @default 131072
-   */
-  maxSize?: number;
-  /**
-   * 是否获取 http 请求的 body
-   */
-  requiresBody?: boolean;
-  /**
-   * 获取 http 请求的 body 类型为 Uint8Array
-   */
-  binaryBodyMode?: boolean;
-  /**
-   * cron 表达式，仅在 type 为 cron 时有效
-   */
-  cronexp?: string;
-  /**
-   * 是否开启 debug 模式
-   * @default dev 环境下为 true，其他环境下为 false
-   */
-  debug?: boolean;
 }
 
 export interface ModuleContent extends PluginModuleContent {

@@ -1,86 +1,25 @@
-import type { Server } from 'node:http';
-import { type commander, logger } from '@iringo/utils';
-import {
-  type AsyncManager,
-  type AsyncWorker,
-  type Worker,
-  createAsyncManager,
-  createAsyncWorkflow,
-  createWorkflow,
-} from '@modern-js/plugin';
-import type { RsbuildInstance } from '@rsbuild/core';
-import type { Express } from 'express';
-import type { ModkitConfig } from '../config';
+import { logger } from '@iringo/utils';
+import { type AsyncManager, createAsyncManager, createAsyncWorkflow, createWorkflow } from '@modern-js/plugin';
+
+import type {
+  CommandsParams,
+  ConfigurePlatformReturn,
+  ModifySourceParams,
+  OnAfterStartDevServer,
+  OnBeforeStartDevServer,
+  SourceConfig,
+  TemplateParametersParams,
+} from '../types';
 import { runMaybeAsync } from '../utils';
 import { setAppContext, useAppContext } from './context';
 
-type RsbuildDevServer = Awaited<ReturnType<RsbuildInstance['createDevServer']>>;
-
-export interface ModifySourceParams {
-  source: ModkitConfig['source'];
-}
-
-export interface TemplateParametersParams {
-  source: ModkitConfig['source'];
-  getFilePath: (fileName: string) => string;
-  getScriptPath: (scriptKey: string) => string;
-}
-
-export interface ConfigurePlatformReturn {
-  /**
-   * 拓展名
-   */
-  extension: `.${string}`;
-  /**
-   * 渲染模板
-   */
-  template: string;
-}
-
-export interface OnBeforeStartDevServer {
-  app: Express;
-}
-
-export interface OnAfterStartDevServer {
-  app: Express;
-  httpServer: Server;
-  rsbuildServer: RsbuildDevServer;
-}
-
-export interface PluginHooks {
-  /**
-   * 配置平台信息
-   */
-  configurePlatform?: Worker<void, ConfigurePlatformReturn>;
-  /**
-   * 针对当前平台修改配置
-   */
-  modifySource?: AsyncWorker<ModifySourceParams, ModkitConfig['source']>;
-  /**
-   * 注入模板参数
-   */
-  templateParameters?: Worker<TemplateParametersParams, Record<string, any>>;
-  /**
-   * 启动开发服务器前
-   */
-  onBeforeStartDevServer?: AsyncWorker<OnBeforeStartDevServer, void>;
-  /**
-   * 启动开发服务器后
-   */
-  onAfterStartDevServer?: AsyncWorker<OnAfterStartDevServer, void>;
-  /**
-   * 为 commander 添加新的 CLI 命令
-   */
-  commands?: AsyncWorker<{ program: commander.Command }, void>;
-}
-
 const hooks = {
   configurePlatform: createWorkflow<void, ConfigurePlatformReturn>(),
-  modifySource: createAsyncWorkflow<ModifySourceParams, ModkitConfig['source']>(),
+  modifySource: createAsyncWorkflow<ModifySourceParams, SourceConfig>(),
   templateParameters: createWorkflow<TemplateParametersParams, Record<string, any>>(),
   onBeforeStartDevServer: createAsyncWorkflow<OnBeforeStartDevServer, void>(),
   onAfterStartDevServer: createAsyncWorkflow<OnAfterStartDevServer, void>(),
-  commands: createAsyncWorkflow<{ program: commander.Command }, void>(),
+  commands: createAsyncWorkflow<CommandsParams, void>(),
 };
 
 export const pluginAPI = {

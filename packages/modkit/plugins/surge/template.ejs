@@ -1,27 +1,46 @@
-<%= surgeTemplate.renderMetadata(argumentsText, argumentsDescription) %>
+<%= surgeTemplate.Metadata %>
 
-
-<% if (content.general) { %>
+<% if (surgeTemplate.General) { %>
 [General]
-<%= surgeTemplate.renderKeyValuePairs(content.general) %>
+<%= surgeTemplate.General %>
 <% } %>
 
-<% if (content.host) { %>
+<% if (surgeTemplate.Host) { %>
 [Host]
-<%= surgeTemplate.renderKeyValuePairs(content.host) %>
+<%= surgeTemplate.Host %>
 <% } %>
 
-<% if (content.rule) { %>
+<% if (surgeTemplate.Rule) { %>
 [Host]
-<%= surgeTemplate.renderRule() %>
+<%= surgeTemplate.Rule %>
 <% } %>
 
-<% if (content.script) { %>
+<% if (surgeTemplate.URLRewrite) { %>
+[URL Rewrite]
+<%= surgeTemplate.URLRewrite %>
+<% } %>
+
+<% if (surgeTemplate.HeaderRewrite) { %>
+[Header Rewrite]
+<%= surgeTemplate.HeaderRewrite %>
+<% } %>
+
+<% if (surgeTemplate.BodyRewrite) { %>
+[Body Rewrite]
+<%= surgeTemplate.BodyRewrite %>
+<% } %>
+
+<% if (surgeTemplate.MapLocal) { %>
+[Map Local]
+<%= surgeTemplate.BodyRewrite %>
+<% } %>
+
+<% if (surgeTemplate.Script) { %>
 [Script]
-<%= surgeTemplate.renderScript(scriptParams) %>
+<%= surgeTemplate.Script %>
 <% } %>
 
-<% if (content.mitm && content.mitm.hostname) { %>
-[Mitm]
-hostname = %APPEND% <%= content.mitm.hostname %>
+<% if (surgeTemplate.MITM) { %>
+[MITM]
+<%= surgeTemplate.MITM %>
 <% } %>

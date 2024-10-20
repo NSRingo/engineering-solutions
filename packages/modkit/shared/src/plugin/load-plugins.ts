@@ -1,4 +1,4 @@
-import type { ModkitConfig } from '../config';
+import type { ModkitConfig } from '../types';
 import { createPlugin } from './manager';
 
 export const loadPlugins = (config: ModkitConfig) => {

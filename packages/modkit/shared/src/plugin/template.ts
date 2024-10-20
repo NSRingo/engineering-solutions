@@ -1,4 +1,4 @@
-import type { TemplateParametersParams } from './manager';
+import type { TemplateParametersParams } from '../types/plugin';
 
 export class Template {
   constructor(readonly params: TemplateParametersParams) {}
@@ -13,5 +13,15 @@ export class Template {
       getFilePath,
       getScriptPath,
     };
+  }
+
+  renderKeyValuePairs(ojb?: Record<string, string>) {
+    return Object.entries(ojb || {})
+      .map(([key, value]) => `${key} = ${value}`)
+      .join('\n');
+  }
+
+  renderLines(lines?: string[]) {
+    return (lines || []).join('\n');
   }
 }

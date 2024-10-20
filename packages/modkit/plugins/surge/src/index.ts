@@ -29,9 +29,7 @@ export const pluginSurge = (): ModkitPlugin => {
         },
         templateParameters(params) {
           const surgeTemplate = new SurgeTemplate(params);
-          const argumentsResult = surgeTemplate.handleArguments();
           return {
-            ...argumentsResult,
             surgeTemplate,
           };
         },
