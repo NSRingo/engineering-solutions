@@ -8,5 +8,5 @@ export interface ModuleMock {
    */
   data?: MockData;
   statusCode?: number;
-  headers?: Record<string, string>;
+  headers?: string | Record<string, string>;
 }
