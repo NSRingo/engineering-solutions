@@ -1,16 +1,14 @@
 import { loadConfigFile, lodash, logger } from '@iringo/utils';
 import type { ModkitConfig } from './types';
 
-export function defineConfig<ScriptInput extends Record<string, string>>(
-  config: ModkitConfig<ScriptInput> | (() => ModkitConfig<ScriptInput>),
-): ModkitConfig<ScriptInput> {
+export function defineConfig(config: ModkitConfig | (() => ModkitConfig)): ModkitConfig {
   if (typeof config === 'function') {
     return config();
   }
   return config;
 }
 
-const getDefaultConfig = (): ModkitConfig<any> => {
+const getDefaultConfig = (): ModkitConfig => {
   const root = process.env.MODKIT_ROOT || process.cwd();
 
   let packageJson: any = {};
@@ -32,6 +30,8 @@ const getDefaultConfig = (): ModkitConfig<any> => {
     output: {
       distPath: {
         root: 'dist',
+        js: 'scripts',
+        assets: 'static',
       },
     },
     dev: {
@@ -43,10 +43,10 @@ const getDefaultConfig = (): ModkitConfig<any> => {
 export const loadConfig = async (
   configPath?: string,
 ): Promise<{
-  config: ModkitConfig<any>;
+  config: ModkitConfig;
   configFilePath: string;
 }> => {
-  const resp = await loadConfigFile<ModkitConfig<any>>({
+  const resp = await loadConfigFile<ModkitConfig>({
     configPath,
     baseConfigName: 'modkit.config',
     cwd: process.env.MODKIT_ROOT || process.cwd(),

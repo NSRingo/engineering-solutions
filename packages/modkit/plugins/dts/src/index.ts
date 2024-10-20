@@ -112,12 +112,12 @@ export interface DtsPluginOptions {
   tsconfigPath?: string;
 }
 
-export const pluginDts = <T extends Record<string, string>>({
+export const pluginDts = ({
   interfaceName = 'Arguments',
   isExported = false,
   filePath = 'src/arguments.d.ts',
   tsconfigPath = 'tsconfig.json',
-}: DtsPluginOptions = {}): ModkitPlugin<T> => ({
+}: DtsPluginOptions = {}): ModkitPlugin => ({
   name: 'dts',
 
   setup: (api) => {

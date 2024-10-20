@@ -3,12 +3,12 @@
 
 <% if (content.general) { %>
 [General]
-<%= surgeTemplate.renderGeneral() %>
+<%= surgeTemplate.renderKeyValuePairs(content.general) %>
 <% } %>
 
 <% if (content.host) { %>
 [Host]
-<%= surgeTemplate.renderHost() %>
+<%= surgeTemplate.renderKeyValuePairs(content.host) %>
 <% } %>
 
 <% if (content.rule) { %>

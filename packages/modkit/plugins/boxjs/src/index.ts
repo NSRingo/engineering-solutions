@@ -16,9 +16,7 @@ export interface BoxJsPluginOptions {
   scope?: string;
 }
 
-export const pluginBoxJs = <T extends Record<string, string>>({
-  scope = '',
-}: BoxJsPluginOptions = {}): ModkitPlugin<T> => {
+export const pluginBoxJs = ({ scope = '' }: BoxJsPluginOptions = {}): ModkitPlugin => {
   return {
     name: 'boxjs',
     setup() {

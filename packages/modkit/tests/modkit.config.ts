@@ -3,9 +3,7 @@ import { pluginBoxJs } from '@iringo/modkit/plugins/boxjs';
 import { pluginDts } from '@iringo/modkit/plugins/dts';
 import { pluginSurge } from '@iringo/modkit/plugins/surge';
 
-export default defineConfig<{
-  response: string;
-}>({
+export default defineConfig({
   source: {
     arguments: [
       {
@@ -152,6 +150,9 @@ export default defineConfig<{
     },
     scripts: {
       response: './src/index.ts',
+    },
+    ruleSets: {
+      'rule-set.list': './src/rule.list',
     },
   },
   plugins: [pluginSurge(), pluginDts(), pluginBoxJs()],

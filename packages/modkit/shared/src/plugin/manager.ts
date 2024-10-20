@@ -16,12 +16,13 @@ import { setAppContext, useAppContext } from './context';
 
 type RsbuildDevServer = Awaited<ReturnType<RsbuildInstance['createDevServer']>>;
 
-export interface ModifySourceParams<T extends Record<string, string>> {
-  source: ModkitConfig<T>['source'];
+export interface ModifySourceParams {
+  source: ModkitConfig['source'];
 }
 
-export interface TemplateParametersParams<T extends Record<string, string>> {
-  source: ModkitConfig<T>['source'];
+export interface TemplateParametersParams {
+  source: ModkitConfig['source'];
+  getFilePath: (fileName: string) => string;
   getScriptPath: (scriptKey: string) => string;
 }
 
@@ -46,7 +47,7 @@ export interface OnAfterStartDevServer {
   rsbuildServer: RsbuildDevServer;
 }
 
-export interface PluginHooks<T extends Record<string, string>> {
+export interface PluginHooks {
   /**
    * 配置平台信息
    */
@@ -54,11 +55,11 @@ export interface PluginHooks<T extends Record<string, string>> {
   /**
    * 针对当前平台修改配置
    */
-  modifySource?: AsyncWorker<ModifySourceParams<T>, ModkitConfig<T>['source']>;
+  modifySource?: AsyncWorker<ModifySourceParams, ModkitConfig['source']>;
   /**
    * 注入模板参数
    */
-  templateParameters?: Worker<TemplateParametersParams<T>, Record<string, any>>;
+  templateParameters?: Worker<TemplateParametersParams, Record<string, any>>;
   /**
    * 启动开发服务器前
    */
@@ -75,11 +76,8 @@ export interface PluginHooks<T extends Record<string, string>> {
 
 const hooks = {
   configurePlatform: createWorkflow<void, ConfigurePlatformReturn>(),
-  modifySource: createAsyncWorkflow<
-    ModifySourceParams<Record<string, string>>,
-    ModkitConfig<Record<string, string>>['source']
-  >(),
-  templateParameters: createWorkflow<TemplateParametersParams<Record<string, string>>, Record<string, any>>(),
+  modifySource: createAsyncWorkflow<ModifySourceParams, ModkitConfig['source']>(),
+  templateParameters: createWorkflow<TemplateParametersParams, Record<string, any>>(),
   onBeforeStartDevServer: createAsyncWorkflow<OnBeforeStartDevServer, void>(),
   onAfterStartDevServer: createAsyncWorkflow<OnAfterStartDevServer, void>(),
   commands: createAsyncWorkflow<{ program: commander.Command }, void>(),

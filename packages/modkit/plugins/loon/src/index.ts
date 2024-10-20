@@ -1,6 +1,6 @@
 import type { ModkitPlugin } from '@iringo/modkit-shared';
 
-export const pluginLoon = <T extends Record<string, string>>(): ModkitPlugin<T> => {
+export const pluginLoon = (): ModkitPlugin => {
   return {
     name: 'loon',
     setup() {

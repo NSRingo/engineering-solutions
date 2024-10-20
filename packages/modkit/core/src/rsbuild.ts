@@ -12,11 +12,9 @@ import {
 import { type EnvironmentConfig, type RsbuildConfig, createRsbuild } from '@rsbuild/core';
 import type { Compilation } from '@rspack/core';
 
-const getScriptPathFactory = (compilation: Compilation, assetPrefix = '') => {
+const getFilePathFactory = (assetPrefix = '') => {
   const isDev = process.env.NODE_ENV === 'development';
-  const entrypoints = compilation.getStats().toJson({ assets: true }).entrypoints;
-  return (scriptKey: string) => {
-    const filePath = entrypoints?.[scriptKey]?.assets?.[0].name;
+  return (filePath: string) => {
     let result = filePath;
     if (assetPrefix) {
       result = `${assetPrefix}/${filePath}`;
@@ -24,7 +22,19 @@ const getScriptPathFactory = (compilation: Compilation, assetPrefix = '') => {
     if (isDev) {
       result += `?t=${Date.now()}`;
     }
-    return result ?? '';
+    return result;
+  };
+};
+
+const getScriptPathFactory = (compilation: Compilation, assetPrefix = '') => {
+  const entrypoints = compilation.getStats().toJson({ assets: true }).entrypoints;
+  const getFilePath = getFilePathFactory(assetPrefix);
+  return (scriptKey: string) => {
+    const filePath = entrypoints?.[scriptKey]?.assets?.[0].name;
+    if (!filePath) {
+      return '';
+    }
+    return getFilePath(filePath);
   };
 };
 
@@ -32,7 +42,7 @@ const generateEnvironment = async ({
   plugin,
   config,
   appContext,
-}: { plugin: PluginType; config: ModkitConfig<Record<string, string>>; appContext: IAppContext }): Promise<{
+}: { plugin: PluginType; config: ModkitConfig; appContext: IAppContext }): Promise<{
   name: string;
   rsbuildConfig: RsbuildConfig;
 } | null> => {
@@ -72,14 +82,15 @@ const generateEnvironment = async ({
 
   // 设置模板参数
   rsbuildConfig.html.templateParameters = (defaultParameters) => {
-    const getScriptPath = getScriptPathFactory(
-      defaultParameters.compilation as Compilation,
-      defaultParameters.assetPrefix as string,
-    );
-    const params = pluginCtx.templateParameters?.({ source, getScriptPath });
+    const compilation = defaultParameters.compilation as Compilation;
+    const assetPrefix = defaultParameters.assetPrefix as string;
+    const getFilePath = getFilePathFactory(assetPrefix);
+    const getScriptPath = getScriptPathFactory(compilation, assetPrefix);
+    const params = pluginCtx.templateParameters?.({ source, getFilePath, getScriptPath });
     return {
       ...source,
       ...params,
+      getFilePath,
       getScriptPath,
     };
   };
@@ -95,7 +106,7 @@ export const useRsbuild = async ({
   plugins,
   appContext,
 }: {
-  config: ModkitConfig<Record<string, string>>;
+  config: ModkitConfig;
   plugins: PluginType[];
   appContext: IAppContext;
 }) => {
@@ -111,6 +122,12 @@ export const useRsbuild = async ({
     ),
   );
 
+  const assetsOutput = config.output?.distPath?.assets ?? 'static';
+  const assetsCopy = Object.entries(config.source?.assets ?? {}).map(([outputName, from]) => ({
+    from,
+    to: path.join(assetsOutput, outputName),
+  }));
+
   const rsbuild = await createRsbuild({
     rsbuildConfig: {
       source: {
@@ -120,11 +137,12 @@ export const useRsbuild = async ({
         assetPrefix: config.output?.assetPrefix,
         distPath: {
           root: config.output?.distPath?.root,
-          js: '',
+          js: config.output?.distPath?.js,
         },
         filename: {
           js: '[name].js',
         },
+        copy: assetsCopy,
       },
       dev: {
         assetPrefix: `http://${address.ip()}:${config.dev?.port ?? 3000}`,

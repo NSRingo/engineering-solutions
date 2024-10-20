@@ -9,6 +9,16 @@ export class SurgeTemplate extends Template {
     return this.source?.content || {};
   }
 
+  renderKeyValuePairs(ojb?: Record<string, string>) {
+    return Object.entries(ojb || {})
+      .map(([key, value]) => `${key} = ${value}`)
+      .join('\n');
+  }
+
+  renderLines(lines?: string[]) {
+    return (lines || []).join('\n');
+  }
+
   renderMetadata(argumentsText: string, argumentsDescription: string) {
     const result: Record<string, string | undefined> = {};
     result.name = this.metadata.name;
@@ -30,61 +40,66 @@ export class SurgeTemplate extends Template {
       .join('\n');
   }
 
-  renderGeneral() {
-    return Object.entries(this.content.general || {})
-      .map(([key, value]) => `${key} = ${value}`)
-      .join('\n');
-  }
-
-  renderHost() {
-    return Object.entries(this.content.host || {})
-      .map(([key, value]) => `${key} = ${value}`)
-      .join('\n');
-  }
-
   renderRule() {
-    return this.content.rule?.join('\n') || '';
+    return this.content.rule
+      ?.map((rule) => {
+        if (typeof rule === 'string') {
+          return rule;
+        }
+        switch (rule.type) {
+          case 'RULE-SET': {
+            let result = `RULE-SET, ${this.utils.getFilePath(rule.assetKey)}`;
+            if (rule.policyName) {
+              result += `, ${rule.policyName}`;
+            }
+            return result;
+          }
+          default:
+            break;
+        }
+      })
+      .join('\n');
   }
 
   renderScript(scriptParams: string) {
     return (this.content.script || [])
       .map((script, index) => {
-        const options = [];
-        options.push(`type=${script.type}`);
+        const parameters = [];
+        parameters.push(`type=${script.type}`);
         if (script.pattern) {
-          options.push(`pattern=${script.pattern}`);
+          parameters.push(`pattern=${script.pattern}`);
         }
         if (script.type === 'cron' && script.cronexp) {
-          options.push(`cronexp="${script.cronexp}"`);
+          parameters.push(`cronexp="${script.cronexp}"`);
         }
         if (script.engine) {
-          options.push(`requires-body=${JSON.stringify(!!script.requiresBody)}`);
+          parameters.push(`requires-body=${JSON.stringify(!!script.requiresBody)}`);
         }
         if (script.binaryBodyMode) {
-          options.push(`binary-body-mode=${JSON.stringify(!!script.binaryBodyMode)}`);
+          parameters.push(`binary-body-mode=${JSON.stringify(!!script.binaryBodyMode)}`);
         }
         if (script.scriptKey) {
-          options.push(`script-path=${this.getScriptPath(script.scriptKey)}`);
+          parameters.push(`script-path=${this.utils.getScriptPath(script.scriptKey)}`);
         }
         if (script.engine) {
-          options.push(`engine=${script.engine}`);
+          parameters.push(`engine=${script.engine}`);
         }
         if (script.maxSize) {
-          options.push(`max-size=${script.maxSize}`);
+          parameters.push(`max-size=${script.maxSize}`);
         }
         if (script.timeout) {
-          options.push(`timeout=${script.timeout}`);
+          parameters.push(`timeout=${script.timeout}`);
         }
         if (script.scriptUpdateInterval) {
-          options.push(`script-update-interval=${script.scriptUpdateInterval}`);
+          parameters.push(`script-update-interval=${script.scriptUpdateInterval}`);
         }
         if (script.debug || process.env.NODE_ENV === 'development') {
-          options.push('debug=true');
+          parameters.push('debug=true');
         }
         if (script.injectArgument || script.argument) {
-          options.push(`argument=${script.argument || scriptParams}`);
+          parameters.push(`argument=${script.argument || scriptParams}`);
         }
-        return `${script.name || `script${index}`} = ${options.join(', ')}`;
+        return `${script.name || `script${index}`} = ${parameters.join(', ')}`;
       })
       .join('\n');
   }

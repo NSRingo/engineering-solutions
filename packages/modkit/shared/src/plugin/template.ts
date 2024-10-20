@@ -1,8 +1,17 @@
-import type { ModkitConfig } from '../config';
+import type { TemplateParametersParams } from './manager';
 
 export class Template {
-  constructor(
-    readonly source: ModkitConfig<Record<string, string>>['source'],
-    readonly getScriptPath: (scriptKey: string) => string,
-  ) {}
+  constructor(readonly params: TemplateParametersParams) {}
+
+  get source() {
+    return this.params.source;
+  }
+
+  get utils() {
+    const { getFilePath, getScriptPath } = this.params;
+    return {
+      getFilePath,
+      getScriptPath,
+    };
+  }
 }

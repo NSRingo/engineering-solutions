@@ -4,7 +4,6 @@ declare module '@iringo/modkit-shared' {
   interface PluginModuleContent {
     general?: Record<string, string>;
     host?: Record<string, string>;
-    rule?: string[];
     mitm?: {
       hostname?: string[];
       clientSourceAddress?: string[];

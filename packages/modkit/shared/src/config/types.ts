@@ -94,52 +94,13 @@ export interface ModuleMetadata {
   };
 }
 
-// 建议交给QX内置解析器自己处理，因为只有QX插件的写法和其他的不一样
-export interface Rule<RuleSetKey extends string> {
-  name?: string;
-  type:
-    | 'DOMAIN'
-    | 'DOMAIN-SUFFIX'
-    | 'DOMAIN-KEYWORD'
-    | 'DOMAIN-SET'
-    | 'IP-CIDR'
-    | 'IP-CIDR6'
-    | 'GEOIP'
-    | 'IP-ASN'
-    | 'USER-AGENT'
-    | 'URL-REGEX'
-    | 'PROCESS-NAME'
-    | 'AND'
-    | 'OR'
-    | 'NOT'
-    | 'SUBNET'
-    | 'DEST-PORT'
-    | 'IN-PORT'
-    | 'SRC-PORT'
-    | 'SRC-IP'
-    | 'PROTOCOL'
-    | 'SCRIPT'
-    | 'CELLULAR-RADIO'
-    | 'DEVICE-NAME'
-    | 'RULE-SET'
-    | 'FINAL';
-  /**
-   * 规则组，对应 `source.ruleSet` 中的 key
-   */
-  content: string | number | RuleSetKey;
-  policy:
-    | 'DIRECT'
-    | 'REJECT'
-    | 'REJECT-NO-DROP'
-    | 'REJECT-TINYGIF'
-    | 'CELLULAR'
-    | 'CELLULAR-ONLY'
-    | 'HYBRID'
-    | 'NO-HYBRID'
-    | string;
-
-  parameters?: 'extended-matching' | 'no-resolve' | 'dns-failed';
+export interface RuleSetRule {
+  type: 'RULE-SET';
+  assetKey: string;
+  policyName?: string;
 }
+
+export type Rule = string | RuleSetRule;
 
 // 三合一写法（建议用这个，因为只有surge区分Url Header Body）
 // 有type没mode: BodyRewrite
@@ -182,13 +143,13 @@ export interface Mock<FileKey extends string> {
   headers?: Record<string, string>;
 }
 
-export interface Script<ScriptKey extends string> {
+export interface Script {
   name: string;
   type: 'http-request' | 'http-response' | 'cron' | 'event' | 'dns' | 'rule' | 'generic';
   /**
    * 脚本，对应 `source.script` 中的 key
    */
-  scriptKey: ScriptKey;
+  scriptKey: string;
   scriptUpdateInterval?: number;
   timeout?: number;
   /**
@@ -225,11 +186,12 @@ export interface Script<ScriptKey extends string> {
   debug?: boolean;
 }
 
-export interface ModuleContent<ScriptKey extends string> extends PluginModuleContent {
-  script?: Script<ScriptKey>[];
+export interface ModuleContent extends PluginModuleContent {
+  script?: Script[];
+  rule?: Rule[];
 }
 
-export interface ModkitConfig<ScriptInput extends Record<string, string>> {
+export interface ModkitConfig {
   source?: {
     /**
      * 模块名称
@@ -246,11 +208,15 @@ export interface ModkitConfig<ScriptInput extends Record<string, string>> {
     /**
      * 模块内容
      */
-    content?: ModuleContent<keyof ScriptInput & string>;
+    content?: ModuleContent;
     /**
      * 待编译的脚本
      */
-    scripts?: ScriptInput;
+    scripts?: Record<string, string>;
+    /**
+     * 复制到产物的静态资源，key 为文件名，value 为文件路径
+     */
+    assets?: Record<string, string>;
   };
   dev?: {
     /**
@@ -265,6 +231,16 @@ export interface ModkitConfig<ScriptInput extends Record<string, string>> {
        * @default dist
        */
       root?: string;
+      /**
+       * js 文件的输出目录
+       * @default 'scripts'
+       */
+      js?: string;
+      /**
+       * 文件的输出目录
+       * @default 'static'
+       */
+      assets?: string;
     };
     /**
      * 静态资源的 URL 前缀
@@ -284,14 +260,14 @@ export interface ModkitConfig<ScriptInput extends Record<string, string>> {
     swc?: NonNullable<RsbuildConfig['tools']>['swc'];
   };
 
-  plugins?: ModkitPlugin<ScriptInput>[];
+  plugins?: ModkitPlugin[];
 }
 
-export interface ModkitPlugin<ScriptInput extends Record<string, string> = any> {
+export interface ModkitPlugin {
   /**
    * 插件名称
    */
   name: string;
 
-  setup: (api: PluginAPI) => PluginHooks<ScriptInput>;
+  setup: (api: PluginAPI) => PluginHooks;
 }
