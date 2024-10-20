@@ -228,7 +228,7 @@ export class ArgumentsBuilder {
         return defaultValue;
       case 'object':
         if (Array.isArray(defaultValue) && defaultValue.length > 0) {
-          return defaultValue.map(this.getDefaultValue).join(',');
+          return `"${defaultValue.join(',')}"`;
         }
         return '""';
       default:
