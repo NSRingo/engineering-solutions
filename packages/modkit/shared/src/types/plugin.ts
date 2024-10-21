@@ -33,10 +33,12 @@ export interface ConfigurePlatformReturn {
 
 export interface OnBeforeStartDevServer {
   app: Express;
+  isFirstCompile: boolean;
 }
 
 export interface OnAfterStartDevServer {
   app: Express;
+  isFirstCompile: boolean;
   httpServer: Server;
   rsbuildServer: RsbuildDevServer;
 }

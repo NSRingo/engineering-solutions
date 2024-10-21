@@ -1,2 +1,2 @@
-export { initCommand } from './cli';
+export { ModKitCli } from './cli';
 export { defineConfig } from '@iringo/modkit-shared';
