@@ -173,6 +173,8 @@ export class SurgeTemplate extends Template {
               options.push(`header=${header}`);
               break;
             }
+            default:
+              break;
           }
         }
         return options.join(' ');
