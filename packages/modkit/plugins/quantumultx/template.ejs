@@ -1,0 +1,21 @@
+<%= quantumultxTemplate.Metadata %>
+
+<% if (quantumultxTemplate.DNS) { %>
+#[dns]
+<%= quantumultxTemplate.DNS %>
+<% } %>
+
+<% if (quantumultxTemplate.Filter) { %>
+#[filter_local]
+<%= quantumultxTemplate.Filter %>
+<% } %>
+
+<% if (quantumultxTemplate.Rewrite) { %>
+#[rewrite_local]
+<%= quantumultxTemplate.Rewrite %>
+<% } %>
+
+<% if (quantumultxTemplate.MITM) { %>
+#[mitm]
+<%= quantumultxTemplate.MITM %>
+<% } %>
