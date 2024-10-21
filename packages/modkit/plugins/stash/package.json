@@ -11,7 +11,8 @@
   },
   "files": ["dist", "types", "CHANGELOG.md"],
   "dependencies": {
-    "@iringo/modkit-shared": "workspace:^"
+    "@iringo/modkit-shared": "workspace:^",
+    "yaml": "^2.6.0"
   },
   "devDependencies": {
     "@iringo/modkit-config": "workspace:^",

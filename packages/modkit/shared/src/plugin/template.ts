@@ -27,7 +27,15 @@ export class Template {
   renderKeyValuePairs(ojb?: Record<string, string | undefined>, { separator = ' = ', join = '\n', prefix = '' } = {}) {
     return Object.entries(ojb || {})
       .filter(([, value]) => value !== undefined)
-      .map(([key, value]) => `${prefix}${key}${separator}${value}`)
+      .map(([key, value]) => {
+        let result = `${prefix}${key}${separator}`;
+        if (typeof value === 'string' && value.includes('\n')) {
+          result += value.replace(/\n/g, `\\n`);
+        } else {
+          result += value;
+        }
+        return result;
+      })
       .join(join)
       .trim();
   }

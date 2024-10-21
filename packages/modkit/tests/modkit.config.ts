@@ -119,6 +119,7 @@ export default defineConfig({
       },
     ],
     metadata: {
+      description: 'iOS 18 & macOS 15 & watchOS 11\n1.解锁全部天气功能\n2.替换空气质量数据\n3.添加下一小时降水数据',
       extra: {
         category: ' iRingo',
       },

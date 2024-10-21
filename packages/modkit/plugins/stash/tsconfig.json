@@ -1,6 +1,7 @@
 {
   "extends": "@iringo/modkit-config/tsconfig",
   "compilerOptions": {
+    "lib": ["ESNext"],
     "outDir": "./dist",
     "baseUrl": "./"
   },
