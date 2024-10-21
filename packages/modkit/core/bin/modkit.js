@@ -1,4 +1,6 @@
 #!/usr/bin/env node
-const { initCommand } = require('../dist/index.js');
+const { ModKitCli } = require('../dist/index.js');
 
-initCommand();
+const cli = new ModKitCli();
+
+cli.run();

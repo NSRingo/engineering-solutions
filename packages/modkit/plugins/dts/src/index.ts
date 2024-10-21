@@ -43,8 +43,12 @@ const addNestedProperty = (
 
     // 构建 TSDoc 注释
     const comments = [];
-    if (arg.name) comments.push(arg.name);
-    if (arg.description) comments.push(`\n${arg.description}`);
+    if (arg.name) {
+      comments.push(arg.name);
+    }
+    if (arg.description) {
+      comments.push(`\n${arg.description}`);
+    }
     if (arg.options?.length) {
       comments.push('\n@remarks\n\nPossible values:');
       arg.options.forEach((opt) => {
@@ -112,47 +116,48 @@ export interface DtsPluginOptions {
   tsconfigPath?: string;
 }
 
-export const pluginDts = <T extends Record<string, string>>({
+export const pluginDts = ({
   interfaceName = 'Arguments',
   isExported = false,
   filePath = 'src/arguments.d.ts',
   tsconfigPath = 'tsconfig.json',
-}: DtsPluginOptions = {}): ModkitPlugin<T> => ({
+}: DtsPluginOptions = {}): ModkitPlugin => ({
   name: 'dts',
 
   setup: (api) => {
     let argumentItems: ArgumentItem[] = [];
     const { appDirectory } = api.useAppContext();
+
+    function generateDts() {
+      const tsconfigFilePath = path.resolve(appDirectory, tsconfigPath);
+      const dtsFilePath = path.resolve(appDirectory, filePath);
+      if (fs.existsSync(dtsFilePath)) {
+        fs.unlinkSync(dtsFilePath);
+      }
+      const project = new Project({
+        tsConfigFilePath: fs.existsSync(tsconfigFilePath) ? tsconfigFilePath : undefined,
+      });
+      const sourceFile = project.createSourceFile(dtsFilePath, '');
+      const argumentsInterface = sourceFile.addInterface({
+        name: interfaceName,
+        isExported,
+      });
+      argumentItems.forEach((arg) => {
+        const keys = arg.key.split('.');
+        addNestedProperty(argumentsInterface, keys, arg);
+      });
+      sourceFile.saveSync();
+      api.logger.success(`Generated ${path.relative(appDirectory, dtsFilePath)}`);
+    }
+
     return {
-      processArguments: ({ args }) => {
-        argumentItems = args;
-        return args;
+      templateParameters: ({ source }) => {
+        argumentItems = source?.arguments || [];
+        return {};
       },
+      onBeforeStartDevServer: generateDts,
       commands: ({ program }) => {
-        const tsconfigFilePath = path.resolve(appDirectory, tsconfigPath);
-        const dtsFilePath = path.resolve(appDirectory, filePath);
-        program
-          .command('dts')
-          .description('generate typescript interface file for arguments')
-          .action(() => {
-            if (fs.existsSync(dtsFilePath)) {
-              fs.unlinkSync(dtsFilePath);
-            }
-            const project = new Project({
-              tsConfigFilePath: fs.existsSync(tsconfigFilePath) ? tsconfigFilePath : undefined,
-            });
-            const sourceFile = project.createSourceFile(dtsFilePath, '');
-            const argumentsInterface = sourceFile.addInterface({
-              name: interfaceName,
-              isExported,
-            });
-            argumentItems.forEach((arg) => {
-              const keys = arg.key.split('.');
-              addNestedProperty(argumentsInterface, keys, arg);
-            });
-            sourceFile.saveSync();
-            api.logger.success(`Generated ${path.relative(appDirectory, dtsFilePath)}`);
-          });
+        program.command('dts').description('generate typescript interface file for arguments').action(generateDts);
       },
     };
   },

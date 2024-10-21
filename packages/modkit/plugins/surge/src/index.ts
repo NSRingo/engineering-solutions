@@ -1,24 +1,8 @@
 import type { ModkitPlugin } from '@iringo/modkit-shared';
 import qrcode from 'qrcode-terminal';
+import { SurgeTemplate } from './template';
 
-function getDefaultValue(defaultValue: any): any {
-  switch (typeof defaultValue) {
-    case 'string':
-      return `"${defaultValue}"`;
-    case 'number':
-    case 'boolean':
-      return defaultValue;
-    case 'object':
-      if (Array.isArray(defaultValue) && defaultValue.length > 0) {
-        return getDefaultValue(defaultValue[0]);
-      }
-      return '""';
-    default:
-      return '""';
-  }
-}
-
-export const pluginSurge = <T extends Record<string, string>>(): ModkitPlugin<T> => {
+export const pluginSurge = (): ModkitPlugin => {
   return {
     name: 'surge',
 
@@ -34,14 +18,8 @@ export const pluginSurge = <T extends Record<string, string>>(): ModkitPlugin<T>
         },
         modifySource({ source }) {
           source ??= {};
-          source.metadata ??= {};
-          source.metadata.arguments ??= true;
           source.arguments = source.arguments?.filter((item) => {
-            if (
-              typeof item.type === 'object' &&
-              Array.isArray(item.type.exclude) &&
-              item.type.exclude.includes('surge')
-            ) {
+            if (typeof item.type === 'object' && item.type.surge === 'exclude') {
               return false;
             }
             return true;
@@ -49,46 +27,16 @@ export const pluginSurge = <T extends Record<string, string>>(): ModkitPlugin<T>
           moduleName = source.moduleName || '';
           return source;
         },
-        processArguments({ args }) {
-          const argumentsText = args.map((arg) => `${arg.key}:${getDefaultValue(arg.defaultValue)}`).join(',');
-
-          const argumentsDescription = args
-            .map((arg) => {
-              let result = arg.key;
-              if (arg.name) {
-                result += `: ${arg.name}`;
-              }
-              if (arg.options?.length) {
-                result += '\n';
-                result += arg.options
-                  .map((option, index, array) => {
-                    const prefix = index === array.length - 1 ? '└' : '├';
-                    return `    ${prefix} ${option.key}: ${option.label ?? option.key}`;
-                  })
-                  .join('\n');
-              }
-              if (arg.description) {
-                result += `\n${arg.description}`;
-              }
-              result += '\n';
-              return result;
-            })
-            .join('\n')
-            .replace(/\n/g, '\\n');
-
-          const scriptParams = args.map((item) => `${item.key}={{{${item.key}}}}`).join('&');
-
+        templateParameters(params) {
+          const surgeTemplate = new SurgeTemplate(params);
           return {
-            argumentsText,
-            argumentsDescription,
-            scriptParams,
+            surgeTemplate,
           };
         },
-
         onAfterStartDevServer({ rsbuildServer }) {
           const moduleRemoteUrl = `http://${appContext.ip}:${rsbuildServer.port}/${moduleName}.sgmodule`;
           qrcode.generate(`surge:///install-module?url=${encodeURIComponent(moduleRemoteUrl)}`, { small: true });
-          api.logger.ready('Scan the QR code to install the module, or manually import:', moduleRemoteUrl);
+          api.logger.ready('[Surge] Scan the QR code to install the module, or manually import:', moduleRemoteUrl);
         },
       };
     },

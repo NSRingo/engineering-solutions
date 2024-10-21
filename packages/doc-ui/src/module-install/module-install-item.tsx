@@ -3,7 +3,9 @@ import type { SupportedApp } from './constants';
 
 export const ModuleInstallItem: React.FC<
   {
+    // biome-ignore lint/style/useNamingConvention: <explanation>
     __appType: SupportedApp;
+    // biome-ignore lint/style/useNamingConvention: <explanation>
     __urlPrefix?: string;
   } & Omit<AppTabContentProps, 'appType'>
 > = ({ __appType, __urlPrefix = '', url, ...rest }) => {

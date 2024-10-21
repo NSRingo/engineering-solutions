@@ -9,11 +9,12 @@ import styles from './module-install.module.scss';
 export interface ModuleInstallProps {
   urlPrefix?: string;
   urls?: {
-    [key in SupportedApp]?: string;
+    [Key in SupportedApp]?: string;
   };
   children?: React.ReactNode;
 }
 
+// biome-ignore lint/style/useNamingConvention: React Component
 export function ModuleInstall({ urlPrefix = '', urls, children }: ModuleInstallProps) {
   const renderTabLabel = useCallback((appType: SupportedApp) => {
     return (
@@ -57,7 +58,9 @@ export function ModuleInstall({ urlPrefix = '', urls, children }: ModuleInstallP
     const result: React.ReactNode[] = [];
     SUPPORTED_APPS.forEach((appType) => {
       const url = urls?.[appType];
-      if (!url) return;
+      if (!url) {
+        return;
+      }
       result.push(
         <Tab key={appType}>
           <AppTabContent key={url} appType={appType} url={`${urlPrefix}${url}`} />

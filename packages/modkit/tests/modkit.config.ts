@@ -1,11 +1,11 @@
 import { defineConfig } from '@iringo/modkit';
 import { pluginBoxJs } from '@iringo/modkit/plugins/boxjs';
 import { pluginDts } from '@iringo/modkit/plugins/dts';
+import { pluginLoon } from '@iringo/modkit/plugins/loon';
+import { pluginStash } from '@iringo/modkit/plugins/stash';
 import { pluginSurge } from '@iringo/modkit/plugins/surge';
 
-export default defineConfig<{
-  response: string;
-}>({
+export default defineConfig({
   source: {
     arguments: [
       {
@@ -14,7 +14,7 @@ export default defineConfig<{
         defaultValue: true,
         type: {
           default: 'boolean',
-          exclude: ['surge', 'loon'],
+          surge: 'exclude',
         },
         description: '是否启用此APP修改',
       },
@@ -119,12 +119,21 @@ export default defineConfig<{
       },
     ],
     metadata: {
+      description: 'iOS 18 & macOS 15 & watchOS 11\n1.解锁全部天气功能\n2.替换空气质量数据\n3.添加下一小时降水数据',
       extra: {
         category: ' iRingo',
       },
     },
     content: {
-      rule: ['DOMAIN,weather-analytics-events.apple.com,REJECT-DROP'],
+      rule: [
+        'DOMAIN,weather-analytics-events.apple.com,REJECT-DROP',
+        {
+          type: 'RULE-SET',
+          assetKey: 'rule-set.list',
+          policyName: 'REJECT',
+          description: 'test',
+        },
+      ],
       script: [
         {
           name: '🌤 WeatherKit.api.v1.availability.response',
@@ -153,8 +162,11 @@ export default defineConfig<{
     scripts: {
       response: './src/index.ts',
     },
+    assets: {
+      'rule-set.list': './src/rule.list',
+    },
   },
-  plugins: [pluginSurge(), pluginDts(), pluginBoxJs()],
+  plugins: [pluginSurge(), pluginDts(), pluginBoxJs(), pluginLoon(), pluginStash()],
   output: {
     assetPrefix: 'https://github.com/NSRingo/WeatherKit/releases/download/v1.8.12',
   },
