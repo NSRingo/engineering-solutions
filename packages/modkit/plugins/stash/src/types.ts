@@ -1,6 +1,32 @@
+type StashRuleType =
+  | 'DOMAIN'
+  | 'DOMAIN-SUFFIX'
+  | 'DOMAIN-KEYWORD'
+  | 'GEOIP'
+  | 'IP-ASN'
+  | 'IP-CIDR'
+  | 'IP-CIDR6'
+  | 'DST-PORT'
+  | 'RULE-SET'
+  | 'GEOSITE'
+  | 'PROCESS-NAME'
+  | 'PROCESS-PATH'
+  | 'SCRIPT';
+
 export interface StashOverride {
   name?: string;
   desc?: string;
+
+  rule?: `${StashRuleType},${string}`[];
+
+  'rule-providers'?: {
+    [key: string]: {
+      behavior: 'domain' | 'ipcidr' | 'classical';
+      format: 'yaml' | 'text';
+      url: string;
+      interval?: number;
+    };
+  };
 
   http?: {
     'force-http-engine'?: string[];

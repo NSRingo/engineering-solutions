@@ -125,7 +125,15 @@ export default defineConfig({
       },
     },
     content: {
-      rule: ['DOMAIN,weather-analytics-events.apple.com,REJECT-DROP'],
+      rule: [
+        'DOMAIN,weather-analytics-events.apple.com,REJECT-DROP',
+        {
+          type: 'RULE-SET',
+          assetKey: 'rule-set.list',
+          policyName: 'REJECT',
+          description: 'test',
+        },
+      ],
       script: [
         {
           name: '🌤 WeatherKit.api.v1.availability.response',
