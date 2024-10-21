@@ -127,36 +127,37 @@ export const pluginDts = ({
   setup: (api) => {
     let argumentItems: ArgumentItem[] = [];
     const { appDirectory } = api.useAppContext();
+
+    function generateDts() {
+      const tsconfigFilePath = path.resolve(appDirectory, tsconfigPath);
+      const dtsFilePath = path.resolve(appDirectory, filePath);
+      if (fs.existsSync(dtsFilePath)) {
+        fs.unlinkSync(dtsFilePath);
+      }
+      const project = new Project({
+        tsConfigFilePath: fs.existsSync(tsconfigFilePath) ? tsconfigFilePath : undefined,
+      });
+      const sourceFile = project.createSourceFile(dtsFilePath, '');
+      const argumentsInterface = sourceFile.addInterface({
+        name: interfaceName,
+        isExported,
+      });
+      argumentItems.forEach((arg) => {
+        const keys = arg.key.split('.');
+        addNestedProperty(argumentsInterface, keys, arg);
+      });
+      sourceFile.saveSync();
+      api.logger.success(`Generated ${path.relative(appDirectory, dtsFilePath)}`);
+    }
+
     return {
       templateParameters: ({ source }) => {
         argumentItems = source?.arguments || [];
         return {};
       },
+      onBeforeStartDevServer: generateDts,
       commands: ({ program }) => {
-        const tsconfigFilePath = path.resolve(appDirectory, tsconfigPath);
-        const dtsFilePath = path.resolve(appDirectory, filePath);
-        program
-          .command('dts')
-          .description('generate typescript interface file for arguments')
-          .action(() => {
-            if (fs.existsSync(dtsFilePath)) {
-              fs.unlinkSync(dtsFilePath);
-            }
-            const project = new Project({
-              tsConfigFilePath: fs.existsSync(tsconfigFilePath) ? tsconfigFilePath : undefined,
-            });
-            const sourceFile = project.createSourceFile(dtsFilePath, '');
-            const argumentsInterface = sourceFile.addInterface({
-              name: interfaceName,
-              isExported,
-            });
-            argumentItems.forEach((arg) => {
-              const keys = arg.key.split('.');
-              addNestedProperty(argumentsInterface, keys, arg);
-            });
-            sourceFile.saveSync();
-            api.logger.success(`Generated ${path.relative(appDirectory, dtsFilePath)}`);
-          });
+        program.command('dts').description('generate typescript interface file for arguments').action(generateDts);
       },
     };
   },
