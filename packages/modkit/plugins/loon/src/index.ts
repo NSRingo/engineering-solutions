@@ -3,18 +3,7 @@ import { LoonTemplate } from './template';
 
 export type LoonArgumentType = 'input' | 'select' | 'switch' | 'exclude';
 
-export interface LoonPluginOptions {
-  objectValuesHandler?: (obj: Record<string, any>) => string;
-}
-
-export const pluginLoon = ({
-  objectValuesHandler = (obj) => {
-    if (Array.isArray(obj)) {
-      return `"${obj.join()}"`;
-    }
-    return `"${JSON.stringify(obj)}"`;
-  },
-}: LoonPluginOptions = {}): ModkitPlugin => {
+export const pluginLoon = (): ModkitPlugin => {
   return {
     name: 'loon',
     setup() {
@@ -36,7 +25,7 @@ export const pluginLoon = ({
           return source;
         },
         templateParameters(params) {
-          const loonTemplate = new LoonTemplate(params, objectValuesHandler);
+          const loonTemplate = new LoonTemplate(params);
           return {
             loonTemplate,
           };

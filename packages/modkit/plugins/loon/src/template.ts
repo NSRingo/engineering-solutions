@@ -1,12 +1,5 @@
-import {
-  type ModuleMock,
-  Template,
-  type TemplateParametersParams,
-  logger,
-  objectEntries,
-  toKebabCase,
-} from '@iringo/modkit-shared';
-import type { LoonArgumentType, LoonPluginOptions } from './index';
+import { type ModuleMock, Template, logger, objectEntries, toKebabCase } from '@iringo/modkit-shared';
+import type { LoonArgumentType } from './index';
 
 type LoonMockDataType =
   | 'json'
@@ -40,13 +33,6 @@ const mockDataTypeMap: Record<LoonMockDataType, string[]> = {
 };
 
 export class LoonTemplate extends Template {
-  constructor(
-    params: TemplateParametersParams,
-    private readonly objectValuesHandler: LoonPluginOptions['objectValuesHandler'],
-  ) {
-    super(params);
-  }
-
   get Metadata() {
     const result: Record<string, string | undefined> = {};
     result.name = this.metadata.name;
@@ -73,7 +59,7 @@ export class LoonTemplate extends Template {
           case 'RULE-SET': {
             let result = `RULE-SET, ${this.utils.getFilePath(rule.assetKey)}`;
             if (rule.policyName) {
-              result += `, ${rule.policyName}`;
+              result += `, ${this.normalizeUnion(rule.policyName, 'custom')}`;
             }
             return result;
           }
@@ -97,12 +83,12 @@ export class LoonTemplate extends Template {
           type = 'select';
         }
         result += ` = ${type}`;
-        result += `,${this.#getDefaultValue(arg.defaultValue)}`;
+        result += `,${this.getDefaultValue(arg.defaultValue)}`;
         if (arg.options && type === 'select') {
           result += ',';
           result += arg.options
             .filter((item) => item.key !== arg.defaultValue)
-            .map((option) => `${this.#getDefaultValue(option.key)}`)
+            .map((option) => `${this.getDefaultValue(option.key)}`)
             .join(',');
         }
         if (arg.name) {
@@ -200,24 +186,9 @@ export class LoonTemplate extends Template {
         }
       }
     }
-
     if (dataType === 'text') {
       return 'text';
     }
     return undefined;
-  }
-
-  #getDefaultValue(defaultValue: any): any {
-    switch (typeof defaultValue) {
-      case 'string':
-        return `"${defaultValue}"`;
-      case 'number':
-      case 'boolean':
-        return defaultValue;
-      case 'object':
-        return this.objectValuesHandler?.(defaultValue);
-      default:
-        return '""';
-    }
   }
 }

@@ -2,6 +2,7 @@ import path from 'node:path';
 import {
   AppContext,
   commander,
+  handleArgumentsDefaultValue,
   initAppContext,
   initAppDir,
   loadConfig,
@@ -66,6 +67,7 @@ export async function initCommand() {
       source: config.source,
       getFilePath: () => '',
       getScriptPath: () => '',
+      handleArgumentsDefaultValue,
     }),
   ]);
 

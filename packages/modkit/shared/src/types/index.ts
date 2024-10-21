@@ -1,4 +1,5 @@
 import type { RsbuildConfig } from '@rsbuild/core';
+import type { Output } from './output';
 import type { ModkitPlugin } from './plugin';
 import type { SourceConfig } from './source';
 
@@ -9,32 +10,6 @@ export interface DevConfig {
   port?: number;
 }
 
-export interface OutputDistPath {
-  /**
-   * 输出目录
-   * @default dist
-   */
-  root?: string;
-  /**
-   * js 文件的输出目录
-   * @default 'scripts'
-   */
-  js?: string;
-  /**
-   * 文件的输出目录
-   * @default 'static'
-   */
-  assets?: string;
-}
-
-export interface Output {
-  distPath?: OutputDistPath;
-  /**
-   * 静态资源的 URL 前缀
-   */
-  assetPrefix?: string;
-}
-
 export interface ModkitConfig {
   source?: SourceConfig;
   dev?: DevConfig;
@@ -43,5 +18,6 @@ export interface ModkitConfig {
   plugins?: ModkitPlugin[];
 }
 
-export * from './plugin';
 export * from './source';
+export * from './output';
+export * from './plugin';

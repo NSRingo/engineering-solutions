@@ -1,14 +1,6 @@
-import { Template, type TemplateParametersParams, objectEntries, toKebabCase } from '@iringo/modkit-shared';
-import type { SurgePluginOptions } from './index';
+import { Template, objectEntries, toKebabCase } from '@iringo/modkit-shared';
 
 export class SurgeTemplate extends Template {
-  constructor(
-    params: TemplateParametersParams,
-    private readonly objectValuesHandler: SurgePluginOptions['objectValuesHandler'],
-  ) {
-    super(params);
-  }
-
   get Metadata() {
     const { argumentsText, argumentsDescription } = this.#handleArguments();
     const result: Record<string, string | undefined> = {};
@@ -46,7 +38,7 @@ export class SurgeTemplate extends Template {
           case 'RULE-SET': {
             let result = `RULE-SET, ${this.utils.getFilePath(rule.assetKey)}`;
             if (rule.policyName) {
-              result += `, ${rule.policyName}`;
+              result += `, ${this.normalizeUnion(rule.policyName, 'custom')}`;
             }
             if (rule.description) {
               result += ` # ${rule.description}`;
@@ -124,7 +116,7 @@ export class SurgeTemplate extends Template {
           headerRewrites.push(options.join(' '));
           break;
         }
-        case undefined: {
+        default: {
           const options = [];
           options.push(rewrite.type);
           options.push(rewrite.pattern);
@@ -191,7 +183,7 @@ export class SurgeTemplate extends Template {
 
   #handleArguments() {
     const args = this.source?.arguments || [];
-    const argumentsText = args.map((arg) => `${arg.key}:${this.#getDefaultValue(arg.defaultValue)}`).join(',');
+    const argumentsText = args.map((arg) => `${arg.key}:${this.getDefaultValue(arg.defaultValue)}`).join(',');
 
     const argumentsDescription = args
       .map((arg) => {
@@ -224,19 +216,5 @@ export class SurgeTemplate extends Template {
       argumentsDescription,
       scriptParams,
     };
-  }
-
-  #getDefaultValue(defaultValue: any): any {
-    switch (typeof defaultValue) {
-      case 'string':
-        return `"${defaultValue}"`;
-      case 'number':
-      case 'boolean':
-        return defaultValue;
-      case 'object':
-        return this.objectValuesHandler?.(defaultValue);
-      default:
-        return '""';
-    }
   }
 }

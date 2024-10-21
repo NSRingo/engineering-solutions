@@ -1,18 +1,7 @@
 import type { ModkitPlugin } from '@iringo/modkit-shared';
 import { QuantumultxTemplate } from './template';
 
-export interface QuantumultxPluginOptions {
-  objectValuesHandler?: (obj: Record<string, any>) => string;
-}
-
-export const pluginQuantumultx = ({
-  objectValuesHandler = (obj) => {
-    if (Array.isArray(obj)) {
-      return `"${obj.join()}"`;
-    }
-    return `"${JSON.stringify(obj)}"`;
-  },
-}: QuantumultxPluginOptions = {}): ModkitPlugin => {
+export const pluginQuantumultx = (): ModkitPlugin => {
   return {
     name: 'quantumultx',
     setup() {
@@ -34,7 +23,7 @@ export const pluginQuantumultx = ({
           return source;
         },
         templateParameters(params) {
-          const quantumultxTemplate = new QuantumultxTemplate(params, objectValuesHandler);
+          const quantumultxTemplate = new QuantumultxTemplate(params);
           return {
             quantumultxTemplate,
           };

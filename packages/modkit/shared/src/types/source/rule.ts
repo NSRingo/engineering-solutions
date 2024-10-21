@@ -25,7 +25,7 @@ export type RuleType =
   | 'RULE-SET'
   | 'FINAL';
 
-export type policyNameType =
+export type PolicyNameType =
   | 'DIRECT'
   | 'REJECT'
   | 'REJECT-NO-DROP'
@@ -34,23 +34,22 @@ export type policyNameType =
   | 'CELLULAR-ONLY'
   | 'HYBRID'
   | 'NO-HYBRID'
-  | string;
+  | { custom: string };
 
-export interface Rule {
-  type: RuleType;
-  content?: string;
+export interface RuleSetRule {
+  type: 'RULE-SET';
   /**
    * 对应 `source.assets` 中的 key
    */
-  assetKey?: string;
+  assetKey: string;
   /**
    * 策略名
    */
-  policyName?: policyNameType;
+  policyName?: PolicyNameType;
   /**
    * 描述
    */
   description?: string;
 }
 
-export type ModuleRule = string | Rule;
+export type ModuleRule = `${Exclude<RuleType, 'RULE-SET'>},${string}` | RuleSetRule;

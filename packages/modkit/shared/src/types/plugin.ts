@@ -4,6 +4,7 @@ import type { AsyncWorker, Worker } from '@modern-js/plugin';
 import type { RsbuildInstance } from '@rsbuild/core';
 import type { Express } from 'express';
 import type { PluginAPI } from '../plugin/manager';
+import type { HandleArgumentsDefaultValue } from './output';
 import type { SourceConfig } from './source';
 
 type RsbuildDevServer = Awaited<ReturnType<RsbuildInstance['createDevServer']>>;
@@ -16,6 +17,7 @@ export interface TemplateParametersParams {
   source: SourceConfig;
   getFilePath: (fileName: string) => string;
   getScriptPath: (scriptKey: string) => string;
+  handleArgumentsDefaultValue: HandleArgumentsDefaultValue;
 }
 
 export interface ConfigurePlatformReturn {

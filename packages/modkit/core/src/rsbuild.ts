@@ -6,6 +6,7 @@ import {
   type PluginType,
   address,
   getPluginContext,
+  handleArgumentsDefaultValue,
   lodash,
   runMaybeAsync,
 } from '@iringo/modkit-shared';
@@ -90,7 +91,12 @@ const generateEnvironment = async ({
     const assetPrefix = defaultParameters.assetPrefix as string;
     const getFilePath = getFilePathFactory(assetPrefix);
     const getScriptPath = getScriptPathFactory(compilation, assetPrefix);
-    const params = pluginCtx.templateParameters?.({ source, getFilePath, getScriptPath });
+    const params = pluginCtx.templateParameters?.({
+      source,
+      getFilePath,
+      getScriptPath,
+      handleArgumentsDefaultValue: config.output?.handleArgumentsDefaultValue ?? handleArgumentsDefaultValue,
+    });
     return {
       ...source,
       ...params,

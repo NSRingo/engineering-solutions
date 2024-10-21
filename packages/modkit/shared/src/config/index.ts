@@ -1,5 +1,6 @@
 import { loadConfigFile, lodash, logger } from '@iringo/utils';
 import type { ModkitConfig } from '../types';
+import { handleArgumentsDefaultValue } from '../utils';
 
 export function defineConfig(config: ModkitConfig | (() => ModkitConfig)): ModkitConfig {
   if (typeof config === 'function') {
@@ -33,6 +34,7 @@ const getDefaultConfig = (): ModkitConfig => {
         js: 'scripts',
         assets: 'static',
       },
+      handleArgumentsDefaultValue,
     },
     dev: {
       port: 3000,
