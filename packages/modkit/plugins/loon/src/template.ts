@@ -124,7 +124,8 @@ export class LoonTemplate extends Template {
             line += 'network-changed ';
             break;
           case 'dns':
-            logger.warn('[Loon] Unsupported script type: dns');
+          default:
+            logger.warn(`[Loon] Unsupported script type: ${type}`);
             break;
         }
         const parameters: Record<string, any> = {};
