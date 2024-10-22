@@ -62,7 +62,7 @@ export class ArgumentsBuilder {
       })
       .join('\n');
 
-    const scriptParams = args.map((item) => `${item.key}={{{${item.key}}}}`).join('&');
+    const scriptParams = args.map((item) => `${item.key}="{{{${item.key}}}}"`).join('&');
 
     return {
       argumentsText,
