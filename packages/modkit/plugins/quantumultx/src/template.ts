@@ -1,6 +1,6 @@
 import { type RuleType, Template, logger, objectEntries, toKebabCase } from '@iringo/modkit-shared';
 
-const ruleTypeMap: Record<RuleType, string> = {
+const ruleTypeMap: Record<RuleType, string | undefined> = {
   DOMAIN: 'host',
   'DOMAIN-SUFFIX': 'host-suffix',
   'DOMAIN-KEYWORD': 'host-keyword',
@@ -10,16 +10,28 @@ const ruleTypeMap: Record<RuleType, string> = {
   'IP-CIDR6': 'ip6-cidr',
   'IP-ASN': 'ip-asn',
   'PROCESS-NAME': 'process',
+  FINAL: 'final',
+  'DOMAIN-SET': undefined,
+  'URL-REGEX': undefined,
+  SUBNET: undefined,
+  'DEST-PORT': undefined,
+  'IN-PORT': undefined,
+  'SRC-PORT': undefined,
+  'SRC-IP': undefined,
+  PROTOCOL: undefined,
+  SCRIPT: undefined,
+  'CELLULAR-RADIO': undefined,
+  'DEVICE-NAME': undefined,
+  'RULE-SET': undefined,
 };
 
 export class QuantumultxTemplate extends Template {
   get Metadata() {
-    const result: Record<string, string | undefined> = {};
-    result.name = this.metadata.name;
-    result.desc = this.metadata.description;
-    result.system = this.metadata.system?.join();
-    result.version = this.metadata.version;
-    Object.entries(this.metadata.extra || {}).forEach(([key, value]) => {
+    const { name, description, ...rest } = this.metadata;
+    const result: Record<string, string | number | boolean | undefined> = {};
+    result.name = name;
+    result.desc = description;
+    Object.entries(rest).forEach(([key, value]) => {
       result[key] = Array.isArray(value) ? value.join(',') : value;
     });
     return this.renderKeyValuePairs(result, { prefix: '#!' });
@@ -34,19 +46,14 @@ export class QuantumultxTemplate extends Template {
   get Filter() {
     const filters: string[] = [];
     this.content.rule?.forEach((rule) => {
-      if (typeof rule === 'string') {
-        return rule;
+      switch (typeof rule) {
+        case 'string':
+          filters.push(rule);
+          break;
+        default:
+          logger.warn(`[Quantumult X] Invalid rule type: ${typeof rule}`);
+          break;
       }
-      const { type, content, policyName } = rule;
-      const options = [];
-      if (ruleTypeMap[type]) {
-        options.push(ruleTypeMap[type]);
-      } else {
-        logger.warn(`[Quantumult X] Unsupported rule type: ${type}`);
-      }
-      options.push(content);
-      options.push(policyName);
-      filters.push(options.join(', '));
     });
     return filters.join('\n').trim();
   }
@@ -54,34 +61,38 @@ export class QuantumultxTemplate extends Template {
   get Rewrite() {
     const rewrites: string[] = [];
     this.content.rewrite?.forEach((rewrite) => {
-      let { type, pattern, mode, content, ...rest } = rewrite;
+      const { type, pattern, mode, content } = rewrite;
+      const options = [];
+      options.push(pattern);
+      options.push('url');
       switch (rewrite.mode) {
-        case 'header':
-          logger.warn('[Quantumult X] Unsupported rewrite mode: header');
-          break;
         case 'header-add':
-          mode = 'request-header';
+          options.push('request-header');
+          options.push(content || '');
           break;
         case 'header-del':
-          mode = 'request-header';
-          content += " ''";
+          options.push('request-header');
+          options.push(" ''");
           break;
         case undefined:
           switch (type) {
             case 'http-request':
-              mode = 'request-body';
+              options.push('request-body');
+              options.push(content || '');
               break;
             case 'http-response':
-              mode = 'response-body';
+              options.push('response-body');
+              options.push(content || '');
+              break;
+            default:
+              logger.warn(`[Quantumult X] Unsupported rewrite type: ${type}`);
               break;
           }
           break;
+        default:
+          logger.warn(`[Quantumult X] Unsupported rewrite mode: ${mode}`);
+          break;
       }
-      const options = [];
-      options.push(pattern);
-      options.push('url');
-      options.push(mode);
-      options.push(content || '');
       rewrites.push(options.join(' '));
     });
     return `${rewrites.join('\n').trim()}\n${this.#script.rewrite}`;
@@ -91,34 +102,23 @@ export class QuantumultxTemplate extends Template {
     const rewrites: string[] = [];
     const tasks: string[] = [];
     this.content.script?.forEach((script, index) => {
-      let { type, pattern, cronexp, scriptKey, argument, injectArgument, name, ...rest } = script;
-      switch (type) {
-        case 'http-request':
-          type = 'script-request';
-          break;
-        case 'http-response':
-          type = 'script-response';
-          break;
-        case 'generic':
-          // 没找到示例
-          break;
-        case 'event':
-          // 没找到示例
-          break;
-        case 'dns':
-          logger.warn('[Quantumult X] Unsupported script type: dns');
-          break;
-      }
-      const parameters: Record<string, any> = {};
+      const { type, pattern, cronexp, scriptKey, name } = script;
+      const parameters: Record<string, string | number | boolean | undefined> = {};
       parameters['script-path'] = this.utils.getScriptPath(scriptKey);
       parameters.tag = name || `Script${index}`;
       const options = [];
       switch (type) {
-        case 'script-request':
-        case 'script-response':
+        case 'http-request':
           options.push(pattern);
           options.push('url');
-          options.push(type);
+          options.push('script-request');
+          options.push(parameters['script-path']);
+          rewrites.push(`# ${parameters.tag}\n${options.join(' ')}`);
+          break;
+        case 'http-response':
+          options.push(pattern);
+          options.push('url');
+          options.push('script-response');
           options.push(parameters['script-path']);
           rewrites.push(`# ${parameters.tag}\n${options.join(' ')}`);
           break;
@@ -126,23 +126,18 @@ export class QuantumultxTemplate extends Template {
           options.push(cronexp);
           options.push(parameters['script-path']);
           const option = [options.join(' ')];
-          if (name) {
-            option.push(`tag = ${name}`);
-          }
-          if (imgUrl) {
-            option.push(`img-url = ${imgUrl}`);
-          }
-          if (enabled) {
-            option.push(`enabled = ${enabled}`);
-          }
+          option.push(`tag = ${parameters.tag}`);
+          //option.push(`img-url = ${imgUrl}`);
+          option.push(`enabled = ${true}`);
           tasks.push(option.join(', '));
           break;
         }
+        default:
+          logger.warn(`[Quantumult X] Unsupported script type: ${type}`);
+          break;
       }
     });
-    const rewrite = rewrites.join('\n').trim();
-    const task = tasks.join('\n').trim();
-    return { rewrite, task };
+    return { rewrite: rewrites.join('\n').trim(), task: tasks.join('\n').trim() };
   }
 
   get MITM() {
