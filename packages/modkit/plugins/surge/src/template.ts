@@ -1,21 +1,22 @@
-import { Template, objectEntries, toKebabCase } from '@iringo/modkit-shared';
+import { Template, logger, objectEntries, toKebabCase } from '@iringo/modkit-shared';
 
 export class SurgeTemplate extends Template {
   get Metadata() {
+    const { name, description, system, version, extra } = this.metadata;
     const { argumentsText, argumentsDescription } = this.#handleArguments();
     const result: Record<string, string | undefined> = {};
-    result.name = this.metadata.name;
-    result.desc = this.metadata.description;
-    result.requirement = this.metadata.system?.map((item) => `SYSTEM = ${item}`).join(' || ');
-    result.version = this.metadata.version;
+    result.name = name;
+    result.desc = description;
+    result.requirement = system?.map((item) => `SYSTEM = ${item}`).join(' || ');
+    result.version = version;
     if (argumentsText) {
       result.arguments = argumentsText;
     }
     if (argumentsDescription) {
       result['arguments-desc'] = argumentsDescription;
     }
-    Object.entries(this.metadata.extra || {}).forEach(([key, value]) => {
-      result[key] = Array.isArray(value) ? value.join(',') : value;
+    Object.entries(extra || {}).forEach(([key, value]) => {
+      result[key] = Array.isArray(value) ? value.join(', ') : value;
     });
     return this.renderKeyValuePairs(result, { prefix: '#!' });
   }
@@ -29,50 +30,58 @@ export class SurgeTemplate extends Template {
   }
 
   get Rule() {
-    return this.content.rule
-      ?.map((rule) => {
-        if (typeof rule === 'string') {
-          return rule;
-        }
-        switch (rule.type) {
-          case 'RULE-SET': {
-            let result = `RULE-SET, ${this.utils.getFilePath(rule.assetKey)}`;
-            if (rule.policyName) {
-              result += `, ${this.normalizeUnion(rule.policyName, 'custom')}`;
+    const rules: string[] = [];
+    this.content.rule?.forEach((rule) => {
+      switch (typeof rule) {
+        case 'object':
+          switch (rule.type) {
+            case 'RULE-SET': {
+              let result = `RULE-SET, ${this.utils.getFilePath(rule.assetKey)}`;
+              if (rule.policyName) {
+                result += `, ${this.normalizeUnion(rule.policyName, 'custom')}`;
+              }
+              if (rule.description) {
+                result += ` // ${rule.description}`;
+              }
+              rules.push(result);
+              break;
             }
-            if (rule.description) {
-              result += ` # ${rule.description}`;
-            }
-            return result;
+            default:
+              break;
           }
-          default:
-            break;
-        }
-      })
-      .join('\n')
-      .trim();
+          break;
+        case 'string':
+          rules.push(rule);
+          break;
+        default:
+          logger.error(`Invalid rule type: ${typeof rule}`);
+          break;
+      }
+    });
+    return rules.join('\n').trim();
   }
 
   get Script() {
+    const scripts: string[] = [];
     const { scriptParams } = this.#handleArguments();
-    return (this.content.script || [])
-      .map((script, index) => {
-        const parameters: Record<string, any> = {};
-        const { name, scriptKey, debug, ...rest } = script;
-        parameters['script-path'] = this.utils.getScriptPath(scriptKey);
-        objectEntries(rest).forEach(([key, value]) => {
-          parameters[toKebabCase(key)] = value;
-        });
-        if (debug || process.env.NODE_ENV === 'development') {
-          parameters.debug = true;
-        }
-        if (script.injectArgument || script.argument) {
-          parameters.argument = script.argument || scriptParams;
-        }
-        return `${name || `script${index}`} = ${this.renderKeyValuePairs(parameters, { join: ', ', separator: '=' })}`;
-      })
-      .join('\n')
-      .trim();
+    this.content.script.forEach((script, index) => {
+      const parameters: Record<string, any> = {};
+      const { name, scriptKey, debug, ...rest } = script;
+      parameters['script-path'] = this.utils.getScriptPath(scriptKey);
+      objectEntries(rest).forEach(([key, value]) => {
+        parameters[toKebabCase(key)] = value;
+      });
+      if (debug || process.env.NODE_ENV === 'development') {
+        parameters.debug = true;
+      }
+      if (script.injectArgument || script.argument) {
+        parameters.argument = script.argument || scriptParams;
+      }
+      scripts.push(
+        `${name || `script${index}`} = ${this.renderKeyValuePairs(parameters, { join: ', ', separator: '=' })}`,
+      );
+    });
+    return scripts.join('\n').trim();
   }
 
   get MITM() {
@@ -146,41 +155,40 @@ export class SurgeTemplate extends Template {
   }
 
   get MapLocal() {
-    return (this.content.mock || [])
-      .map((mock) => {
-        const options = [];
-        options.push(mock.pattern);
-        if (mock.dataType) {
-          options.push(`data-type=${mock.dataType}`);
-        }
-        if (typeof mock.data === 'string') {
-          options.push(`data=${this.utils.getFilePath(mock.data) || mock.data}`);
-        } else if (!!mock.data && 'content' in mock.data) {
-          options.push(`data=${mock.data.content}`);
-        }
-        if (mock.statusCode) {
-          options.push(`status-code=${mock.statusCode}`);
-        }
-        if (mock.headers) {
-          switch (typeof mock.headers) {
-            case 'string':
-              options.push(`header=${mock.headers}`);
-              break;
-            case 'object': {
-              const header = Object.entries(mock.headers)
-                .map((value) => value.join(':'))
-                .join('|');
-              options.push(`header=${header}`);
-              break;
-            }
-            default:
-              break;
+    const mapLocals: string[] = [];
+    this.content.mock?.forEach((mock) => {
+      const options: string[] = [];
+      options.push(mock.pattern);
+      if (mock.dataType) {
+        options.push(`data-type=${mock.dataType}`);
+      }
+      if (typeof mock.data === 'string') {
+        options.push(`data=${this.utils.getFilePath(mock.data) || mock.data}`);
+      } else if (!!mock.data && 'content' in mock.data) {
+        options.push(`data=${mock.data.content}`);
+      }
+      if (mock.statusCode) {
+        options.push(`status-code=${mock.statusCode}`);
+      }
+      if (mock.headers) {
+        switch (typeof mock.headers) {
+          case 'string':
+            options.push(`header=${mock.headers}`);
+            break;
+          case 'object': {
+            const header = Object.entries(mock.headers)
+              .map((value) => value.join(':'))
+              .join('|');
+            options.push(`header=${header}`);
+            break;
           }
+          default:
+            break;
         }
-        return options.join(' ');
-      })
-      .join('\n')
-      .trim();
+      }
+      mapLocals.push(options.join(' '));
+    });
+    return mapLocals.join('\n').trim();
   }
 
   #handleArguments() {
