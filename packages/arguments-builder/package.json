@@ -1,6 +1,6 @@
 {
   "name": "@iringo/arguments-builder",
-  "version": "1.7.7",
+  "version": "1.7.8",
   "private": false,
   "main": "dist/lib/index.js",
   "types": "dist/types/index.d.ts",
