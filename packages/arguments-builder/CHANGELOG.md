@@ -1,5 +1,11 @@
 # @iringo/arguments-builder
 
+## 1.7.8
+
+### Patch Changes
+
+- 99a1956: 修复 surge 的 script 参数可能被截断的问题
+
 ## 1.7.7
 
 ### Patch Changes
