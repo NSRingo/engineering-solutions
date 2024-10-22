@@ -29,10 +29,19 @@ export class Template {
       .filter(([, value]) => value !== undefined)
       .map(([key, value]) => {
         let result = `${prefix}${key}${separator}`;
-        if (typeof value === 'string' && value.includes('\n')) {
-          result += value.replace(/\n/g, `\\n`);
-        } else {
-          result += value;
+        switch (typeof value) {
+          case 'string':
+            if (value.includes('\n')) {
+              result += value.replace(/\n/g, `\\n`);
+            } else if (value.includes(',') && join.includes(',')) {
+              result += `"${value}"`;
+            } else {
+              result += value;
+            }
+            break;
+          default:
+            result += value;
+            break;
         }
         return result;
       })
