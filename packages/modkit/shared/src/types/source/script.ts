@@ -57,4 +57,8 @@ export interface ModuleScript {
    * @default dev 环境下为 true，其他环境下为 false
    */
   debug?: boolean;
+  /**
+   * 额外的配置
+   */
+  [key: string]: string | number | boolean | undefined;
 }
