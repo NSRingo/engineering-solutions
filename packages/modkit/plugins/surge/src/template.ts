@@ -2,20 +2,21 @@ import { Template, logger, objectEntries, toKebabCase } from '@iringo/modkit-sha
 
 export class SurgeTemplate extends Template {
   get Metadata() {
-    const { name, description, system, version, extra } = this.metadata;
+    const { name, description, system, ...rest } = this.metadata;
     const { argumentsText, argumentsDescription } = this.#handleArguments();
-    const result: Record<string, string | undefined> = {};
+    const result: Record<string, string | number | boolean | undefined> = {};
     result.name = name;
     result.desc = description;
-    result.requirement = system?.map((item) => `SYSTEM = ${item}`).join(' || ');
-    result.version = version;
+    if (system) {
+      result.requirement = system?.map((item) => `SYSTEM = ${item}`).join(' || ');
+    }
     if (argumentsText) {
       result.arguments = argumentsText;
     }
     if (argumentsDescription) {
       result['arguments-desc'] = argumentsDescription;
     }
-    Object.entries(extra || {}).forEach(([key, value]) => {
+    Object.entries(rest).forEach(([key, value]) => {
       result[key] = Array.isArray(value) ? value.join(', ') : value;
     });
     return this.renderKeyValuePairs(result, { prefix: '#!' });
@@ -65,7 +66,7 @@ export class SurgeTemplate extends Template {
     const scripts: string[] = [];
     const { scriptParams } = this.#handleArguments();
     this.content.script.forEach((script, index) => {
-      const parameters: Record<string, any> = {};
+      const parameters: Record<string, string | number | boolean | undefined> = {};
       const { name, scriptKey, debug, ...rest } = script;
       parameters['script-path'] = this.utils.getScriptPath(scriptKey);
       objectEntries(rest).forEach(([key, value]) => {

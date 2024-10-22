@@ -34,12 +34,11 @@ const mockDataTypeMap: Record<LoonMockDataType, string[]> = {
 
 export class LoonTemplate extends Template {
   get Metadata() {
-    const result: Record<string, string | undefined> = {};
-    result.name = this.metadata.name;
-    result.desc = this.metadata.description;
-    result.system = this.metadata.system?.join();
-    result.version = this.metadata.version;
-    Object.entries(this.metadata.extra || {}).forEach(([key, value]) => {
+    const { name, description, ...rest } = this.metadata;
+    const result: Record<string, string | number | boolean | undefined> = {};
+    result.name = name;
+    result.desc = description;
+    Object.entries(rest).forEach(([key, value]) => {
       result[key] = Array.isArray(value) ? value.join(',') : value;
     });
     return this.renderKeyValuePairs(result, { prefix: '#!' });
@@ -128,7 +127,7 @@ export class LoonTemplate extends Template {
             logger.warn(`[Loon] Unsupported script type: ${type}`);
             break;
         }
-        const parameters: Record<string, any> = {};
+        const parameters: Record<string, string | number | boolean | undefined> = {};
         parameters['script-path'] = this.utils.getScriptPath(scriptKey);
         parameters.tag = name || `Script${index}`;
         objectEntries(rest).forEach(([key, value]) => {

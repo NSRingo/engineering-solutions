@@ -8,12 +8,11 @@ export class StashTemplate extends Template {
   }
 
   get #override(): StashOverride {
+    const { name, description, ...rest } = this.metadata;
     const result: StashOverride = {};
-
-    result.name = this.metadata.name;
-    result.desc = this.metadata.description;
-    result.version = this.metadata.version;
-    Object.entries(this.metadata.extra || {}).forEach(([key, value]) => {
+    result.name = name;
+    result.desc = description;
+    Object.entries(rest).forEach(([key, value]) => {
       result[key] = Array.isArray(value) ? value.join('\n') : value;
     });
 
