@@ -37,19 +37,19 @@ export class QuantumultxTemplate extends Template {
     return this.renderKeyValuePairs(result, { prefix: '#!' });
   }
 
-  get DNS() {
-    const dnss: string[] = [];
-    // 没写呢
-    return dnss.join('\n').trim();
-  }
-
   get Filter() {
     const filters: string[] = [];
-    this.content.rule?.forEach((rule) => {
+    this.content.rule?.forEach((rule: string | object) => {
       switch (typeof rule) {
-        case 'string':
-          filters.push(rule);
+        case 'string': {
+          const [type, content, policyName] = rule.split(',');
+          if (ruleTypeMap[type as RuleType]) {
+            filters.push([ruleTypeMap[type as RuleType], content, policyName].join(', '));
+          } else {
+            logger.warn(`[Quantumult X] Unsupported rule type: ${type}`);
+          }
           break;
+        }
         default:
           logger.warn(`[Quantumult X] Invalid rule type: ${typeof rule}`);
           break;
@@ -101,7 +101,7 @@ export class QuantumultxTemplate extends Template {
   get #script() {
     const rewrites: string[] = [];
     const tasks: string[] = [];
-    this.content.script?.forEach((script, index) => {
+    this.content.script?.forEach((script, index: number) => {
       const { type, pattern, cronexp, scriptKey, name } = script;
       const parameters: Record<string, string | number | boolean | undefined> = {};
       parameters['script-path'] = this.utils.getScriptPath(scriptKey);
