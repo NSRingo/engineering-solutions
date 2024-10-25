@@ -60,5 +60,5 @@ export interface ModuleScript {
   /**
    * 额外的配置
    */
-  [key: string]: string | number | boolean | undefined;
+  extra?: Record<string, any>;
 }

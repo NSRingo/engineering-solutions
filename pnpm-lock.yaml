@@ -183,9 +183,21 @@ importers:
       '@modern-js/module-tools':
         specifier: ^2.60.2
         version: 2.60.2(typescript@5.6.2)
+      '@test/modkit':
+        specifier: workspace:^
+        version: link:../../tests
+      '@types/jest':
+        specifier: ^29.5.13
+        version: 29.5.13
       '@types/node':
         specifier: ^20.0.0
         version: 20.16.10
+      jest:
+        specifier: ^29.7.0
+        version: 29.7.0(@types/node@20.16.10)(ts-node@10.9.1(@types/node@20.16.10)(typescript@5.6.2))
+      ts-jest:
+        specifier: ^29.2.5
+        version: 29.2.5(@babel/core@7.25.2)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.25.2))(jest@29.7.0(@types/node@20.16.10)(ts-node@10.9.1(@types/node@20.16.10)(typescript@5.6.2)))(typescript@5.6.2)
       typescript:
         specifier: ^5.6.2
         version: 5.6.2
@@ -205,9 +217,21 @@ importers:
       '@modern-js/module-tools':
         specifier: ^2.60.2
         version: 2.60.2(typescript@5.6.2)
+      '@test/modkit':
+        specifier: workspace:^
+        version: link:../../tests
+      '@types/jest':
+        specifier: ^29.5.13
+        version: 29.5.13
       '@types/node':
         specifier: ^20.0.0
         version: 20.16.10
+      jest:
+        specifier: ^29.7.0
+        version: 29.7.0(@types/node@20.16.10)(ts-node@10.9.1(@types/node@20.16.10)(typescript@5.6.2))
+      ts-jest:
+        specifier: ^29.2.5
+        version: 29.2.5(@babel/core@7.25.2)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.25.2))(jest@29.7.0(@types/node@20.16.10)(ts-node@10.9.1(@types/node@20.16.10)(typescript@5.6.2)))(typescript@5.6.2)
       typescript:
         specifier: ^5.6.2
         version: 5.6.2
@@ -224,9 +248,21 @@ importers:
       '@modern-js/module-tools':
         specifier: ^2.60.2
         version: 2.60.2(typescript@5.6.2)
+      '@test/modkit':
+        specifier: workspace:^
+        version: link:../../tests
+      '@types/jest':
+        specifier: ^29.5.13
+        version: 29.5.13
       '@types/node':
         specifier: ^20.0.0
         version: 20.16.10
+      jest:
+        specifier: ^29.7.0
+        version: 29.7.0(@types/node@20.16.10)(ts-node@10.9.1(@types/node@20.16.10)(typescript@5.6.2))
+      ts-jest:
+        specifier: ^29.2.5
+        version: 29.2.5(@babel/core@7.25.2)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.25.2))(jest@29.7.0(@types/node@20.16.10)(ts-node@10.9.1(@types/node@20.16.10)(typescript@5.6.2)))(typescript@5.6.2)
       typescript:
         specifier: ^5.6.2
         version: 5.6.2
@@ -243,9 +279,21 @@ importers:
       '@modern-js/module-tools':
         specifier: ^2.60.2
         version: 2.60.2(typescript@5.6.2)
+      '@test/modkit':
+        specifier: workspace:^
+        version: link:../../tests
+      '@types/jest':
+        specifier: ^29.5.13
+        version: 29.5.13
       '@types/node':
         specifier: ^20.0.0
         version: 20.16.10
+      jest:
+        specifier: ^29.7.0
+        version: 29.7.0(@types/node@20.16.10)(ts-node@10.9.1(@types/node@20.16.10)(typescript@5.6.2))
+      ts-jest:
+        specifier: ^29.2.5
+        version: 29.2.5(@babel/core@7.25.2)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.25.2))(jest@29.7.0(@types/node@20.16.10)(ts-node@10.9.1(@types/node@20.16.10)(typescript@5.6.2)))(typescript@5.6.2)
       typescript:
         specifier: ^5.6.2
         version: 5.6.2
@@ -265,9 +313,21 @@ importers:
       '@modern-js/module-tools':
         specifier: ^2.60.2
         version: 2.60.2(typescript@5.6.2)
+      '@test/modkit':
+        specifier: workspace:^
+        version: link:../../tests
+      '@types/jest':
+        specifier: ^29.5.13
+        version: 29.5.13
       '@types/node':
         specifier: ^20.0.0
         version: 20.16.10
+      jest:
+        specifier: ^29.7.0
+        version: 29.7.0(@types/node@20.16.10)(ts-node@10.9.1(@types/node@20.16.10)(typescript@5.6.2))
+      ts-jest:
+        specifier: ^29.2.5
+        version: 29.2.5(@babel/core@7.25.2)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.25.2))(jest@29.7.0(@types/node@20.16.10)(ts-node@10.9.1(@types/node@20.16.10)(typescript@5.6.2)))(typescript@5.6.2)
       typescript:
         specifier: ^5.6.2
         version: 5.6.2
@@ -287,12 +347,24 @@ importers:
       '@modern-js/module-tools':
         specifier: ^2.60.2
         version: 2.60.2(typescript@5.6.2)
+      '@test/modkit':
+        specifier: workspace:^
+        version: link:../../tests
+      '@types/jest':
+        specifier: ^29.5.13
+        version: 29.5.13
       '@types/node':
         specifier: ^20.0.0
         version: 20.16.10
       '@types/qrcode-terminal':
         specifier: ^0.12.2
         version: 0.12.2
+      jest:
+        specifier: ^29.7.0
+        version: 29.7.0(@types/node@20.16.10)(ts-node@10.9.1(@types/node@20.16.10)(typescript@5.6.2))
+      ts-jest:
+        specifier: ^29.2.5
+        version: 29.2.5(@babel/core@7.25.2)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.25.2))(jest@29.7.0(@types/node@20.16.10)(ts-node@10.9.1(@types/node@20.16.10)(typescript@5.6.2)))(typescript@5.6.2)
       typescript:
         specifier: ^5.6.2
         version: 5.6.2
@@ -339,6 +411,9 @@ importers:
       '@iringo/modkit':
         specifier: workspace:^
         version: link:../core
+      '@iringo/modkit-shared':
+        specifier: workspace:^
+        version: link:../shared
 
   packages/sgmoudle-tools:
     dependencies:

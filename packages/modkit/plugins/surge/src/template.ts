@@ -2,11 +2,12 @@ import { Template, logger, objectEntries, toKebabCase } from '@iringo/modkit-sha
 
 export class SurgeTemplate extends Template {
   get Metadata() {
-    const { name, description, system, ...rest } = this.metadata;
+    const { name, description, system, version, extra = {} } = this.metadata;
     const { argumentsText, argumentsDescription } = this.#handleArguments();
-    const result: Record<string, string | number | boolean | undefined> = {};
+    const result: Record<string, any> = {};
     result.name = name;
     result.desc = description;
+    result.version = version;
     if (system) {
       result.requirement = system?.map((item) => `SYSTEM = ${item}`).join(' || ');
     }
@@ -16,7 +17,7 @@ export class SurgeTemplate extends Template {
     if (argumentsDescription) {
       result['arguments-desc'] = argumentsDescription;
     }
-    Object.entries(rest).forEach(([key, value]) => {
+    objectEntries(extra).forEach(([key, value]) => {
       result[key] = Array.isArray(value) ? value.join(', ') : value;
     });
     return this.renderKeyValuePairs(result, { prefix: '#!' });
@@ -65,18 +66,22 @@ export class SurgeTemplate extends Template {
   get Script() {
     const scripts: string[] = [];
     const { scriptParams } = this.#handleArguments();
-    this.content.script.forEach((script, index) => {
-      const parameters: Record<string, string | number | boolean | undefined> = {};
-      const { name, scriptKey, debug, ...rest } = script;
+    this.content.script?.forEach((script, index) => {
+      const parameters: Record<string, any> = {};
+      const { name, scriptKey, debug, injectArgument, argument, extra, ...rest } = script;
       parameters['script-path'] = this.utils.getScriptPath(scriptKey);
-      objectEntries(rest).forEach(([key, value]) => {
-        parameters[toKebabCase(key)] = value;
+
+      objectEntries({ ...rest, ...extra }).forEach(([key, value]) => {
+        if (value !== undefined) {
+          parameters[toKebabCase(key as string)] = value.toString();
+        }
       });
+      if (injectArgument || argument) {
+        parameters.argument = argument || scriptParams;
+      }
+
       if (debug || process.env.NODE_ENV === 'development') {
         parameters.debug = true;
-      }
-      if (script.injectArgument || script.argument) {
-        parameters.argument = script.argument || scriptParams;
       }
       scripts.push(
         `${name || `script${index}`} = ${this.renderKeyValuePairs(parameters, { join: ', ', separator: '=' })}`,
@@ -91,10 +96,10 @@ export class SurgeTemplate extends Template {
     }
     let result = '';
     if (this.content.mitm.hostname?.length) {
-      result += `hostname = %APPEND%  ${this.content.mitm.hostname.join(', ')}\n`;
+      result += `hostname = %APPEND% ${this.content.mitm.hostname.join(', ')}\n`;
     }
     if (this.content.mitm.clientSourceAddress?.length) {
-      result += `client-source-address = %APPEND%  ${this.content.mitm.clientSourceAddress.join(', ')}\n`;
+      result += `client-source-address = %APPEND% ${this.content.mitm.clientSourceAddress.join(', ')}\n`;
     }
     return result.trim();
   }
@@ -118,20 +123,27 @@ export class SurgeTemplate extends Template {
         case 'header-add':
         case 'header-del':
         case 'header-replace-regex': {
-          const options = [];
-          options.push(rewrite.type);
-          options.push(rewrite.pattern);
-          options.push(rewrite.mode);
-          options.push(rewrite.content);
-          headerRewrites.push(options.join(' '));
+          if (typeof rewrite.content === 'string') {
+            headerRewrites.push([rewrite.type, rewrite.pattern, rewrite.mode, rewrite.content].join(' '));
+            break;
+          }
+          Object.entries(rewrite.content).forEach(([key, value]) => {
+            headerRewrites.push([rewrite.type, rewrite.pattern, rewrite.mode, key, value].join(' '));
+          });
           break;
         }
         default: {
-          const options = [];
-          options.push(rewrite.type);
-          options.push(rewrite.pattern);
-          options.push(rewrite.content);
-          bodyRewrites.push(options.join(' '));
+          if (typeof rewrite.content === 'string') {
+            headerRewrites.push([rewrite.type, rewrite.pattern, rewrite.content].join(' '));
+            break;
+          }
+          bodyRewrites.push(
+            [
+              rewrite.type,
+              rewrite.pattern,
+              ...Object.entries(rewrite.content).map(([key, value]) => [key, value].join(' ')),
+            ].join(' '),
+          );
           break;
         }
       }
@@ -164,9 +176,9 @@ export class SurgeTemplate extends Template {
         options.push(`data-type=${mock.dataType}`);
       }
       if (typeof mock.data === 'string') {
-        options.push(`data=${this.utils.getFilePath(mock.data) || mock.data}`);
+        options.push(`data="${this.utils.getFilePath(mock.data) || mock.data}"`);
       } else if (!!mock.data && 'content' in mock.data) {
-        options.push(`data=${mock.data.content}`);
+        options.push(`data="${mock.data.content}"`);
       }
       if (mock.statusCode) {
         options.push(`status-code=${mock.statusCode}`);
@@ -174,13 +186,13 @@ export class SurgeTemplate extends Template {
       if (mock.headers) {
         switch (typeof mock.headers) {
           case 'string':
-            options.push(`header=${mock.headers}`);
+            options.push(`header="${mock.headers}"`);
             break;
           case 'object': {
             const header = Object.entries(mock.headers)
               .map((value) => value.join(':'))
               .join('|');
-            options.push(`header=${header}`);
+            options.push(`header="${header}"`);
             break;
           }
           default:
