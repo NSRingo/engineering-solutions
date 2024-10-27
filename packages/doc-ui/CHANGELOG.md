@@ -1,5 +1,11 @@
 # @iringo/doc-ui
 
+## 1.2.3
+
+### Patch Changes
+
+- 5cc8afd: `ModuleInstall` 中 stash 一键安装链接组装错误的问题
+
 ## 1.2.2
 
 ### Patch Changes
