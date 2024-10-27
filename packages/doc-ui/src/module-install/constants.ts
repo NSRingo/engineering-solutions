@@ -56,7 +56,7 @@ export const APP_INSTALL_INFO_MAP: Record<
   },
   stash: {
     urlTemplate: (url) => {
-      return `https://link.stash.ws/install-override/${url.replace('^https?://', '')}`;
+      return `https://link.stash.ws/install-override/${url.replace(/^https?:\/\//, '')}`;
     },
     manualInstall: {
       urlTitle: '覆写地址',
