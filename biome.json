@@ -8,7 +8,7 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "ignore": []
+    "ignore": ["packages/modkit/tests/src/arguments.d.ts"]
   },
   "formatter": {
     "enabled": true,
