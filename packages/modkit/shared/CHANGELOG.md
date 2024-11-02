@@ -1,5 +1,11 @@
 # @iringo/modkit-shared
 
+## 1.0.0
+
+### Major Changes
+
+- d2754aa: first version
+
 ## 0.0.1
 
 ### Patch Changes

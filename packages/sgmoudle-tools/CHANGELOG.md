@@ -1,5 +1,11 @@
 # @iringo/sgmoudle-tools
 
+## 2.0.0
+
+### Major Changes
+
+- d2754aa: first version
+
 ## 1.2.2
 
 ### Patch Changes
