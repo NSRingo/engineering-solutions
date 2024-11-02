@@ -28,8 +28,9 @@ export function ModuleInstall({ urlPrefix = '', urls, children }: ModuleInstallP
   const tabLabels = useMemo(() => {
     const result: React.ReactNode[] = [];
     if (urls) {
-      SUPPORTED_APPS.forEach((appType) => {
-        if (urls[appType]) {
+      Object.keys(urls).forEach((item) => {
+        const appType = item as SupportedApp;
+        if (SUPPORTED_APPS.includes(appType)) {
           result.push(renderTabLabel(appType));
         }
       });
