@@ -34,11 +34,13 @@ const mockDataTypeMap: Record<LoonMockDataType, string[]> = {
 
 export class LoonTemplate extends Template {
   get Metadata() {
-    const { name, description, ...rest } = this.metadata;
-    const result: Record<string, string | number | boolean | undefined> = {};
+    const { name, description, version, system, extra = {} } = this.metadata;
+    const result: Record<string, any> = {};
     result.name = name;
     result.desc = description;
-    Object.entries(rest).forEach(([key, value]) => {
+    result.version = version;
+    result.system = system?.join(', ');
+    Object.entries(extra).forEach(([key, value]) => {
       result[key] = Array.isArray(value) ? value.join(',') : value;
     });
     return this.renderKeyValuePairs(result, { prefix: '#!' });
@@ -103,44 +105,56 @@ export class LoonTemplate extends Template {
   }
 
   get Script() {
-    return this.content.script
-      ?.map((script, index) => {
-        let line = '';
-        const { type, pattern, cronexp, scriptKey, argument, injectArgument, name, ...rest } = script;
-        switch (type) {
-          case 'http-request':
-          case 'http-response':
-            line += `${type} ${pattern} `;
-            break;
-          case 'cron':
-            line += `${type} "${cronexp}" `;
-            break;
-          case 'generic':
-            line += `${type} `;
-            break;
-          // case 'network-changed':
-          case 'event':
-            line += 'network-changed ';
-            break;
-          case 'dns':
-          default:
-            logger.warn(`[Loon] Unsupported script type: ${type}`);
-            break;
-        }
-        const parameters: Record<string, string | number | boolean | undefined> = {};
-        parameters['script-path'] = this.utils.getScriptPath(scriptKey);
-        parameters.tag = name || `Script${index}`;
-        objectEntries(rest).forEach(([key, value]) => {
-          parameters[toKebabCase(key)] = value;
-        });
-        if (injectArgument || argument) {
-          parameters.argument = argument || `[${this.source.arguments?.map((item) => `{${item.key}}`).join(',')}]`;
-        }
-        line += this.renderKeyValuePairs(parameters, { join: ', ', separator: '=' });
-        return line;
-      })
-      .join('\n')
-      .trim();
+    return this.content.script?.map((script, index) => {
+      let line = '';
+      switch (script.type) {
+        case 'http-request':
+        case 'http-response':
+          line += `${script.type} ${script.pattern},`;
+          break;
+        case 'cron':
+          line += `${script.type} "${script.cronexp}",`;
+          break;
+        case 'generic':
+          line += `${script.type} `;
+          break;
+        // case 'network-changed':
+        case 'event':
+          line += 'network-changed ';
+          break;
+        default:
+          logger.warn(`[Loon] Unsupported script type: ${script.type}`);
+          break;
+      }
+      line += `script-path=${this.utils.getScriptPath(script.scriptKey)},`;
+      line += objectEntries(script)
+        .map(([key, value]) => {
+          switch (key) {
+            case 'name':
+              return `tag = ${value || `Script${index}`}`;
+            case 'argument':
+              return `argument = ${value}`;
+            case 'injectArgument': {
+              if (!script.argument && value) {
+                return `argument = [${this.source.arguments?.map((item) => `{${item.key}}`).join(',')}]`;
+              }
+              return '';
+            }
+            case 'type':
+            case 'pattern':
+            case 'cronexp':
+            case 'scriptKey':
+              return '';
+
+            default:
+              return `${key} = ${value}`;
+          }
+        })
+        .filter(Boolean)
+        .join(',')
+        .trim();
+      return line;
+    });
   }
 
   get MITM() {

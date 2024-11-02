@@ -1,4 +1,4 @@
-import { type RuleType, Template, logger, objectEntries, toKebabCase } from '@iringo/modkit-shared';
+import { type RuleType, Template, logger } from '@iringo/modkit-shared';
 
 const ruleTypeMap: Record<RuleType, string | undefined> = {
   DOMAIN: 'host',
@@ -27,11 +27,13 @@ const ruleTypeMap: Record<RuleType, string | undefined> = {
 
 export class QuantumultxTemplate extends Template {
   get Metadata() {
-    const { name, description, ...rest } = this.metadata;
-    const result: Record<string, string | number | boolean | undefined> = {};
+    const { name, description, version, system, extra = {} } = this.metadata;
+    const result: Record<string, any> = {};
     result.name = name;
     result.desc = description;
-    Object.entries(rest).forEach(([key, value]) => {
+    result.version = version;
+    result.system = system?.join(', ');
+    Object.entries(extra).forEach(([key, value]) => {
       result[key] = Array.isArray(value) ? value.join(',') : value;
     });
     return this.renderKeyValuePairs(result, { prefix: '#!' });
