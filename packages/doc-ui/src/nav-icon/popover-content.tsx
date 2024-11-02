@@ -24,7 +24,7 @@ const PROJECTS = [
 export const PopoverContent: React.FC = () => {
   const renderLink = ({ icon, url, title, description }: (typeof PROJECTS)[number]) => {
     return (
-      <a key={title} className={styles.item} href={url} target='_blank' rel='noopener noreferrer'>
+      <a key={title} className={styles.item} href={url} target="_blank" rel="noopener noreferrer">
         <img className={styles.icon} src={icon} alt={title} />
         <div>
           <span className={styles.title}>{title}</span>

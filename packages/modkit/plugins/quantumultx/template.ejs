@@ -1,0 +1,16 @@
+<%= quantumultxTemplate.Metadata %>
+
+<% if (quantumultxTemplate.Filter) { %>
+#[filter_local]
+<%= quantumultxTemplate.Filter %>
+<% } %>
+
+<% if (quantumultxTemplate.Rewrite) { %>
+#[rewrite_local]
+<%= quantumultxTemplate.Rewrite %>
+<% } %>
+
+<% if (quantumultxTemplate.MITM) { %>
+#[mitm]
+<%= quantumultxTemplate.MITM %>
+<% } %>

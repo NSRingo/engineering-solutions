@@ -1,68 +1,46 @@
-#!name = <%= metadata.name %>
-#!desc = <%= metadata.description %><% if (metadata.system?.length) { %>
-#!requirement = <%= metadata.system.map(item => `SYSTEM = '${item}'`).join(' || ') %><% } %><% if (arguments) { %>
-#!arguments = <%= argumentsText %>
-#!arguments-desc = <%= argumentsDescription %><% } %><% Object.entries(metadata.extra).forEach(([key, value]) => { %>
-#!<%= key %> = <%= value %>
-<% }) %>
+<%= surgeTemplate.Metadata %>
 
-<% if (content.general) { %>
+<% if (surgeTemplate.General) { %>
 [General]
-<% Object.entries(content.general).forEach(([key, value]) => { %>
-<%= key %> = <%= value %>
-<% }); %>
+<%= surgeTemplate.General %>
 <% } %>
 
-<% if (content.host) { %>
+<% if (surgeTemplate.Host) { %>
 [Host]
-<% Object.entries(content.host).forEach(([key, value]) => { %>
-<%= key %> = <%= value %>
-<% }); %>
+<%= surgeTemplate.Host %>
 <% } %>
 
-<% if (content.rule) { %>
+<% if (surgeTemplate.Rule) { %>
 [Rule]
-<% content.rule.forEach((rule) => { %>
-<%= rule %>
-<% }); %>
+<%= surgeTemplate.Rule %>
 <% } %>
 
-<% if (content.urlRewrite) { %>
+<% if (surgeTemplate.URLRewrite) { %>
 [URL Rewrite]
-<% content.urlRewrite.forEach((rewrite) => { %>
-<%= rewrite %>
-<% }); %>
+<%= surgeTemplate.URLRewrite %>
 <% } %>
 
-<% if (content.headerRewrite) { %>
+<% if (surgeTemplate.HeaderRewrite) { %>
 [Header Rewrite]
-<% content.headerRewrite.forEach((rewrite) => { %>
-<%= rewrite %>
-<% }); %>
+<%= surgeTemplate.HeaderRewrite %>
 <% } %>
 
-<% if (content.bodyRewrite) { %>
+<% if (surgeTemplate.BodyRewrite) { %>
 [Body Rewrite]
-<% content.bodyRewrite.forEach((rewrite) => { %>
-<%= rewrite %>
-<% }); %>
+<%= surgeTemplate.BodyRewrite %>
 <% } %>
 
-<% if (content.mapLocal) { %>
+<% if (surgeTemplate.MapLocal) { %>
 [Map Local]
-<% content.mapLocal.forEach((map) => { %>
-<%= map %>
-<% }); %>
+<%= surgeTemplate.BodyRewrite %>
 <% } %>
 
-<% if (content.script) { %>
+<% if (surgeTemplate.Script) { %>
 [Script]
-<% content.script.forEach((script) => { %>
-<%= script.name %> = type=<%= script.type %><% if (script.pattern) { %>, pattern=<%= script.pattern %><% } %>, requires-body=<%= script.requiresBody ? 'true' : 'false' %>, binary-body-mode=<%= script.binaryBodyMode ? 'true' : 'false' %>, script-path=<%= getScriptPath(compilation, script.scriptKey, assetPrefix) %><% if (script.injectArgument || script.argument) { %>, argument=<%= script.argument || scriptParams %><% } %>
-<% }); %>
+<%= surgeTemplate.Script %>
 <% } %>
 
-<% if (content.mitm && content.mitm.hostname) { %>
-[Mitm]
-hostname = %APPEND% <%= content.mitm.hostname %>
+<% if (surgeTemplate.MITM) { %>
+[MITM]
+<%= surgeTemplate.MITM %>
 <% } %>

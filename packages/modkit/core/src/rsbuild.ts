@@ -6,40 +6,56 @@ import {
   type PluginType,
   address,
   getPluginContext,
+  handleArgumentsDefaultValue,
   lodash,
   runMaybeAsync,
 } from '@iringo/modkit-shared';
 import { type EnvironmentConfig, type RsbuildConfig, createRsbuild } from '@rsbuild/core';
 import type { Compilation } from '@rspack/core';
 
-const getScriptPath = (compilation: Compilation, scriptKey: string, assetPrefix = '') => {
+const getFilePathFactory = (assetPrefix = '') => {
   const isDev = process.env.NODE_ENV === 'development';
-  const filePath = compilation.getStats().toJson({ assets: true }).entrypoints?.[scriptKey]?.assets?.[0].name;
-  let result = filePath;
-  if (assetPrefix) {
-    result = `${assetPrefix}/${filePath}`;
-  }
-  if (isDev) {
-    result += `?t=${Date.now()}`;
-  }
-  return result;
+  return (filePath: string) => {
+    let result = filePath;
+    if (assetPrefix) {
+      result = `${assetPrefix}/${filePath}`;
+    }
+    if (isDev) {
+      result += `?t=${Date.now()}`;
+    }
+    return result;
+  };
+};
+
+const getScriptPathFactory = (compilation: Compilation, assetPrefix = '') => {
+  const entrypoints = compilation.getStats().toJson({ assets: true }).entrypoints;
+  const getFilePath = getFilePathFactory(assetPrefix);
+  return (scriptKey: string) => {
+    const filePath = entrypoints?.[scriptKey]?.assets?.[0].name;
+    if (!filePath) {
+      return '';
+    }
+    return getFilePath(filePath);
+  };
 };
 
 const generateEnvironment = async ({
   plugin,
   config,
   appContext,
-}: { plugin: PluginType; config: ModkitConfig<Record<string, string>>; appContext: IAppContext }): Promise<{
+}: { plugin: PluginType; config: ModkitConfig; appContext: IAppContext }): Promise<{
   name: string;
   rsbuildConfig: RsbuildConfig;
 } | null> => {
+  if (!config.source) {
+    return null;
+  }
+
   const { cacheDirectory } = appContext;
   if (!fs.existsSync(cacheDirectory)) {
     fs.mkdirSync(cacheDirectory);
   }
-  /**
-   * 不能用完整的 `RsbuildConfig`，类型存在递归，下方类型推断会造成内存溢出
-   */
+
   const rsbuildConfig: EnvironmentConfig = {
     html: {
       inject: false,
@@ -47,10 +63,11 @@ const generateEnvironment = async ({
   };
 
   const pluginCtx = await getPluginContext(plugin);
-  if (!pluginCtx.configurePlatform) {
+
+  const platformConfig = pluginCtx.configurePlatform?.();
+  if (!platformConfig) {
     return null;
   }
-  const platformConfig = pluginCtx.configurePlatform();
 
   // 注入模板
   const templatePath = path.resolve(cacheDirectory, `${plugin.name}.ejs`);
@@ -69,10 +86,23 @@ const generateEnvironment = async ({
   rsbuildConfig.output.filename.html = moduleFilename;
 
   // 设置模板参数
-  const argsCtx = await runMaybeAsync(pluginCtx.processArguments, { args: source?.arguments ?? [] });
-  rsbuildConfig.html.templateParameters = {
-    ...argsCtx,
-    ...source,
+  rsbuildConfig.html.templateParameters = (defaultParameters) => {
+    const compilation = defaultParameters.compilation as Compilation;
+    const assetPrefix = defaultParameters.assetPrefix as string;
+    const getFilePath = getFilePathFactory(assetPrefix);
+    const getScriptPath = getScriptPathFactory(compilation, assetPrefix);
+    const params = pluginCtx.templateParameters?.({
+      source,
+      getFilePath,
+      getScriptPath,
+      handleArgumentsDefaultValue: config.output?.handleArgumentsDefaultValue ?? handleArgumentsDefaultValue,
+    });
+    return {
+      ...source,
+      ...params,
+      getFilePath,
+      getScriptPath,
+    };
   };
 
   return {
@@ -86,7 +116,7 @@ export const useRsbuild = async ({
   plugins,
   appContext,
 }: {
-  config: ModkitConfig<Record<string, string>>;
+  config: ModkitConfig;
   plugins: PluginType[];
   appContext: IAppContext;
 }) => {
@@ -102,6 +132,12 @@ export const useRsbuild = async ({
     ),
   );
 
+  const assetsOutput = config.output?.distPath?.assets ?? 'static';
+  const assetsCopy = Object.entries(config.source?.assets ?? {}).map(([outputName, from]) => ({
+    from,
+    to: path.join(assetsOutput, outputName),
+  }));
+
   const rsbuild = await createRsbuild({
     rsbuildConfig: {
       source: {
@@ -111,19 +147,17 @@ export const useRsbuild = async ({
         assetPrefix: config.output?.assetPrefix,
         distPath: {
           root: config.output?.distPath?.root,
-          js: '',
+          js: config.output?.distPath?.js,
         },
         filename: {
           js: '[name].js',
         },
+        copy: assetsCopy,
       },
       dev: {
         assetPrefix: `http://${address.ip()}:${config.dev?.port ?? 3000}`,
-      },
-      html: {
-        templateParameters: {
-          getScriptPath,
-        },
+        hmr: false,
+        liveReload: false,
       },
       performance: {
         chunkSplit: {

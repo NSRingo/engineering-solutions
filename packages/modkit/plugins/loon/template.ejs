@@ -1,0 +1,36 @@
+<%= loonTemplate.Metadata %>
+
+<% if (loonTemplate.General) { %>
+[General]
+<%= loonTemplate.General %>
+<% } %>
+
+<% if (loonTemplate.Host) { %>
+[Host]
+<%= loonTemplate.Host %>
+<% } %>
+
+<% if (loonTemplate.Rule) { %>
+[Host]
+<%= loonTemplate.Rule %>
+<% } %>
+
+<% if (loonTemplate.Mock) { %>
+[Rewrite]
+<%= loonTemplate.Mock %>
+<% } %>
+
+<% if (loonTemplate.Argument) { %>
+[Argument]
+<%= loonTemplate.Argument %>
+<% } %>
+
+<% if (loonTemplate.Script) { %>
+[Script]
+<%= loonTemplate.Script %>
+<% } %>
+
+<% if (loonTemplate.MITM) { %>
+[MITM]
+<%= loonTemplate.MITM %>
+<% } %>

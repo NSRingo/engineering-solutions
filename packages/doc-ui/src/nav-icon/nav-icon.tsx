@@ -5,7 +5,7 @@ import { PopoverContent } from './popover-content';
 
 export const NavIcon: React.FC = () => {
   return (
-    <Popover overlay={<PopoverContent />} placement='bottomLeft'>
+    <Popover overlay={<PopoverContent />} placement="bottomLeft">
       <span className={styles.icon}>
         <IconNav />
       </span>

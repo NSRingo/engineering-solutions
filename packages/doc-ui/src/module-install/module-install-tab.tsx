@@ -4,6 +4,7 @@ import type { SupportedApp } from './constants';
 
 export interface ModuleInstallTabProps {
   type: SupportedApp;
+  // biome-ignore lint/style/useNamingConvention: <explanation>
   __urlPrefix?: string;
   children?: React.ReactNode;
 }
