@@ -1,5 +1,11 @@
 # @iringo/doc-ui
 
+## 1.3.0
+
+### Minor Changes
+
+- eb7b525: 支持自定义排序
+
 ## 1.2.3
 
 ### Patch Changes

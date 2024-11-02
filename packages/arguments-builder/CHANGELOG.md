@@ -1,5 +1,11 @@
 # @iringo/arguments-builder
 
+## 2.0.0
+
+### Major Changes
+
+- d2754aa: first version
+
 ## 1.7.8
 
 ### Patch Changes

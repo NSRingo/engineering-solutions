@@ -1,5 +1,21 @@
 # @iringo/modkit
 
+## 1.0.0
+
+### Major Changes
+
+- d2754aa: first version
+
+### Patch Changes
+
+- Updated dependencies [d2754aa]
+  - @iringo/modkit-plugin-boxjs@1.0.0
+  - @iringo/modkit-plugin-stash@1.0.0
+  - @iringo/modkit-plugin-surge@1.0.0
+  - @iringo/modkit-plugin-loon@1.0.0
+  - @iringo/modkit-plugin-dts@1.0.0
+  - @iringo/modkit-shared@1.0.0
+
 ## 0.0.1
 
 ### Patch Changes
