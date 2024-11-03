@@ -1,5 +1,11 @@
 # @iringo/arguments-builder
 
+## 1.8.0
+
+### Minor Changes
+
+- 45d3861: 支持 Egern 转换
+
 ## 2.0.0
 
 ### Major Changes

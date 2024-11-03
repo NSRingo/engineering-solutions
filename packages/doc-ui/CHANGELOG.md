@@ -1,5 +1,11 @@
 # @iringo/doc-ui
 
+## 1.3.1
+
+### Patch Changes
+
+- 46c706f: 修复部分浏览器不支持 text-wrap 的问题
+
 ## 1.3.0
 
 ### Minor Changes
