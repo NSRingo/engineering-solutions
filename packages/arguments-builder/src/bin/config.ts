@@ -9,6 +9,12 @@ const outputSchema = z.object({
     .object({
       template: z.string().optional(),
       path: z.string().optional(),
+      transformEgern: z
+        .object({
+          enable: z.boolean().optional().default(true),
+          path: z.string().optional(),
+        })
+        .optional(),
     })
     .optional(),
   loon: z

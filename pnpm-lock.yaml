@@ -32,6 +32,9 @@ importers:
 
   packages/arguments-builder:
     dependencies:
+      '@iringo/surge2egern':
+        specifier: workspace:^
+        version: link:../surge2egern
       '@iringo/utils':
         specifier: workspace:^
         version: link:../utils

@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { Surge2Egern } from '@iringo/surge2egern';
 import { logger } from '@iringo/utils';
 import type { ArgumentsBuilder } from '../core';
 import type { Output } from './config';
@@ -21,15 +22,21 @@ export const buildSurgeArguments = async (
   try {
     const template = handlebars.compile(fs.readFileSync(templatePath, 'utf-8'));
     const { argumentsText, argumentsDescription, scriptParams } = builder.buildSurgeArguments();
-    await safeWriteFile(
-      outputPath,
-      template({
-        arguments: argumentsText,
-        argumentsDesc: argumentsDescription.replace(/\n/g, '\\n'),
-        scriptParams,
-      }),
-    );
+    const result = template({
+      arguments: argumentsText,
+      argumentsDesc: argumentsDescription.replace(/\n/g, '\\n'),
+      scriptParams,
+    });
+    await safeWriteFile(outputPath, result);
     logger.success(`Successfully generated Surge module to ${outputPath}`);
+
+    if (output?.transformEgern?.enable) {
+      const surge2Egern = new Surge2Egern();
+      const egernModule = await surge2Egern.transformModule(result);
+      const egernOutputPath = output?.transformEgern?.path ?? path.resolve('egern.yaml');
+      await safeWriteFile(egernOutputPath, egernModule);
+      logger.success(`Successfully generated Egern module to ${egernOutputPath}`);
+    }
   } catch (error) {
     logger.error(`Failed to generate Surge module to ${outputPath}`, error);
   }
