@@ -17,5 +17,5 @@
     "source.organizeImports.biome": "explicit"
   },
   "conventionalCommits.scopes": ["arguments-builder", "sgmoudle-tools"],
-  "cSpell.words": ["iringo", "MITM", "modkit", "rsbuild"]
+  "cSpell.words": ["egern", "iringo", "MITM", "modkit", "rsbuild"]
 }
