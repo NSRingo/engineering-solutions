@@ -18,5 +18,10 @@
   },
   "devDependencies": {
     "@modern-js/module-tools": "^2.60.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NSRingo/engineering-solutions",
+    "directory": "packages/surge2egern"
   }
 }
