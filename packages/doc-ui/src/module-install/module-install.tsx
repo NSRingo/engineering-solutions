@@ -57,18 +57,16 @@ export function ModuleInstall({ urlPrefix = '', urls, children }: ModuleInstallP
       });
     }
     const result: React.ReactNode[] = [];
-    SUPPORTED_APPS.forEach((appType) => {
-      const url = urls?.[appType];
-      if (!url) {
-        return;
+    Object.keys(urls ?? {}).forEach((item) => {
+      const appType = item as SupportedApp;
+      if (SUPPORTED_APPS.includes(appType)) {
+        result.push(
+          <Tab key={appType}>
+            <AppTabContent key={appType} appType={appType} url={`${urlPrefix}${urls?.[appType]}`} />
+          </Tab>,
+        );
       }
-      result.push(
-        <Tab key={appType}>
-          <AppTabContent key={url} appType={appType} url={`${urlPrefix}${url}`} />
-        </Tab>,
-      );
     });
-
     return result;
   }, [urlPrefix, urls, children]);
 
