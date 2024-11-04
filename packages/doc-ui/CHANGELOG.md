@@ -1,5 +1,11 @@
 # @iringo/doc-ui
 
+## 1.3.2
+
+### Patch Changes
+
+- 5c3ee69: 修复排序问题
+
 ## 1.3.1
 
 ### Patch Changes
