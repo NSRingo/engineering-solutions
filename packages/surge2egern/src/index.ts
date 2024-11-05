@@ -75,12 +75,10 @@ export class Surge2Egern {
         return output.value;
       }, outputElement);
 
-      await this.#browser.close();
       spinner.succeed(`${title}成功`);
 
       return outputValue;
     } catch (error) {
-      await this.#browser.close();
       spinner.fail(`${title}失败`);
       throw error;
     }
@@ -90,7 +88,11 @@ export class Surge2Egern {
     return this.#transform('模块配置转换', module);
   }
 
-  async transformRules(rules: string) {
+  transformRules(rules: string) {
     return this.#transform('规则集合转换', rules);
+  }
+
+  async destroy() {
+    await this.#browser.close();
   }
 }
