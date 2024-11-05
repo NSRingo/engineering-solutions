@@ -16,7 +16,7 @@ export class Surge2Egern {
     this.#browser = await puppeteer.launch();
     this.#page = await this.#browser.newPage();
 
-    await this.#page.goto('https://gen.egernapp.com/');
+    await this.#page.goto('https://gen.egernapp.com/', { waitUntil: 'networkidle0' });
   }
 
   async #findElement(title: string) {
@@ -57,12 +57,16 @@ export class Surge2Egern {
       const { inputElement, outputElement } = await this.#findElement(title);
 
       // 清空输入框的内容
-      await this.#page.evaluate((input) => {
-        input.value = '';
-      }, inputElement);
+      await this.#page.evaluate(
+        (input, value) => {
+          input.value = value;
+          input.dispatchEvent(new Event('input', { bubbles: true }));
+        },
+        inputElement,
+        text,
+      );
 
-      // 输入新的内容
-      await inputElement.type(text);
+      await inputElement.type('\n');
 
       await new Promise((resolve) => setTimeout(resolve, 500));
 
