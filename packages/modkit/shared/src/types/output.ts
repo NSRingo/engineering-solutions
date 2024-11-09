@@ -1,3 +1,4 @@
+import type { BannerPluginArgument } from '@rspack/core';
 export interface OutputDistPath {
   /**
    * 输出目录
@@ -32,6 +33,10 @@ export interface Output {
    * 静态资源的 URL 前缀
    */
   assetPrefix?: string;
+  /**
+   * banner
+   */
+  banners?: BannerPluginArgument[];
   /**
    * 自定义处理参数的默认值
    */

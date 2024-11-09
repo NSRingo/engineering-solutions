@@ -12,7 +12,6 @@ export const pluginEgern = (): ModkitPlugin => {
           if (!distPath || !fs.existsSync(distPath)) {
             return;
           }
-
           const surgeModules = fs.readdirSync(distPath).reduce<string[]>((acc, file) => {
             if (path.extname(file) === '.sgmodule') {
               acc.push(path.join(distPath, file));

@@ -10,8 +10,8 @@ import {
   lodash,
   runMaybeAsync,
 } from '@iringo/modkit-shared';
-import { type EnvironmentConfig, type RsbuildConfig, createRsbuild } from '@rsbuild/core';
-import type { Compilation } from '@rspack/core';
+import { type EnvironmentConfig, type RsbuildConfig, type Rspack, createRsbuild } from '@rsbuild/core';
+import { type Compilation, rspack } from '@rspack/core';
 
 const getFilePathFactory = (assetPrefix = '') => {
   const isDev = process.env.NODE_ENV === 'development';
@@ -138,41 +138,50 @@ export const useRsbuild = async ({
     to: path.join(assetsOutput, outputName),
   }));
 
-  const { rsbuild: rsbuildConfig, ...tools } = config.tools ?? {};
-  const rsbuild = await createRsbuild({
-    rsbuildConfig: {
-      ...rsbuildConfig,
-      source: {
-        entry: config.source?.scripts,
-      },
-      output: {
-        assetPrefix: config.output?.assetPrefix,
-        distPath: {
-          root: config.output?.distPath?.root,
-          js: config.output?.distPath?.js,
-        },
-        filename: {
-          js: '[name].js',
-        },
-        copy: assetsCopy,
-      },
-      dev: {
-        assetPrefix: `http://${address.ip()}:${config.dev?.port ?? 3000}`,
-        hmr: false,
-        liveReload: false,
-      },
-      performance: {
-        chunkSplit: {
-          strategy: 'all-in-one',
-        },
-      },
-      server: {
-        printUrls: false,
-      },
-      environments,
-      tools,
+  const { rsbuild: rsbuildPartialConfig, ...tools } = config.tools ?? {};
+  const rsbuildConfig: RsbuildConfig = {
+    ...rsbuildPartialConfig,
+    source: {
+      entry: config.source?.scripts,
     },
-  });
+    output: {
+      assetPrefix: config.output?.assetPrefix,
+      distPath: {
+        root: config.output?.distPath?.root,
+        js: config.output?.distPath?.js,
+      },
+      filename: {
+        js: '[name].js',
+      },
+      copy: assetsCopy,
+    },
+    dev: {
+      assetPrefix: `http://${address.ip()}:${config.dev?.port ?? 3000}`,
+      hmr: false,
+      liveReload: false,
+    },
+    performance: {
+      chunkSplit: {
+        strategy: 'all-in-one',
+      },
+    },
+    server: {
+      printUrls: false,
+    },
+    environments,
+    tools: {
+      ...tools,
+    },
+  };
+  if (config.output?.banners?.length) {
+    rsbuildConfig.tools ??= {};
+    rsbuildConfig.tools.rspack ??= {};
+    (rsbuildConfig.tools.rspack as Rspack.Configuration).plugins ??= [];
+    config.output.banners.forEach((banner) => {
+      (rsbuildConfig.tools!.rspack as Rspack.Configuration).plugins?.push(new rspack.BannerPlugin(banner));
+    });
+  }
+  const rsbuild = await createRsbuild({ rsbuildConfig });
 
   return {
     rsbuild,

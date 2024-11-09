@@ -105,56 +105,59 @@ export class LoonTemplate extends Template {
   }
 
   get Script() {
-    return this.content.script?.map((script, index) => {
-      let line = '';
-      switch (script.type) {
-        case 'http-request':
-        case 'http-response':
-          line += `${script.type} ${script.pattern},`;
-          break;
-        case 'cron':
-          line += `${script.type} "${script.cronexp}",`;
-          break;
-        case 'generic':
-          line += `${script.type} `;
-          break;
-        // case 'network-changed':
-        case 'event':
-          line += 'network-changed ';
-          break;
-        default:
-          logger.warn(`[Loon] Unsupported script type: ${script.type}`);
-          break;
-      }
-      line += `script-path=${this.utils.getScriptPath(script.scriptKey)},`;
-      line += objectEntries(script)
-        .map(([key, value]) => {
-          switch (key) {
-            case 'name':
-              return `tag = ${value || `Script${index}`}`;
-            case 'argument':
-              return `argument = ${value}`;
-            case 'injectArgument': {
-              if (!script.argument && value) {
-                return `argument = [${this.source.arguments?.map((item) => `{${item.key}}`).join(',')}]`;
+    return this.content.script
+      ?.map((script, index) => {
+        let line = '';
+        switch (script.type) {
+          case 'http-request':
+          case 'http-response':
+            line += `${script.type} ${script.pattern},`;
+            break;
+          case 'cron':
+            line += `${script.type} "${script.cronexp}",`;
+            break;
+          case 'generic':
+            line += `${script.type} `;
+            break;
+          // case 'network-changed':
+          case 'event':
+            line += 'network-changed ';
+            break;
+          default:
+            logger.warn(`[Loon] Unsupported script type: ${script.type}`);
+            break;
+        }
+        line += `script-path=${this.utils.getScriptPath(script.scriptKey)},`;
+        line += objectEntries(script)
+          .map(([key, value]) => {
+            switch (key) {
+              case 'name':
+                return `tag = ${value || `Script${index}`}`;
+              case 'argument':
+                return `argument = ${value}`;
+              case 'injectArgument': {
+                if (!script.argument && value) {
+                  return `argument = [${this.source.arguments?.map((item) => `{${item.key}}`).join(',')}]`;
+                }
+                return '';
               }
-              return '';
-            }
-            case 'type':
-            case 'pattern':
-            case 'cronexp':
-            case 'scriptKey':
-              return '';
+              case 'type':
+              case 'pattern':
+              case 'cronexp':
+              case 'scriptKey':
+                return '';
 
-            default:
-              return `${key} = ${value}`;
-          }
-        })
-        .filter(Boolean)
-        .join(',')
-        .trim();
-      return line;
-    });
+              default:
+                return `${key} = ${value}`;
+            }
+          })
+          .filter(Boolean)
+          .join(',')
+          .trim();
+        return line;
+      })
+      .join('\n')
+      .trim();
   }
 
   get MITM() {
