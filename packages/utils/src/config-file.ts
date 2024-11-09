@@ -44,7 +44,8 @@ export async function loadConfigFile<T = any>({
         interopDefault: true,
       });
 
-      config = (await jiti.import(configFilePath)) as T;
+      const configResult: any = await jiti.import(configFilePath);
+      config = configResult.default ? configResult.default : configResult;
     }
   } catch (err) {
     logger.error(`Failed to load file with jiti: ${configFilePath}`);
