@@ -1,5 +1,16 @@
 # @iringo/modkit
 
+## 1.1.1
+
+### Patch Changes
+
+- @iringo/modkit-shared@1.1.1
+- @iringo/modkit-plugin-boxjs@1.1.1
+- @iringo/modkit-plugin-dts@1.1.1
+- @iringo/modkit-plugin-loon@1.1.1
+- @iringo/modkit-plugin-stash@1.1.1
+- @iringo/modkit-plugin-surge@1.1.1
+
 ## 1.1.0
 
 ### Minor Changes
