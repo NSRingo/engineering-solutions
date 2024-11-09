@@ -239,6 +239,28 @@ importers:
         specifier: ^5.6.2
         version: 5.6.2
 
+  packages/modkit/plugins/egern:
+    dependencies:
+      '@iringo/modkit-shared':
+        specifier: workspace:^
+        version: link:../../shared
+      '@iringo/surge2egern':
+        specifier: ^1.1.0
+        version: 1.1.0(typescript@5.6.2)
+    devDependencies:
+      '@iringo/modkit-config':
+        specifier: workspace:^
+        version: link:../../config
+      '@modern-js/module-tools':
+        specifier: ^2.60.2
+        version: 2.60.2(typescript@5.6.2)
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.16.10
+      typescript:
+        specifier: ^5.6.2
+        version: 5.6.2
+
   packages/modkit/plugins/loon:
     dependencies:
       '@iringo/modkit-shared':
@@ -1644,6 +1666,9 @@ packages:
     engines: {node: '>=12'}
     cpu: [x64]
     os: [win32]
+
+  '@iringo/surge2egern@1.1.0':
+    resolution: {integrity: sha512-8DEu6sIeWCTC0B6TOzXaGyI4IBnhuKKXE0sgNjyA/dfcwoT4jQDoDlaTQUHh2MVqB8OfD2R4gStaogw+o9qqng==}
 
   '@istanbuljs/load-nyc-config@1.1.0':
     resolution: {integrity: sha512-VjeHSlIzpv/NyD3N0YuHfXOPDIixcA1q2ZV98wsMqcYlPmv2n3Yb2lYP9XMElnaFVXg5A7YLTeLu6V84uQDjmQ==}
@@ -7083,6 +7108,16 @@ snapshots:
 
   '@esbuild/win32-x64@0.19.2':
     optional: true
+
+  '@iringo/surge2egern@1.1.0(typescript@5.6.2)':
+    dependencies:
+      ora: 5.4.1
+      puppeteer: 23.6.1(typescript@5.6.2)
+    transitivePeerDependencies:
+      - bufferutil
+      - supports-color
+      - typescript
+      - utf-8-validate
 
   '@istanbuljs/load-nyc-config@1.1.0':
     dependencies:

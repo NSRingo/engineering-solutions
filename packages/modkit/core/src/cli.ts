@@ -107,7 +107,9 @@ export class ModKitCli {
     this.buildCommand.action(async () => {
       process.env.NODE_ENV = 'production';
 
+      await runMaybeAsync(this.hooksRunner.onBeforeBuild);
       await this.rsbuild.build();
+      await runMaybeAsync(this.hooksRunner.onAfterBuild, { distPath: this.rsbuild.context.distPath });
     });
   }
 

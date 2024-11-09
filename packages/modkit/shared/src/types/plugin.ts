@@ -31,16 +31,20 @@ export interface ConfigurePlatformReturn {
   template: string;
 }
 
-export interface OnBeforeStartDevServer {
+export interface OnBeforeStartDevServerParams {
   app: Express;
   isFirstCompile: boolean;
 }
 
-export interface OnAfterStartDevServer {
+export interface OnAfterStartDevServerParams {
   app: Express;
   isFirstCompile: boolean;
   httpServer: Server;
   rsbuildServer: RsbuildDevServer;
+}
+
+export interface OnAfterBuildParams {
+  distPath?: string;
 }
 
 export interface CommandsParams {
@@ -63,11 +67,19 @@ export interface PluginHooks {
   /**
    * 启动开发服务器前
    */
-  onBeforeStartDevServer?: AsyncWorker<OnBeforeStartDevServer, void>;
+  onBeforeStartDevServer?: AsyncWorker<OnBeforeStartDevServerParams, void>;
   /**
    * 启动开发服务器后
    */
-  onAfterStartDevServer?: AsyncWorker<OnAfterStartDevServer, void>;
+  onAfterStartDevServer?: AsyncWorker<OnAfterStartDevServerParams, void>;
+  /**
+   * 构建前
+   */
+  onBeforeBuild?: AsyncWorker<void, void>;
+  /**
+   * 构建后
+   */
+  onAfterBuild?: AsyncWorker<OnAfterBuildParams, void>;
   /**
    * 为 commander 添加新的 CLI 命令
    */

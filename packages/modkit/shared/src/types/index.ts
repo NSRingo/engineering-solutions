@@ -10,11 +10,18 @@ export interface DevConfig {
   port?: number;
 }
 
+export interface ModkitConfigTools
+  extends Pick<NonNullable<RsbuildConfig['tools']>, 'bundlerChain' | 'rspack' | 'swc'> {
+  rsbuild?: {
+    plugins?: RsbuildConfig['plugins'];
+  };
+}
+
 export interface ModkitConfig {
   source?: SourceConfig;
   dev?: DevConfig;
   output?: Output;
-  tools?: Pick<NonNullable<RsbuildConfig['tools']>, 'bundlerChain' | 'rspack' | 'swc'>;
+  tools?: ModkitConfigTools;
   plugins?: ModkitPlugin[];
 }
 

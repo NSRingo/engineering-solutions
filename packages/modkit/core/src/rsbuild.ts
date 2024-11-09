@@ -138,8 +138,10 @@ export const useRsbuild = async ({
     to: path.join(assetsOutput, outputName),
   }));
 
+  const { rsbuild: rsbuildConfig, ...tools } = config.tools ?? {};
   const rsbuild = await createRsbuild({
     rsbuildConfig: {
+      ...rsbuildConfig,
       source: {
         entry: config.source?.scripts,
       },
@@ -168,7 +170,7 @@ export const useRsbuild = async ({
         printUrls: false,
       },
       environments,
-      tools: config.tools,
+      tools,
     },
   });
 

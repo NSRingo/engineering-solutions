@@ -5,8 +5,9 @@ import type {
   CommandsParams,
   ConfigurePlatformReturn,
   ModifySourceParams,
-  OnAfterStartDevServer,
-  OnBeforeStartDevServer,
+  OnAfterBuildParams,
+  OnAfterStartDevServerParams,
+  OnBeforeStartDevServerParams,
   SourceConfig,
   TemplateParametersParams,
 } from '../types';
@@ -17,8 +18,10 @@ const hooks = {
   configurePlatform: createWorkflow<void, ConfigurePlatformReturn>(),
   modifySource: createAsyncWorkflow<ModifySourceParams, SourceConfig>(),
   templateParameters: createWorkflow<TemplateParametersParams, Record<string, any>>(),
-  onBeforeStartDevServer: createAsyncWorkflow<OnBeforeStartDevServer, void>(),
-  onAfterStartDevServer: createAsyncWorkflow<OnAfterStartDevServer, void>(),
+  onBeforeStartDevServer: createAsyncWorkflow<OnBeforeStartDevServerParams, void>(),
+  onAfterStartDevServer: createAsyncWorkflow<OnAfterStartDevServerParams, void>(),
+  onBeforeBuild: createAsyncWorkflow<void, void>(),
+  onAfterBuild: createAsyncWorkflow<OnAfterBuildParams, void>(),
   commands: createAsyncWorkflow<CommandsParams, void>(),
 };
 
