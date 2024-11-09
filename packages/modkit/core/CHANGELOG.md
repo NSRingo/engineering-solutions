@@ -1,5 +1,21 @@
 # @iringo/modkit
 
+## 1.1.0
+
+### Minor Changes
+
+- 177ee0c: 支持 rsbuild 插件
+
+### Patch Changes
+
+- Updated dependencies [177ee0c]
+  - @iringo/modkit-shared@1.1.0
+  - @iringo/modkit-plugin-boxjs@1.1.0
+  - @iringo/modkit-plugin-dts@1.1.0
+  - @iringo/modkit-plugin-loon@1.1.0
+  - @iringo/modkit-plugin-stash@1.1.0
+  - @iringo/modkit-plugin-surge@1.1.0
+
 ## 1.0.0
 
 ### Major Changes
