@@ -1,5 +1,12 @@
 # @iringo/modkit-shared
 
+## 1.1.1
+
+### Patch Changes
+
+- Updated dependencies [e83ede4]
+  - @iringo/utils@1.0.2
+
 ## 1.1.0
 
 ### Minor Changes

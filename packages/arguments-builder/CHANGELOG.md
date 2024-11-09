@@ -1,5 +1,12 @@
 # @iringo/arguments-builder
 
+## 1.8.3
+
+### Patch Changes
+
+- Updated dependencies [e83ede4]
+  - @iringo/utils@1.0.2
+
 ## 1.8.2
 
 ### Patch Changes
