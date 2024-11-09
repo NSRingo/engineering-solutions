@@ -1,5 +1,12 @@
 # @iringo/modkit-plugin-egern
 
+## 1.1.2
+
+### Patch Changes
+
+- 3249d1c: 修复转换内容为空的问题
+  - @iringo/modkit-shared@1.1.2
+
 ## 1.1.1
 
 ### Patch Changes
