@@ -1,5 +1,12 @@
 # @iringo/modkit-plugin-loon
 
+## 1.2.0
+
+### Patch Changes
+
+- cdc5205: 修复 script 输出错误的问题
+  - @iringo/modkit-shared@1.2.0
+
 ## 1.1.2
 
 ### Patch Changes

@@ -1,5 +1,21 @@
 # @iringo/modkit
 
+## 1.2.0
+
+### Minor Changes
+
+- cdc5205: 增加 banners 配置
+
+### Patch Changes
+
+- Updated dependencies [cdc5205]
+  - @iringo/modkit-plugin-loon@1.2.0
+  - @iringo/modkit-plugin-boxjs@1.2.0
+  - @iringo/modkit-plugin-dts@1.2.0
+  - @iringo/modkit-plugin-stash@1.2.0
+  - @iringo/modkit-plugin-surge@1.2.0
+  - @iringo/modkit-shared@1.2.0
+
 ## 1.1.2
 
 ### Patch Changes
