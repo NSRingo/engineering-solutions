@@ -22,7 +22,8 @@ export const pluginEgern = (): ModkitPlugin => {
           const surge2egern = new Surge2Egern();
           Promise.allSettled(
             surgeModules.map(async (surgeModule) => {
-              const result = await surge2egern.transformModule(surgeModule);
+              const text = await fs.promises.readFile(surgeModule, 'utf-8');
+              const result = await surge2egern.transformModule(text);
               const targetPath = surgeModule.replace('.sgmodule', '.yaml');
               return fs.promises.writeFile(targetPath, result);
             }),
