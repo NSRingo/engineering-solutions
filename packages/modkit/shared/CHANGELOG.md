@@ -1,5 +1,11 @@
 # @iringo/modkit-shared
 
+## 1.1.0
+
+### Minor Changes
+
+- 177ee0c: 支持 rsbuild 插件
+
 ## 1.0.0
 
 ### Major Changes
