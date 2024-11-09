@@ -41,8 +41,8 @@ export const pluginBoxJs = ({ scope = '' }: BoxJsPluginOptions = {}): ModkitPlug
           const settings =
             source?.arguments?.map((arg) => {
               let type: BoxJsType = 'text';
-              if (typeof arg.type === 'object' && arg.type.boxJs) {
-                type = arg.type.boxJs as BoxJsType;
+              if (typeof arg.type === 'object') {
+                type = (arg.type.boxJs as BoxJsType) || arg.type.default;
               } else {
                 if (arg.type === 'boolean') {
                   type = 'boolean';

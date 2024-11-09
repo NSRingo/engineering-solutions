@@ -77,9 +77,10 @@ export class LoonTemplate extends Template {
       ?.map((arg) => {
         let result = arg.key;
         let type: LoonArgumentType = 'input';
-        if (arg.type === 'boolean') {
+        const argType = typeof arg.type === 'object' ? arg.type.loon || arg.type.default : arg.type;
+        if (argType === 'boolean') {
           type = 'switch';
-        } else if (arg.options && arg.type !== 'array') {
+        } else if (arg.options && argType !== 'array') {
           // 只有在有选项且不是数组类型时才使用 select
           type = 'select';
         }
