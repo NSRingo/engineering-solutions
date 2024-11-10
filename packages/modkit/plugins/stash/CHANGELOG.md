@@ -1,5 +1,11 @@
 # @iringo/modkit-plugin-loon
 
+## 1.3.0
+
+### Patch Changes
+
+- @iringo/modkit-shared@1.3.0
+
 ## 1.2.0
 
 ### Patch Changes

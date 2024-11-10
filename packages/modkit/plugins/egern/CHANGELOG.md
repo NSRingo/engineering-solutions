@@ -1,5 +1,13 @@
 # @iringo/modkit-plugin-egern
 
+## 1.3.0
+
+### Patch Changes
+
+- Updated dependencies [e1bb717]
+  - @iringo/surge2egern@1.2.0
+  - @iringo/modkit-shared@1.3.0
+
 ## 1.2.0
 
 ### Patch Changes
