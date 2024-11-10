@@ -12,7 +12,7 @@
   "files": ["dist", "types", "CHANGELOG.md"],
   "dependencies": {
     "@iringo/modkit-shared": "workspace:^",
-    "@iringo/surge2egern": "^1.1.0"
+    "@iringo/surge2egern": "workspace:^"
   },
   "devDependencies": {
     "@iringo/modkit-config": "workspace:^",

@@ -3,7 +3,7 @@ import type { Output } from './output';
 import type { ModkitPlugin } from './plugin';
 import type { SourceConfig } from './source';
 
-export interface DevConfig {
+export interface DevConfig extends Pick<NonNullable<RsbuildConfig['dev']>, 'progressBar' | 'writeToDisk'> {
   /**
    * @default 3000
    */

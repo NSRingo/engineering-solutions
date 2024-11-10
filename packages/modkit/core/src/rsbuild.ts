@@ -3,6 +3,7 @@ import path from 'node:path';
 import {
   type IAppContext,
   type ModkitConfig,
+  type ModkitPlugin,
   type PluginType,
   address,
   getPluginContext,
@@ -77,6 +78,11 @@ const generateEnvironment = async ({
 
   // 处理 source
   const sourceBackup = lodash.cloneDeep(config.source);
+  if (typeof sourceBackup.content === 'function') {
+    sourceBackup.content = await runMaybeAsync(sourceBackup.content, {
+      pluginName: plugin.name as ModkitPlugin['name'],
+    });
+  }
   const source = (await runMaybeAsync(pluginCtx.modifySource, { source: sourceBackup })) ?? sourceBackup;
 
   // 设置输出模块名
@@ -139,6 +145,7 @@ export const useRsbuild = async ({
   }));
 
   const { rsbuild: rsbuildPartialConfig, ...tools } = config.tools ?? {};
+  const { port = 3000, ...devConfig } = config.dev ?? {};
   const rsbuildConfig: RsbuildConfig = {
     ...rsbuildPartialConfig,
     source: {
@@ -156,7 +163,8 @@ export const useRsbuild = async ({
       copy: assetsCopy,
     },
     dev: {
-      assetPrefix: `http://${address.ip()}:${config.dev?.port ?? 3000}`,
+      ...devConfig,
+      assetPrefix: `http://${address.ip()}:${port}`,
       hmr: false,
       liveReload: false,
     },

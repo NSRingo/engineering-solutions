@@ -86,11 +86,15 @@ export interface PluginHooks {
   commands?: AsyncWorker<CommandsParams, void>;
 }
 
+export interface ModkitPluginName {
+  dts: 'dts';
+}
+
 export interface ModkitPlugin {
   /**
    * 插件名称
    */
-  name: string;
+  name: keyof ModkitPluginName & string;
 
   setup: (api: PluginAPI) => PluginHooks;
 }

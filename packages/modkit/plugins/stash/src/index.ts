@@ -9,7 +9,7 @@ export const pluginStash = (): ModkitPlugin => {
         configurePlatform() {
           return {
             extension: '.stoverride',
-            template: '<%= stashTemplate.output %>',
+            template: '<%= output %>',
           };
         },
         modifySource({ source }) {
@@ -25,7 +25,7 @@ export const pluginStash = (): ModkitPlugin => {
         templateParameters(params) {
           const stashTemplate = new StashTemplate(params);
           return {
-            stashTemplate,
+            output: stashTemplate.output,
           };
         },
       };

@@ -1,6 +1,10 @@
 import '@iringo/modkit-shared';
 
 declare module '@iringo/modkit-shared' {
+  interface ModkitPluginName {
+    surge: 'surge';
+  }
+
   interface PluginModuleContent {
     surgeGeneral?: Record<string, string>;
   }

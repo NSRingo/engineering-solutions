@@ -6,6 +6,7 @@ import { Surge2Egern } from '@iringo/surge2egern';
 export const pluginEgern = (): ModkitPlugin => {
   return {
     name: 'egern',
+
     setup() {
       return {
         onAfterBuild({ distPath }) {
@@ -26,7 +27,9 @@ export const pluginEgern = (): ModkitPlugin => {
               const targetPath = surgeModule.replace('.sgmodule', '.yaml');
               return fs.promises.writeFile(targetPath, result);
             }),
-          );
+          ).finally(() => {
+            surge2egern.destroy();
+          });
         },
       };
     },

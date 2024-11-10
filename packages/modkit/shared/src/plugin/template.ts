@@ -1,3 +1,4 @@
+import type { ModuleContent } from '../types';
 import type { TemplateParametersParams } from '../types/plugin';
 import { handleArgumentsDefaultValue } from '../utils';
 
@@ -12,7 +13,7 @@ export class Template {
     return this.source?.metadata || {};
   }
 
-  get content() {
+  get content(): ModuleContent {
     return this.source?.content || {};
   }
 

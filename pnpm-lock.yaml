@@ -245,7 +245,7 @@ importers:
         specifier: workspace:^
         version: link:../../shared
       '@iringo/surge2egern':
-        specifier: ^1.1.0
+        specifier: workspace:^
         version: link:../../../surge2egern
     devDependencies:
       '@iringo/modkit-config':

@@ -1,3 +1,4 @@
+import type { ModkitPlugin } from '../plugin';
 import type { ArgumentItem } from './argument';
 import type { ModuleMetadata } from './metadata';
 import type { ModuleMITM } from './mitm';
@@ -19,6 +20,12 @@ export interface ModuleContent extends PluginModuleContent {
   mitm?: ModuleMITM;
 }
 
+export type ModuleContentType =
+  | ModuleContent
+  | ((options: {
+      pluginName: ModkitPlugin['name'];
+    }) => ModuleContent | PromiseLike<ModuleContent>);
+
 export interface SourceConfig {
   /**
    * 模块名称
@@ -35,7 +42,7 @@ export interface SourceConfig {
   /**
    * 模块内容
    */
-  content?: ModuleContent;
+  content?: ModuleContentType;
   /**
    * 待编译的脚本
    */
