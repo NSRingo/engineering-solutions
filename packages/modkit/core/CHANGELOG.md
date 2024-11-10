@@ -1,5 +1,21 @@
 # @iringo/modkit
 
+## 1.3.0
+
+### Minor Changes
+
+- 9674b0f: content 支持函数式入参
+- 9674b0f: 开放部分 dev 配置
+
+### Patch Changes
+
+- @iringo/modkit-plugin-boxjs@1.3.0
+- @iringo/modkit-plugin-dts@1.3.0
+- @iringo/modkit-plugin-loon@1.3.0
+- @iringo/modkit-plugin-stash@1.3.0
+- @iringo/modkit-plugin-surge@1.3.0
+- @iringo/modkit-shared@1.3.0
+
 ## 1.2.0
 
 ### Minor Changes

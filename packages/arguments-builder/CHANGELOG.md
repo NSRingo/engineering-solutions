@@ -1,5 +1,12 @@
 # @iringo/arguments-builder
 
+## 1.8.4
+
+### Patch Changes
+
+- Updated dependencies [e1bb717]
+  - @iringo/surge2egern@1.2.0
+
 ## 1.8.3
 
 ### Patch Changes
