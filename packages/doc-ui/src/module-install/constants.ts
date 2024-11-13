@@ -23,7 +23,7 @@ export const APP_INSTALL_INFO_MAP: Record<
 > = {
   loon: {
     urlTemplate: (url) => {
-      const result = new URL('https://www.nsloon.com/openloon/import');
+      const result = new URL('loon://import');
       result.searchParams.set('plugin', url);
       return result.toString();
     },
@@ -56,7 +56,10 @@ export const APP_INSTALL_INFO_MAP: Record<
   },
   stash: {
     urlTemplate: (url) => {
-      return `https://link.stash.ws/install-override/${url.replace(/^https?:\/\//, '')}`;
+      const result = new URL('stash://install-override');
+      result.searchParams.set('url', url);
+      return result.toString();
+      //return `https://link.stash.ws/install-override/${url.replace(/^https?:\/\//, '')}`;
     },
     manualInstall: {
       urlTitle: '覆写地址',
