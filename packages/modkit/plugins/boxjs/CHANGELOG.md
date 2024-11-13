@@ -1,5 +1,11 @@
 # @iringo/modkit-plugin-boxjs
 
+## 1.3.2
+
+### Patch Changes
+
+- @iringo/modkit-shared@1.3.2
+
 ## 1.3.1
 
 ### Patch Changes
