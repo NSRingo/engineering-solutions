@@ -5,7 +5,16 @@ import { ModuleInstall } from "..";
     <ModuleInstall.Item
       url="Siri.plugin"
       title="iOS"
-      badge={<>需要 2.1.18(377) 及以上版本</>}
+      badge={[
+        {
+          type: "warning",
+          text: "MITM",
+        },
+        {
+          type: "info",
+          text: "脚本",
+        },
+      ]}
     />
     <ModuleInstall.Item
       url="Siri.macOS.plugin"
@@ -23,12 +32,10 @@ import { ModuleInstall } from "..";
       url="Siri.macOS.sgmodule"
       title="macOS"
       badge={<>需要 5.5.0(2589) 及以上版本</>}
-    />- 可通过`模块`的`编辑参数…`功能自定义内置`策略组`名称 -
-    默认`策略组`名为`🌑Proxy` - 内置 macOS
-    用`域名集`:[LookUp.Wikipedia.list](https://github.com/NSRingo/Siri/releases/latest/download/LookUp.Wikipedia.list
-    "Look Up - Wikipedia") -
-    此`域名集`只作用于macOS的`词典`的维基百科与`查询`的维基百科搜索集成 -
-    需要开启Surge的`增强模式`
+    />- 可通过`模块`的`编辑参数…`功能自定义内置`策略组`名称 - 默认`策略组`名为`🌑Proxy`
+    - 内置 macOS 用`域名集`:[LookUp.Wikipedia.list](https://github.com/NSRingo/Siri/releases/latest/download/LookUp.Wikipedia.list
+    "Look Up - Wikipedia") - 此`域名集`只作用于macOS的`词典`的维基百科与`查询`的维基百科搜索集成
+    - 需要开启Surge的`增强模式`
   </ModuleInstall.Tab>
   <ModuleInstall.Tab type="qx">
     <ModuleInstall.Item

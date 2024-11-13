@@ -5,12 +5,13 @@ import styles from './module-install.module.scss';
 import { QRCode } from './qrcode';
 
 type BadgeProps = React.ComponentProps<typeof Badge>;
+type IBadgeProps = Omit<BadgeProps, 'text'> & { text: React.ReactNode };
 
 export interface AppTabContentProps {
   appType: SupportedApp;
   url: string;
   title?: string;
-  badge?: React.ReactNode | (Omit<BadgeProps['type'], 'text'> & { text: React.ReactNode });
+  badge?: React.ReactNode | IBadgeProps | Array<IBadgeProps>;
   children?: React.ReactNode;
 }
 
@@ -21,17 +22,42 @@ export const AppTabContent: React.FC<AppTabContentProps> = ({ appType, url, titl
   if (!manualInstallInfo) {
     return null;
   }
-  const badgeProps = useMemo<BadgeProps | null>(() => {
-    if (badge && typeof badge === 'object' && 'text' in badge && 'type' in badge) {
-      return badge as unknown as BadgeProps;
+
+  const getBadgeProps = (item: IBadgeProps | React.ReactNode) => {
+    if (item && typeof item === 'object' && 'text' in item && 'type' in item) {
+      return item as BadgeProps;
     }
-    if (badge) {
+    if (item) {
       return {
         type: 'warning',
-        text: badge as string,
-      };
+        text: item,
+      } as BadgeProps;
     }
-    return null;
+  };
+
+  const badgeRender = useMemo(() => {
+    if (Array.isArray(badge)) {
+      return (
+        <span className={styles.badge}>
+          {badge.map((item, index) => {
+            const badgeProps = getBadgeProps(item);
+            if (!badgeProps) {
+              return null;
+            }
+            return <Badge key={index} {...badgeProps} />;
+          })}
+        </span>
+      );
+    }
+    const badgeProps = getBadgeProps(badge);
+    if (!badgeProps) {
+      return null;
+    }
+    return (
+      <span className={styles.badge}>
+        <Badge {...badgeProps} />
+      </span>
+    );
   }, [badge]);
 
   return (
@@ -39,11 +65,7 @@ export const AppTabContent: React.FC<AppTabContentProps> = ({ appType, url, titl
       {title || badge ? (
         <div className={[styles['item-title'], 'mb-2'].join(' ')}>
           {title && <div>{title}</div>}
-          {badgeProps ? (
-            <span className={styles.badge}>
-              <Badge {...badgeProps} />
-            </span>
-          ) : null}
+          {badgeRender}
         </div>
       ) : null}
       {generatedUrl && (

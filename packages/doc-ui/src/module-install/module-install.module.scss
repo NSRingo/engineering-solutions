@@ -54,6 +54,9 @@ body :global(.rspress-doc) {
   }
 
   .badge {
+    display: inline-flex;
+    gap: 0.5em;
+
     a {
       color: inherit;
     }
