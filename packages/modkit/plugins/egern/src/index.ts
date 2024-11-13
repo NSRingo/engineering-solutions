@@ -9,7 +9,7 @@ export const pluginEgern = (): ModkitPlugin => {
 
     setup() {
       return {
-        onAfterBuild({ distPath }) {
+        async onAfterBuild({ distPath }) {
           if (!distPath || !fs.existsSync(distPath)) {
             return;
           }
@@ -20,16 +20,15 @@ export const pluginEgern = (): ModkitPlugin => {
             return acc;
           }, []);
           const surge2egern = new Surge2Egern();
-          Promise.allSettled(
+          await Promise.allSettled(
             surgeModules.map(async (surgeModule) => {
               const text = await fs.promises.readFile(surgeModule, 'utf-8');
               const result = await surge2egern.transformModule(text);
               const targetPath = surgeModule.replace('.sgmodule', '.yaml');
               return fs.promises.writeFile(targetPath, result);
             }),
-          ).finally(() => {
-            surge2egern.destroy();
-          });
+          );
+          surge2egern.destroy();
         },
       };
     },
