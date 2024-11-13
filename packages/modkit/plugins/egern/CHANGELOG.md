@@ -1,5 +1,12 @@
 # @iringo/modkit-plugin-egern
 
+## 1.3.2
+
+### Patch Changes
+
+- 9527746: 修复 egern 编译后未关闭浏览器的问题
+  - @iringo/modkit-shared@1.3.2
+
 ## 1.3.1
 
 ### Patch Changes

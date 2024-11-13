@@ -1,5 +1,11 @@
 # @iringo/doc-ui
 
+## 1.4.0
+
+### Minor Changes
+
+- 4d8436f: ModuleInstall badge 支持数组入参
+
 ## 1.3.2
 
 ### Patch Changes
