@@ -35,6 +35,7 @@ export const buildSurgeArguments = async (
       const egernModule = await surge2Egern.transformModule(result);
       const egernOutputPath = output?.transformEgern?.path ?? path.resolve('egern.yaml');
       await safeWriteFile(egernOutputPath, egernModule);
+      await surge2Egern.destroy();
       logger.success(`Successfully generated Egern module to ${egernOutputPath}`);
     }
   } catch (error) {
