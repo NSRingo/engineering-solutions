@@ -1,5 +1,11 @@
 # @iringo/arguments-builder
 
+## 1.8.5
+
+### Patch Changes
+
+- e30f006: 关闭 surge2Egern
+
 ## 1.8.4
 
 ### Patch Changes
