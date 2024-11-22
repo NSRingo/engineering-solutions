@@ -112,10 +112,10 @@ export class LoonTemplate extends Template {
         switch (script.type) {
           case 'http-request':
           case 'http-response':
-            line += `${script.type} ${script.pattern},`;
+            line += `${script.type} ${script.pattern} `;
             break;
           case 'cron':
-            line += `${script.type} "${script.cronexp}",`;
+            line += `${script.type} "${script.cronexp}" `;
             break;
           case 'generic':
             line += `${script.type} `;
@@ -153,7 +153,7 @@ export class LoonTemplate extends Template {
             }
           })
           .filter(Boolean)
-          .join(',')
+          .join(', ')
           .trim();
         return line;
       })
