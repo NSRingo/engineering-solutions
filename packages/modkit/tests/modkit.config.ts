@@ -1,12 +1,104 @@
 import { defineConfig } from '@iringo/modkit';
+import type { ModuleContent } from '@iringo/modkit';
+import { pluginEgern } from '@iringo/modkit-plugin-egern';
 import { pluginBoxJs } from '@iringo/modkit/plugins/boxjs';
 import { pluginDts } from '@iringo/modkit/plugins/dts';
 import { pluginLoon } from '@iringo/modkit/plugins/loon';
 import { pluginStash } from '@iringo/modkit/plugins/stash';
 import { pluginSurge } from '@iringo/modkit/plugins/surge';
+//import { pluginNodePolyfill } from '@rsbuild/plugin-node-polyfill';
+//import pkg from './package.json';
+const pkg = {
+  name: 'news',
+  version: '3.1.5',
+  organizationName: ' iRingo',
+  displayName: ' iRingo: 📰 News',
+  homepage: 'https://NSRingo.github.io/guide/apple-news',
+};
 
 export default defineConfig({
   source: {
+    metadata: {
+      system: ['iOS', 'iPadOS', 'tvOS', 'macOS', 'watchOS'],
+      extra: {
+        openUrl: 'http://boxjs.com/#/app/iRingo.News',
+        author: ['VirgilClyne[https://github.com/VirgilClyne]'],
+        homepage: 'https://NSRingo.github.io/guide/apple-news',
+        icon: 'https://developer.apple.com/assets/elements/icons/news/news-128x128.png',
+        category: ' iRingo',
+        date: new Date().toLocaleString('zh-CN'),
+      },
+    },
+    content: ({ pluginName }) => {
+      const content: ModuleContent = {
+        script: [
+          {
+            name: '📰 News.v1.configs.request',
+            type: 'http-request',
+            pattern: '^https?://news(-todayconfig)?-edge.apple.com/v1/configs',
+            requiresBody: true,
+            scriptKey: 'request',
+            injectArgument: true,
+          },
+          {
+            name: '📰 News.analyticseventsv2.async.request',
+            type: 'http-request',
+            pattern: '^https?://news(-sports)?-events.apple.com/analyticseventsv2/async',
+            requiresBody: true,
+            scriptKey: 'request',
+            injectArgument: true,
+          },
+          {
+            name: '📰 News.v1.search.request',
+            type: 'http-request',
+            pattern: '^https?://news-client-search.apple.com/v1/search',
+            requiresBody: false,
+            scriptKey: 'request',
+            injectArgument: true,
+          },
+        ],
+        mitm: {
+          hostname: [
+            'news-edge.apple.com',
+            'news-todayconfig-edge.apple.com',
+            'news-events.apple.com',
+            'news-sports-events.apple.com',
+            'news-client.apple.com',
+            'news-client-search.apple.com',
+          ],
+        },
+      };
+      switch (pluginName) {
+        case 'surge':
+          content.rule = [
+            'DOMAIN,gateway.icloud.com,{{{Proxy}}} //☁️ iCloud',
+            {
+              type: 'RULE-SET',
+              assetKey: 'News.list',
+              policyName: {
+                custom: '{{{Proxy}}}',
+              },
+              description: '📰 News',
+            },
+          ];
+          break;
+        case 'loon':
+        case 'stash':
+        default:
+          content.rule = [
+            '# > iCloud',
+            'DOMAIN,gateway.icloud.com,PROXY',
+            '# > News',
+            'DOMAIN,news-edge.apple.com,PROXY',
+            'DOMAIN,news-events.apple.com,PROXY',
+            'DOMAIN,apple.comscoreresearch.com,PROXY',
+            '# News+ Audio',
+            'URL-REGEX,^https?://news-assets.apple.com/(audio-narrative|podcast/audio)/.*,PROXY',
+          ];
+          break;
+      }
+      return content;
+    },
     arguments: [
       {
         key: 'Switch',
@@ -15,159 +107,93 @@ export default defineConfig({
         type: {
           default: 'boolean',
           surge: 'exclude',
+          loon: 'exclude',
+          egern: 'exclude',
         },
-        description: '是否启用此APP修改',
+        description: '是否启用此APP修改。',
       },
       {
-        key: 'NextHour.Provider',
-        name: '[未来一小时降水强度]数据源',
-        defaultValue: 'ColorfulClouds',
+        key: 'CountryCode',
+        name: '国家或地区代码',
+        defaultValue: 'US',
         type: 'string',
         options: [
-          { key: 'WeatherKit', label: 'WeatherKit (不进行替换)' },
-          { key: 'ColorfulClouds', label: '彩云天气' },
-          { key: 'QWeather', label: '和风天气' },
+          { key: 'AUTO', label: '🇺🇳自动（跟随地区检测结果）' },
+          { key: 'CN', label: '🇨🇳中国大陆' },
+          { key: 'HK', label: '🇭🇰香港' },
+          { key: 'TW', label: '🇹🇼台湾' },
+          { key: 'SG', label: '🇸🇬新加坡' },
+          { key: 'US', label: '🇺🇸美国' },
+          { key: 'JP', label: '🇯🇵日本' },
+          { key: 'AU', label: '🇦🇺澳大利亚' },
+          { key: 'GB', label: '🇬🇧英国' },
+          { key: 'KR', label: '🇰🇷韩国' },
+          { key: 'CA', label: '🇨🇦加拿大' },
+          { key: 'IE', label: '🇮🇪爱尔兰' },
         ],
-        description: '始终会使用选定的数据源，填补无降水监测地区的数据。',
+        description: '不同国家或地区提供的内容或有差别。',
       },
       {
-        key: 'AQI.Provider',
-        name: '[空气质量]数据源',
-        defaultValue: 'ColorfulClouds',
-        type: 'string',
-        options: [
-          { key: 'WeatherKit', label: 'WeatherKit (不进行替换)' },
-          { key: 'ColorfulClouds', label: '彩云天气' },
-          { key: 'QWeather', label: '和风天气' },
-          { key: 'WAQI', label: 'The World Air Quality Project' },
-        ],
-        description: '始终会使用选定的数据源，填补无空气质量监测地区的数据。',
-      },
-      {
-        key: 'AQI.ReplaceProviders',
-        name: '[空气质量]需要替换的供应商',
-        defaultValue: [],
-        type: 'array',
-        description: '选中的空气质量数据源会被替换。',
-        options: [
-          { key: 'QWeather', label: '和风天气' },
-          { key: 'BreezoMeter', label: 'BreezoMeter' },
-          { key: 'TWC', label: 'The Weather Channel' },
-        ],
-      },
-      {
-        key: 'AQI.Local.Scale',
-        type: 'string',
-        name: '[空气质量]本地替换算法',
-        description: '本地替换时使用的算法',
-        defaultValue: 'WAQI_InstantCast',
-        options: [
-          { key: 'NONE', label: 'None (不进行替换)' },
-          { key: 'WAQI_InstantCast', label: 'WAQI InstantCast' },
-        ],
-      },
-      {
-        key: 'AQI.Local.ReplaceScales',
-        type: 'array',
-        name: '[空气质量]需要修改的标准',
-        description: '选中的空气质量标准会被替换。请注意各国监测的污染物种类可能有所不同，转换算法或API未必适合当地。',
-        defaultValue: ['HJ6332012'],
-        options: [{ key: 'HJ6332012', label: '中国 (HJ 633—2012)' }],
-      },
-      {
-        key: 'AQI.Local.ConvertUnits',
-        name: '[空气质量]转换污染物计量单位',
-        defaultValue: false,
+        key: 'NewsPlusUser',
+        name: '[搜索]显示News+内容',
+        defaultValue: true,
         type: 'boolean',
-        description:
-          '（不推荐。不同单位互转可能会损失精度，导致数值偏大）将污染物数据替换为转换单位后的数据，方便对照转换后的标准。',
-      },
-      {
-        key: 'API.ColorfulClouds.Token',
-        name: '[API]彩云天气 API 令牌',
-        defaultValue: '',
-        type: 'string',
-        placeholder: '123456789123456789abcdefghijklmnopqrstuv',
-        description: '彩云天气 API 令牌',
-      },
-      {
-        key: 'API.QWeather.Host',
-        name: '[API]和风天气 API 主机',
-        defaultValue: 'devapi.qweather.com',
-        type: 'string',
-        description: '和风天气 API 使用的主机名',
-        options: [
-          { key: 'devapi.qweather.com', label: '免费订阅 (devapi.qweather.com)' },
-          { key: 'api.qweather.com', label: '付费订阅 (api.qweather.com)' },
-        ],
-      },
-      {
-        key: 'API.QWeather.Token',
-        name: '[API]和风天气 API 令牌',
-        defaultValue: '',
-        type: 'string',
-        placeholder: '123456789123456789abcdefghijklmnopqrstuv',
-        description: '和风天气 API 令牌',
-      },
-      {
-        key: 'API.WAQI.Token',
-        name: '[API]WAQI API 令牌',
-        defaultValue: '',
-        type: 'string',
-        placeholder: '123456789123456789abcdefghijklmnopqrstuv',
-        description: 'WAQI API 令牌，填写此字段将自动使用WAQI高级API',
+        description: '是否显示News+搜索结果。',
       },
     ],
-    metadata: {
-      description: 'iOS 18 & macOS 15 & watchOS 11\n1.解锁全部天气功能\n2.替换空气质量数据\n3.添加下一小时降水数据',
-      extra: {
-        category: ' iRingo',
-      },
-    },
-    content: {
-      rule: [
-        'DOMAIN,weather-analytics-events.apple.com,REJECT-DROP',
-        {
-          type: 'RULE-SET',
-          assetKey: 'rule-set.list',
-          policyName: 'REJECT',
-          description: 'test',
-        },
-      ],
-      script: [
-        {
-          name: '🌤 WeatherKit.api.v1.availability.response',
-          type: 'http-response',
-          scriptKey: 'response',
-          pattern: '^https?://weatherkit.apple.com/api/v1/availability/',
-          requiresBody: true,
-          engine: 'webview',
-          injectArgument: true,
-        },
-        {
-          name: '🌤 WeatherKit.api.v2.weather.response',
-          type: 'http-response',
-          scriptKey: 'response',
-          pattern: '^https?://weatherkit.apple.com/api/v2/weather/',
-          requiresBody: true,
-          binaryBodyMode: true,
-          engine: 'webview',
-          injectArgument: true,
-        },
-      ],
-      mitm: {
-        hostname: ['weatherkit.apple.com'],
-      },
-    },
     scripts: {
-      response: './src/index.ts',
+      request: './src/request.js',
     },
     assets: {
-      'rule-set.list': './src/rule.list',
+      'News.list': './rulesets/News.list',
     },
   },
-  plugins: [pluginSurge(), pluginDts(), pluginBoxJs(), pluginLoon(), pluginStash()],
   output: {
-    assetPrefix: 'https://github.com/NSRingo/WeatherKit/releases/download/v1.8.12',
+    assetPrefix: `https://github.com/NSRingo/News/releases/download/v${pkg.version}`,
+    banners: [
+      {
+        banner: `console.log('Version: ${pkg.version}');`,
+        raw: true,
+      },
+      {
+        banner: "console.log('[file]');",
+        raw: true,
+      },
+      {
+        banner: `console.log('${pkg.displayName}');`,
+        raw: true,
+      },
+      {
+        banner: pkg.homepage,
+      },
+    ],
   },
+  tools: {
+    rsbuild: {
+      plugins: [
+        //pluginNodePolyfill()
+      ],
+    },
+    rspack: {
+      resolve: {
+        fallback: {
+          got: false,
+          'iconv-lite': false,
+          'tough-cookie': false,
+        },
+      },
+    },
+  },
+  plugins: [
+    pluginDts({
+      interfaceName: 'Settings',
+      isExported: true,
+      filePath: 'src/types.d.ts',
+    }),
+    pluginBoxJs(),
+    pluginSurge(),
+    pluginLoon(),
+    pluginStash(),
+    pluginEgern(),
+  ],
 });
