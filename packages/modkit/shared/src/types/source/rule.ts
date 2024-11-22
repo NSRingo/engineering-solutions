@@ -49,4 +49,4 @@ export interface RuleSetRule {
   description?: string;
 }
 
-export type ModuleRule = `${Exclude<RuleType, 'RULE-SET'>},${string}` | RuleSetRule;
+export type ModuleRule = `# ${string}` | `${Exclude<RuleType, 'RULE-SET'>},${string}` | RuleSetRule;
