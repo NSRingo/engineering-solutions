@@ -2,7 +2,7 @@ import styles from './popover-content.module.scss';
 
 const PROJECTS = [
   {
-    icon: 'https://avatars.githubusercontent.com/u/2111377?s=80&v=4',
+    icon: 'https://avatars.githubusercontent.com/u/182791244?s=80&v=4',
     url: 'https://NSRingo.github.io/',
     title: 'iRingo',
     description: '解锁完整的 Apple 功能和集成服务',
