@@ -1,5 +1,11 @@
 # @iringo/doc-ui
 
+## 2.0.0
+
+### Major Changes
+
+- 09a6dd1: 修改 nav-icon, 增加 module-install 的 Egren 支持
+
 ## 1.4.0
 
 ### Minor Changes
