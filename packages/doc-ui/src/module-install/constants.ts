@@ -67,7 +67,11 @@ export const APP_INSTALL_INFO_MAP: Record<
     },
   },
   egern: {
-    urlTemplate: null,
+    urlTemplate: (url) => {
+      const result = new URL('egern:///modules/new');
+      result.searchParams.set('url', url);
+      return result.toString();
+    },
     manualInstall: {
       urlTitle: '模块地址',
       path: '工具 > 模块',
