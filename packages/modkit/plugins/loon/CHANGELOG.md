@@ -1,5 +1,13 @@
 # @iringo/modkit-plugin-loon
 
+## 1.3.3
+
+### Patch Changes
+
+- d71022e: 规则增加注释类型，修复 Loon 模版
+- Updated dependencies [d71022e]
+  - @iringo/modkit-shared@1.3.3
+
 ## 1.3.2
 
 ### Patch Changes

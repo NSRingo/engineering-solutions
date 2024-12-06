@@ -1,5 +1,17 @@
 # @iringo/modkit
 
+## 1.3.3
+
+### Patch Changes
+
+- Updated dependencies [d71022e]
+  - @iringo/modkit-plugin-loon@1.3.3
+  - @iringo/modkit-shared@1.3.3
+  - @iringo/modkit-plugin-boxjs@1.3.3
+  - @iringo/modkit-plugin-dts@1.3.3
+  - @iringo/modkit-plugin-stash@1.3.3
+  - @iringo/modkit-plugin-surge@1.3.3
+
 ## 1.3.2
 
 ### Patch Changes
