@@ -1,5 +1,11 @@
 # @iringo/doc-ui
 
+## 2.0.1
+
+### Patch Changes
+
+- b46c781: add Auraflare
+
 ## 2.0.0
 
 ### Major Changes
