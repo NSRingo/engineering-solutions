@@ -1,5 +1,11 @@
 # @iringo/doc-ui
 
+## 2.0.2
+
+### Patch Changes
+
+- 9d5801f: 调整文案
+
 ## 2.0.1
 
 ### Patch Changes
