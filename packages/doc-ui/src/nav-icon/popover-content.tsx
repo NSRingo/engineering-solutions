@@ -5,7 +5,7 @@ const PROJECTS = [
     icon: 'https://avatars.githubusercontent.com/u/182791244?s=80&v=4',
     url: 'https://NSRingo.github.io/',
     title: ' iRingo',
-    description: '解锁更多 Apple® 功能，突破服务地域限制',
+    description: '解锁更多 Apple® 服务与功能',
   },
   {
     icon: 'https://avatars.githubusercontent.com/u/100578089?s=80&v=4',
