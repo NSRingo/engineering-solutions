@@ -1,5 +1,11 @@
 # @iringo/doc-ui
 
+## 2.3.0
+
+### Minor Changes
+
+- 3e008d3: 增加贡献者详情字体大小至 14px
+
 ## 2.2.0
 
 ### Minor Changes
