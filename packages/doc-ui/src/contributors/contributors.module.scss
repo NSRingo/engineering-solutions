@@ -1,0 +1,53 @@
+.contributor-item {
+  display: inline-flex;
+  border: 2px solid var(--rp-c-bg);
+  box-sizing: content-box;
+  transition: margin-left 0.2s ease-in-out;
+
+  &,
+  figure {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+  }
+
+  figure {
+    background-color: var(--rp-c-bg-soft);
+    background-size: cover;
+  }
+
+  &+& {
+    margin-left: -8px;
+
+    .contributors:hover & {
+      margin-left: 0;
+    }
+  }
+}
+
+.user-card {
+  width: 360px;
+  padding: 16px;
+
+  &__avatar {
+    height: 48px;
+    height: 48px;
+    border-radius: 50%;
+  }
+
+  &__details {
+    margin-top: .5rem;
+    font-size: 12px;
+
+    >div {
+      display: flex;
+    }
+
+    svg {
+      width: 16px;
+      height: 16px;
+      margin-right: .5rem;
+      fill: var(--rp-c-text-2);
+    }
+  }
+}
