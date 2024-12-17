@@ -1,5 +1,11 @@
 # @iringo/doc-ui
 
+## 2.4.1
+
+### Patch Changes
+
+- 49f39d6: 优化用户和贡献者数据获取逻辑，增强错误处理
+
 ## 2.4.0
 
 ### Minor Changes
