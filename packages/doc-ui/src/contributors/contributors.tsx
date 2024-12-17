@@ -51,7 +51,9 @@ export const Contributors: React.FC<ContributorsProps> = memo(({ repo }) => {
         <Suspense fallback={<div className={styles.skeleton} />}>
           <AsyncContributors />
         </Suspense>
-      ) : null}
+      ) : (
+        <div className={styles.skeleton} />
+      )}
     </div>
   );
 });
