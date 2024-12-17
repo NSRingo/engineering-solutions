@@ -1,5 +1,11 @@
 # @iringo/doc-ui
 
+## 2.4.0
+
+### Minor Changes
+
+- 3f0f2df: 添加贡献者链接和加载状态优化
+
 ## 2.3.0
 
 ### Minor Changes
