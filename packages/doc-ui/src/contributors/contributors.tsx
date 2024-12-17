@@ -17,14 +17,17 @@ const fetchContributors = async (repo: string): Promise<Contributor[]> => {
     } catch (error) {}
   }
 
-  const response = await fetch(`https://api.github.com/repos/${repo}/contributors`).catch(() => undefined);
-  if (!response?.ok) {
+  try {
+    const response = await fetch(`https://api.github.com/repos/${repo}/contributors`);
+    if (!response.ok) {
+      return [];
+    }
+    const contributors = await response.json();
+    sessionStorage.setItem(`contributors_${repo}`, JSON.stringify(contributors));
+    return contributors;
+  } catch (error) {
     return [];
   }
-
-  const contributors = await response.json();
-  sessionStorage.setItem(`contributors_${repo}`, JSON.stringify(contributors));
-  return contributors;
 };
 
 const createContributorsComponent = (repo: `${string}/${string}`) =>

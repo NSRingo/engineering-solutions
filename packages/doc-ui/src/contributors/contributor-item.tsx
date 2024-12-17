@@ -27,14 +27,17 @@ const fetchUser = async (username: string): Promise<User> => {
     } catch (error) {}
   }
 
-  const response = await fetch(`https://api.github.com/users/${username}`);
-  if (!response.ok) {
+  try {
+    const response = await fetch(`https://api.github.com/users/${username}`);
+    if (!response.ok) {
+      return { login: username } as User;
+    }
+    const user = await response.json();
+    sessionStorage.setItem(`user_${username}`, JSON.stringify(user));
+    return user;
+  } catch (error) {
     return { login: username } as User;
   }
-
-  const user = await response.json();
-  sessionStorage.setItem(`user_${username}`, JSON.stringify(user));
-  return user;
 };
 
 const createUserCard = (username: string) =>
