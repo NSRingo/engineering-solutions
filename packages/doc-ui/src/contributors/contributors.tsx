@@ -17,8 +17,8 @@ const fetchContributors = async (repo: string): Promise<Contributor[]> => {
     } catch (error) {}
   }
 
-  const response = await fetch(`https://api.github.com/repos/${repo}/contributors`);
-  if (!response.ok) {
+  const response = await fetch(`https://api.github.com/repos/${repo}/contributors`).catch(() => undefined);
+  if (!response?.ok) {
     return [];
   }
 
