@@ -29,7 +29,7 @@ const fetchUser = async (username: string): Promise<User> => {
 
   const response = await fetch(`https://api.github.com/users/${username}`);
   if (!response.ok) {
-    throw new Error(`Failed to fetch user ${username}: ${response.statusText}`);
+    return { login: username } as User;
   }
 
   const user = await response.json();
@@ -77,7 +77,7 @@ const UserCard: React.FC<{ username: string }> = ({ username }) => {
   const AsyncUserCard = createUserCard(username);
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div className={styles['user-card']}>Loading...</div>}>
       <AsyncUserCard />
     </Suspense>
   );

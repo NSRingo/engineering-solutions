@@ -1,8 +1,9 @@
 import { Suspense, lazy, memo } from 'react';
+import { useComponentReady } from '../hooks/use-component-ready';
 import { ContributorItem } from './contributor-item';
+import type { Contributor } from './types';
 
 import styles from './contributors.module.scss';
-import type { Contributor } from './types';
 
 export interface ContributorsProps {
   repo: `${string}/${string}`;
@@ -18,7 +19,7 @@ const fetchContributors = async (repo: string): Promise<Contributor[]> => {
 
   const response = await fetch(`https://api.github.com/repos/${repo}/contributors`);
   if (!response.ok) {
-    throw new Error(`Failed to fetch contributors for ${repo}: ${response.statusText}`);
+    return [];
   }
 
   const contributors = await response.json();
@@ -41,11 +42,16 @@ const createContributorsComponent = (repo: `${string}/${string}`) =>
   });
 
 export const Contributors: React.FC<ContributorsProps> = memo(({ repo }) => {
+  const [ref, ready] = useComponentReady<HTMLDivElement>({ enabled: true, key: repo });
   const AsyncContributors = createContributorsComponent(repo);
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <AsyncContributors />
-    </Suspense>
+    <div ref={ref} className={styles.wrapper}>
+      {ready ? (
+        <Suspense fallback={<div className={styles.skeleton} />}>
+          <AsyncContributors />
+        </Suspense>
+      ) : null}
+    </div>
   );
 });
